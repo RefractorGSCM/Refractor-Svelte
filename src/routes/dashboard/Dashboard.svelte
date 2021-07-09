@@ -1,0 +1,375 @@
+<script lang="ts">
+	import { onMount } from "svelte"
+	import { Route, Router } from "svelte-routing"
+
+	import Button from "../../components/Button.svelte"
+	import Home from "./Home.svelte"
+
+	let showAvatarMenu = false
+</script>
+
+<svelte:head>
+	<title>Refractor - Dashboard</title>
+</svelte:head>
+
+<input type="checkbox" id="sidebar-toggle" />
+<nav class="sidebar">
+	<div class="header">
+		<h3 class="brand"><span class="fab fa-replyd" />fractor</h3>
+		<label for="sidebar-toggle" class="fas fa-bars" />
+	</div>
+
+	<div class="menu">
+		<ul>
+			<li>
+				<a href="#">
+					<span class="fas fa-server" />
+					<span>Servers</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="fas fa-user" />
+					<span>Players</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="fas fa-list" />
+					<span>Infractions</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="fas fa-comments" />
+					<span>Chat Logs</span>
+				</a>
+			</li>
+
+			<div class="bottom">
+				<li>
+					<a href="#">
+						<span class="fas fa-cog" />
+						<span>Settings</span>
+					</a>
+				</li>
+			</div>
+		</ul>
+	</div>
+</nav>
+
+<div class="content">
+	<header>
+		<div class="brand-name">Refractor</div>
+
+		<Button size="inline">Log out</Button>
+	</header>
+
+	<main>
+		<Router>
+			<Route path="/" component={Home} />
+		</Router>
+	</main>
+</div>
+
+<style lang="scss">
+	@import "../../mixins/mixins.scss";
+
+	#sidebar-toggle {
+		display: none;
+	}
+
+	// Sidebar collapse
+	#sidebar-toggle:checked {
+		& ~ .sidebar {
+			max-width: 8rem;
+
+			@include respond-below(xl) {
+				max-width: 6rem;
+			}
+
+			.header {
+				display: flex;
+				justify-content: center;
+
+				.brand {
+					display: none;
+				}
+			}
+
+			h3 span:last-child {
+				display: none; // hide brand name
+			}
+
+			li {
+				padding: 1rem;
+				text-align: center;
+
+				span:last-child {
+					display: none;
+				}
+			}
+		}
+
+		& ~ .content {
+			margin-left: 8rem;
+
+			header {
+				left: 8rem;
+				width: calc(100% - 8rem);
+			}
+
+			@include respond-below(xl) {
+				margin-left: 6rem;
+
+				header {
+					left: 6rem;
+					width: calc(100% - 6rem);
+				}
+			}
+		}
+	}
+
+	// Sidebar styling
+	nav.sidebar {
+		height: 100%;
+		max-width: 26rem;
+		width: 100%;
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 100;
+		background: var(--color-accent);
+		color: var(--color-text2);
+		font-size: 1.8rem;
+		overflow-y: auto;
+		transition: max-width 0.1s;
+		user-select: none;
+
+		@include respond-below(xl) {
+			font-size: 1.6rem;
+			max-width: 24rem;
+		}
+
+		.header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 8rem;
+			padding: 1rem 2rem;
+
+			h3 {
+				padding-left: 1rem;
+				cursor: pointer;
+				font-size: 1.6rem;
+
+				span {
+					font-size: 2.7rem;
+				}
+			}
+
+			label {
+				cursor: pointer;
+			}
+		}
+
+		.menu {
+			padding: 0 1rem;
+		}
+
+		li {
+			padding: 1rem 2rem;
+			border-radius: 6px;
+
+			span:last-child {
+				transition: opacity 0.5s;
+				opacity: 1;
+			}
+
+			&:hover {
+				cursor: pointer;
+				background: var(--color-accent-light);
+			}
+		}
+
+		a {
+			color: var(--color-text2);
+
+			span:first-child {
+				width: 2rem;
+			}
+
+			span:last-child {
+				padding-left: 1rem;
+			}
+		}
+
+		.bottom {
+			position: absolute;
+			bottom: 1rem;
+			width: calc(100% - 2rem);
+		}
+	}
+
+	.content {
+		position: relative;
+		margin-left: 26rem; // move past sidebar
+		transition: margin-left 0.1s;
+
+		@include respond-below(xl) {
+			margin-left: 24rem;
+		}
+
+		header {
+			position: fixed;
+			top: 0;
+			left: 26rem;
+			z-index: 100;
+			width: calc(100% - 26rem);
+			background: var(--color-topbar);
+			height: 8rem;
+			padding: 0 3rem;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			transition: all 0.1s;
+			user-select: none;
+
+			@include respond-below(xl) {
+				height: 6rem;
+				left: 24rem;
+				width: calc(100% - 24rem);
+			}
+
+			.brand-name {
+				font-size: 2rem;
+				font-weight: 400;
+				display: flex;
+
+				div {
+					margin-right: 1rem;
+				}
+
+				@include respond-below(sm) {
+					font-size: 1.6rem;
+				}
+			}
+
+			.active {
+				display: block;
+			}
+		}
+
+		main {
+			margin-top: 8rem;
+			background: var(--color-background3);
+			min-height: calc(100vh - 8rem);
+			padding: 3rem;
+
+			@include respond-below(xl) {
+				margin-top: 6rem;
+				min-height: calc(100vh - 6rem);
+			}
+
+			.title {
+				font-size: 2.4rem;
+				font-weight: 500;
+				margin-bottom: 3rem;
+			}
+		}
+	}
+
+	@include respond-below(lg) {
+		// Start with the sidebar collapsed on smaller screens
+		nav.sidebar {
+			font-size: 1.6rem;
+			max-width: 6rem;
+
+			.header {
+				display: flex;
+				justify-content: center;
+
+				.brand {
+					display: none;
+				}
+			}
+
+			h3 span:last-child {
+				display: none; // hide brand name
+			}
+
+			li {
+				padding: 1rem;
+				text-align: center;
+
+				span:last-child {
+					display: none;
+				}
+			}
+		}
+
+		.content {
+			margin-left: 6rem;
+
+			header {
+				left: 6rem;
+				width: calc(100% - 6rem);
+			}
+		}
+
+		// Expand if the checkbox was checked
+		#sidebar-toggle:checked {
+			& ~ .sidebar {
+				max-width: 24rem;
+
+				.header {
+					// display: inline;
+					justify-content: space-between;
+
+					.brand {
+						display: unset;
+					}
+				}
+
+				h3 span:last-child {
+					display: inline; // hide brand name
+				}
+
+				li {
+					text-align: unset;
+					padding-left: 2rem;
+				}
+
+				li span:last-child {
+					display: inline; // hide nav tag label
+				}
+			}
+
+			& ~ .content {
+				margin-left: 24rem;
+
+				header {
+					left: 24rem;
+					width: calc(100% - 24rem);
+				}
+			}
+		}
+	}
+
+	@include respond-below(sm) {
+		nav.sidebar {
+		}
+
+		#sidebar-toggle:checked {
+			& ~ .content {
+				margin-left: 4rem;
+
+				header {
+					left: 0rem;
+					width: calc(100% - 0rem);
+					z-index: -100;
+				}
+			}
+		}
+	}
+</style>
