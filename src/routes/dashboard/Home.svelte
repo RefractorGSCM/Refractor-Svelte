@@ -47,7 +47,7 @@
 
 		.server {
 			display: grid;
-			grid-template-columns: 1fr 1fr 1fr 0.4fr;
+			grid-template-columns: 1.2fr 1fr 1fr 0.4fr;
 			grid-template-rows: auto;
 			background-color: var(--color-background2);
 			padding: 1rem 1.5rem;
@@ -84,7 +84,7 @@
 
 		.heading {
 			display: grid;
-			grid-template-columns: 1fr 1fr 1fr 0.4fr;
+			grid-template-columns: 1.2fr 1fr 1fr 0.4fr;
 			grid-template-rows: auto;
 			background-color: var(--color-accent);
 			padding: 1rem;

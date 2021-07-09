@@ -3,7 +3,22 @@
 	import { Route, Router } from "svelte-routing"
 
 	import Button from "../../components/Button.svelte"
+	import { checkAuth } from "../../domain/user/store"
 	import Home from "./Home.svelte"
+
+	onMount(async () => {
+		const isAuthentciated = await checkAuth()
+
+		if (!isAuthentciated) {
+			window.location.replace(`${process.env.authRoot}/k/login`)
+		}
+	})
+
+	function logout() {
+		window.location.replace(
+			`${process.env.kratosRoot}/self-service/browser/flows/logout`,
+		)
+	}
 
 	let showAvatarMenu = false
 </script>
@@ -62,7 +77,7 @@
 	<header>
 		<div class="brand-name">Refractor</div>
 
-		<Button size="inline">Log out</Button>
+		<Button size="inline" on:click={() => logout()}>Log out</Button>
 	</header>
 
 	<main>
