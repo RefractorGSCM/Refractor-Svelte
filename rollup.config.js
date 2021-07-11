@@ -91,7 +91,7 @@ export default {
 				env: {
 					kratosRoot: "http://127.0.0.1:4433",
 					authRoot: "http://127.0.0.1:4455",
-					apiRoot: "http://127.0.0.1:4455/api/v1",
+					apiRoot: "http://127.0.0.1:4000/api/v1",
 				},
 			}),
 		}),

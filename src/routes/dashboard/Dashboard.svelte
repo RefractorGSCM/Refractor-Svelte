@@ -1,18 +1,13 @@
 <script lang="ts">
+	import axios from "axios"
+
 	import { onMount } from "svelte"
-	import { Route, Router } from "svelte-routing"
+	import { Link, Route, Router } from "svelte-routing"
 
 	import Button from "../../components/Button.svelte"
 	import { checkAuth } from "../../domain/user/store"
+	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
-
-	onMount(async () => {
-		const isAuthentciated = await checkAuth()
-
-		if (!isAuthentciated) {
-			window.location.replace(`${process.env.authRoot}/k/login`)
-		}
-	})
 
 	function logout() {
 		window.location.replace(
@@ -21,6 +16,8 @@
 	}
 
 	let showAvatarMenu = false
+
+	export let url = ""
 </script>
 
 <svelte:head>
@@ -36,12 +33,15 @@
 
 	<div class="menu">
 		<ul>
-			<li>
-				<a href="#">
-					<span class="fas fa-server" />
-					<span>Servers</span>
-				</a>
-			</li>
+			<div class="link">
+				<Link to="/">
+					<li>
+						<span class="fas fa-server" />
+						<span>Servers</span>
+					</li>
+				</Link>
+			</div>
+
 			<li>
 				<a href="#">
 					<span class="fas fa-user" />
@@ -61,6 +61,15 @@
 				</a>
 			</li>
 
+			<div class="link">
+				<Link to="/groups">
+					<li>
+						<span class="fas fa-lock" />
+						<span>Manage Groups</span>
+					</li>
+				</Link>
+			</div>
+
 			<div class="bottom">
 				<li>
 					<a href="#">
@@ -75,13 +84,14 @@
 
 <div class="content">
 	<header>
-		<div class="brand-name">Refractor</div>
+		<div class="brand-name">{"selectedGame.name"}</div>
 
 		<Button size="inline" on:click={() => logout()}>Log out</Button>
 	</header>
 
 	<main>
-		<Router>
+		<Router {url}>
+			<Route path="/groups" component={Groups} />
 			<Route path="/" component={Home} />
 		</Router>
 	</main>
@@ -209,6 +219,7 @@
 
 		a {
 			color: var(--color-text2);
+			text-decoration: none;
 
 			span:first-child {
 				width: 2rem;
@@ -280,6 +291,7 @@
 			background: var(--color-background3);
 			min-height: calc(100vh - 8rem);
 			padding: 3rem;
+			position: relative;
 
 			@include respond-below(xl) {
 				margin-top: 6rem;
@@ -386,5 +398,17 @@
 				}
 			}
 		}
+	}
+
+	// Link styling override
+	.link > :global(a) {
+		text-decoration: none;
+		color: var(--color-text2);
+	}
+
+	// Spinner position fix
+	:global(main .spinner) {
+		top: 0;
+		left: 0;
 	}
 </style>

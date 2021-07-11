@@ -1,8 +1,13 @@
 <script lang="ts">
 	export let fullscreen = false
+	export let blocking = false
 </script>
 
-<div class={`wrapper ${fullscreen ? "wrapper-fullscreen" : null}`}>
+<div
+	class={`spinner wrapper ${fullscreen ? "wrapper-fullscreen" : null} ${
+		blocking ? "wrapper-blocking" : null
+	}`}
+>
 	<div class="lds-roller">
 		<div />
 		<div />
@@ -16,6 +21,9 @@
 </div>
 
 <style>
+	:global(.spinner) {
+	}
+
 	.wrapper-fullscreen {
 		position: fixed !important;
 		height: 100vh !important;
@@ -33,6 +41,10 @@
 		align-items: center;
 		background: rgba(0, 0, 0, 0.1);
 		z-index: 10000;
+	}
+
+	.wrapper-blocking {
+		background: var(--color-background3);
 	}
 
 	.lds-roller {
