@@ -1,0 +1,123 @@
+<script lang="ts">
+	import { createEventDispatcher } from "svelte"
+
+	export let name = "toggle"
+
+	const dispatch = createEventDispatcher()
+
+	const change = (e) => {
+		console.log(e.target.name, e.target.value)
+	}
+</script>
+
+<div class="triple-toggle">
+	<input id="tt-no" type="radio" {name} value="false" on:change={change} />
+	<label class="toggle toggle-yes" for="tt-no">
+		<i class="fas fa-times" />
+	</label>
+
+	<input
+		id="tt-unset"
+		checked
+		type="radio"
+		{name}
+		value="unset"
+		on:change={change}
+	/>
+	<label class="toggle toggle-yes" for="tt-unset">
+		<i class="fas fa-asterisk" />
+	</label>
+
+	<input id="tt-yes" type="radio" {name} value="true" on:change={change} />
+	<label class="toggle toggle-yes" for="tt-yes">
+		<i class="fas fa-check" />
+	</label>
+	<span />
+</div>
+
+<style lang="scss">
+	$option-width: 3rem;
+	$option-height: 3rem;
+
+	.triple-toggle {
+		display: inline-block;
+		border-radius: var(--border-sm);
+		position: relative;
+		background: var(--color-background3);
+
+		label {
+			text-align: center;
+			font-family: sans-serif;
+			display: inline-block;
+			position: relative;
+			z-index: 2;
+			margin: 0;
+			text-align: center;
+			font-size: 1.5rem;
+			transition: color 0.3s ease-in-out;
+
+			i {
+				width: $option-width;
+				height: $option-height;
+				cursor: pointer;
+				display: grid;
+				place-items: center;
+			}
+		}
+
+		input {
+			position: absolute;
+			z-index: 3;
+			opacity: 0;
+			cursor: pointer;
+		}
+
+		span {
+			height: $option-height;
+			width: $option-width;
+			line-height: 2rem.5;
+			background: #fff;
+			display: block;
+			position: absolute;
+			top: 0;
+			transition: all 0.3s ease-in-out;
+			border-radius: var(--border-sm);
+		}
+
+		input[value="false"] ~ label {
+			color: var(--color-danger);
+		}
+
+		input[value="unset"] ~ label {
+			color: var(--color-text-muted);
+		}
+
+		input[value="true"] ~ label {
+			color: var(--color-success);
+		}
+
+		input[value="false"]:checked ~ span {
+			background: var(--color-danger);
+			left: 0;
+		}
+
+		input[value="true"]:checked ~ span {
+			background: var(--color-success);
+			left: calc(100% - #{$option-width});
+		}
+
+		input[value="unset"]:checked ~ span {
+			background: var(--color-accent);
+			left: calc(50% - #{$option-width / 2});
+		}
+
+		input[value="unset"]:checked + label {
+			color: var(--color-text-muted);
+		}
+
+		input[value="false"]:checked + label,
+		input[value="true"]:checked + label {
+			color: var(--color-text1);
+		}
+	}
+</style>
