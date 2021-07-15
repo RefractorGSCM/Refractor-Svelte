@@ -2,12 +2,13 @@
 	import { onMount } from "svelte"
 	import { group_outros, time_ranges_to_array } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
-
+	import TripleToggle from "../../components/TripleToggle.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { allGroups, getAllGroups } from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Container from "./components/Container.svelte"
+	import Toggle from "../../components/Toggle.svelte"
 
 	onMount(async () => {
 		setLoading("groups", true)
@@ -36,6 +37,11 @@
 	<div class="manager">
 		<div class="editor">
 			<Heading>Managing: Group 1</Heading>
+
+			<TripleToggle name="administrator" />
+			<br />
+			<br />
+			<Toggle name="test" />
 		</div>
 		<div class="buttons">
 			<Button color="danger">Reset</Button>

@@ -2,13 +2,11 @@
 	import { createEventDispatcher } from "svelte"
 
 	export let name = "toggle"
-	export let value = "unset"
+	export let value = "false"
 
-	// if (value !== "true" && value !== "unset" && value !== "false") {
-	// 	value = "unset"
-	// }
-
-	console.log("tripple val", value)
+	if (value !== "true" && value !== "false") {
+		value = "false"
+	}
 
 	const dispatch = createEventDispatcher()
 
@@ -17,40 +15,28 @@
 	}
 </script>
 
-<div class="triple-toggle">
+<div class="toggle">
 	<input
 		bind:group={value}
-		id="tt-no"
+		id="t-no"
 		type="radio"
 		{name}
 		value="false"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for="tt-no">
+	<label for="t-no">
 		<i class="fas fa-times" />
 	</label>
 
 	<input
 		bind:group={value}
-		id="tt-unset"
-		type="radio"
-		{name}
-		value="unset"
-		on:change={change}
-	/>
-	<label class="toggle toggle-yes" for="tt-unset">
-		<i class="fas fa-asterisk" />
-	</label>
-
-	<input
-		bind:group={value}
-		id="tt-yes"
+		id="t-yes"
 		type="radio"
 		{name}
 		value="true"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for="tt-yes">
+	<label for="t-yes">
 		<i class="fas fa-check" />
 	</label>
 	<span />
@@ -60,7 +46,7 @@
 	$option-width: 3rem;
 	$option-height: 3rem;
 
-	.triple-toggle {
+	.toggle {
 		display: inline-block;
 		border-radius: var(--border-sm);
 		position: relative;
@@ -110,10 +96,6 @@
 			color: var(--color-danger);
 		}
 
-		input[value="unset"] ~ label {
-			color: var(--color-text-muted);
-		}
-
 		input[value="true"] ~ label {
 			color: var(--color-success);
 		}
@@ -126,15 +108,6 @@
 		input[value="true"]:checked ~ span {
 			background: var(--color-success);
 			left: calc(100% - #{$option-width});
-		}
-
-		input[value="unset"]:checked ~ span {
-			background: var(--color-accent);
-			left: calc(50% - #{$option-width / 2});
-		}
-
-		input[value="unset"]:checked + label {
-			color: var(--color-text-muted);
 		}
 
 		input[value="false"]:checked + label,
