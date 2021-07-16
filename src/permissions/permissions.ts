@@ -51,10 +51,14 @@ export function getDescription(name: string): string {
 export function getSetFlags(permissions: bigint): string[] {
 	const setFlags: string[] = []
 
+	if (permissions === BigInt(0)) {
+		return setFlags
+	}
+
 	for (const flagName of allFlags) {
 		const flag = getFlag(flagName)
 
-		if ((permissions | flag) === flag) {
+		if ((BigInt(permissions) | BigInt(flag)) === BigInt(flag)) {
 			setFlags.push(flagName)
 		}
 	}
