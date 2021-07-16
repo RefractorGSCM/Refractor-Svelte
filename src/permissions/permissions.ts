@@ -1,13 +1,14 @@
 export const FLAG_ADMINISTRATOR = "FLAG_ADMINISTRATOR"
 export const FLAG_VIEW_SERVERS = "FLAG_VIEW_SERVERS"
 
+const allFlags = [FLAG_ADMINISTRATOR, FLAG_VIEW_SERVERS]
 const flags = {}
 const descriptions = {}
 
 type Flag = {
 	name: string
 	description: string
-	flag?: BigInt
+	flag?: bigint
 }
 
 function registerFlags(newFlags: Flag[]) {
@@ -39,10 +40,24 @@ registerFlags([
 	// ADD NEW FLAGS HERE
 ])
 
-export function getFlag(name: string): BigInt {
+export function getFlag(name: string): bigint {
 	return flags[name]
 }
 
 export function getDescription(name: string): string {
 	return descriptions[name]
+}
+
+export function getSetFlags(permissions: bigint): string[] {
+	const setFlags: string[] = []
+
+	for (const flagName of allFlags) {
+		const flag = getFlag(flagName)
+
+		if ((permissions | flag) === flag) {
+			setFlags.push(flagName)
+		}
+	}
+
+	return setFlags
 }

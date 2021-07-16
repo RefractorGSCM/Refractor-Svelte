@@ -11,32 +11,32 @@
 	const dispatch = createEventDispatcher()
 
 	const change = (e) => {
-		dispatch("change", e.target.value)
+		dispatch("change", e)
 	}
 </script>
 
 <div class="toggle">
 	<input
 		bind:group={value}
-		id="t-no"
+		id={`${name}-t-no`}
 		type="radio"
 		{name}
 		value="false"
 		on:change={change}
 	/>
-	<label for="t-no">
+	<label for={`${name}-t-no`}>
 		<i class="fas fa-times" />
 	</label>
 
 	<input
 		bind:group={value}
-		id="t-yes"
+		id={`${name}-t-yes`}
 		type="radio"
 		{name}
 		value="true"
 		on:change={change}
 	/>
-	<label for="t-yes">
+	<label for={`${name}-t-yes`}>
 		<i class="fas fa-check" />
 	</label>
 	<span />
