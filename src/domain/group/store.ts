@@ -1,4 +1,5 @@
 import { Writable, writable } from "svelte/store"
+import { sortAsc } from "../../utils/sorting"
 import api from "./api"
 import type { Group } from "./group.types"
 
@@ -8,7 +9,9 @@ export async function getAllGroups() {
 	try {
 		const { data } = await api.getAllGroups()
 
-		allGroups.set(data.payload)
+		const groups: Group[] = data.payload
+
+		allGroups.set(sortAsc("position", groups))
 	} catch (err) {
 		console.log(err)
 	}

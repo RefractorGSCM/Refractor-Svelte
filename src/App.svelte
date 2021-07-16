@@ -24,15 +24,23 @@
 	})
 </script>
 
-<ThemeProvider />
+<div class="refractor-app">
+	<ThemeProvider />
 
-{#if $loading["app"]}
-	<Spinner fullscreen={true} blocking={true} />
-{/if}
+	{#if $loading["app"]}
+		<Spinner fullscreen={true} blocking={true} />
+	{/if}
 
-{#if authChecked}
-	<Router>
-		<Route path="/styleguide" component={StyleGuide} />
-		<ProtectedRoute path="/*" component={Dashboard} />
-	</Router>
-{/if}
+	{#if authChecked}
+		<Router>
+			<Route path="/styleguide" component={StyleGuide} />
+			<ProtectedRoute path="/*" component={Dashboard} />
+		</Router>
+	{/if}
+</div>
+
+<style lang="scss" global>
+	.refractor-app {
+		box-sizing: border-box;
+	}
+</style>

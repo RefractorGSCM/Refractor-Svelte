@@ -1,5 +1,6 @@
 <script>
 	import Button from "../components/Button.svelte"
+	import Heading from "../components/Heading.svelte"
 	import { currentTheme } from "../theme/store"
 </script>
 
@@ -14,6 +15,14 @@
 					<h1>Layer 2</h1>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<div class="flex">
+		<div>
+			<Heading type="title">Heading</Heading>
+			<Heading type="subtitle">Heading</Heading>
+			<Heading>Heading</Heading>
 		</div>
 	</div>
 

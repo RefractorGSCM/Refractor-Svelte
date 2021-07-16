@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { group_outros, time_ranges_to_array } from "svelte/internal"
+	import {
+		get_custom_elements_slots,
+		group_outros,
+		loop_guard,
+		time_ranges_to_array,
+	} from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import Heading from "../../components/Heading.svelte"
@@ -19,6 +24,7 @@
 		getSetFlags,
 	} from "../../permissions/permissions"
 	import BottomBar from "./components/BottomBar.svelte"
+	import { sortAsc } from "../../utils/sorting"
 
 	onMount(async () => {
 		setLoading("groups", true)
@@ -28,6 +34,7 @@
 		setLoading("groups", false)
 	})
 
+	let hovering = -1
 	let groups = writable([])
 	$: groups.set([...$allGroups])
 
@@ -37,6 +44,59 @@
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
 
+	function dragstart(e, index: number) {
+		e.dataTransfer.effectAllowed = "move"
+		e.dataTransfer.dropEffect = "move"
+		const start = index
+		e.dataTransfer.setData("text/plain", start)
+	}
+
+	function drop(e, target: number) {
+		if (editingNewGroup) {
+			// If we are editing a new group, we do not want to allow group reordering.
+			// This is because reordering a group which the server does not yet know about
+			// would not have the desired result, and would likely break something.
+			highlightChangeError()
+			return
+		}
+
+		e.dataTransfer.dropEffect = "move"
+		const start = parseInt(e.dataTransfer.getData("text/plain"))
+
+		if (start == target) {
+			// do not process the event if a group was dragged on itself
+			return
+		}
+
+		const newTrackgroups = [...$groups]
+
+		if (start < target) {
+			if (target === $groups.length - 1) {
+				// do not allow the default group (everyone) to be moved
+				hovering = -1
+				return
+			}
+
+			newTrackgroups.splice(target + 1, 0, newTrackgroups[start])
+			newTrackgroups.splice(start, 1)
+		} else if (start > target) {
+			newTrackgroups.splice(target, 0, newTrackgroups[start])
+			newTrackgroups.splice(start + 1, 1)
+		}
+
+		hovering = -1
+		groups.set(newTrackgroups)
+		submitGroupReorder(newTrackgroups)
+	}
+
+	function submitGroupReorder(ordered) {
+		setLoading("groups-reorder", true)
+
+		setTimeout(() => {
+			setLoading("groups-reorder", false)
+		}, 300)
+	}
+
 	function addGroup() {
 		if (changesWereMade) {
 			highlightChangeError()
@@ -45,12 +105,12 @@
 
 		const newGroup: Group = {
 			name: "New Group",
-			position: $groups.length + 1,
+			position: $groups.length,
 			color: 0,
 			permissions: BigInt(0),
 		}
 
-		groups.set([...$groups, newGroup])
+		groups.set(sortAsc("position", [...$groups, newGroup]))
 
 		switchGroups(newGroup)
 		editingNewGroup = true
@@ -90,6 +150,7 @@
 
 			allGroups.set([...newGroups])
 			currentGroup = null
+			editingNewGroup = false
 		}
 
 		changesWereMade = false
@@ -137,14 +198,26 @@
 	<Heading type="title">Groups</Heading>
 	<div class="container" id="groups-container">
 		<div class="groups-list">
+			{#if $loading["groups-reorder"]}
+				<Spinner />
+			{/if}
+
 			<div class="groups">
-				{#each $groups as group}
+				{#each $groups as group, index}
 					<div
 						class="group"
 						class:selected={currentGroup && currentGroup.id === group.id}
 						style={`color: #${group.color.toString(16)}`}
 						on:click={() => switchGroups(group)}
+						draggable={group.id !== 1}
+						on:dragstart={(e) => dragstart(e, index)}
+						on:drop|preventDefault={(e) => drop(e, index)}
+						ondragover={"return false"}
+						on:dragend={() => (hovering = -1)}
+						on:dragenter={() => (hovering = index)}
+						class:hovering={group.id !== 1 && hovering === index}
 					>
+						<span class="order">{index + 1}</span>
 						{group.name}
 					</div>
 				{/each}
@@ -232,15 +305,23 @@
 		background-color: var(--color-danger);
 	}
 
+	:global(.hovering) {
+		outline: 2px dashed var(--color-primary);
+	}
+
 	.container {
 		margin-top: 2rem;
 		margin-bottom: 6rem;
 		display: grid;
-		grid-template-columns: 1fr 3fr;
+		grid-template-columns: minmax(20rem, 1fr) 3fr;
 		grid-column-gap: 2rem;
-		font-size: 1.6rem;
+		font-size: 1.8rem;
 		min-height: 70vh;
 		max-height: 100vh;
+
+		@include respond-below(lg) {
+			font-size: 1.6rem;
+		}
 
 		> * {
 			padding: 2rem;
@@ -248,7 +329,7 @@
 			border-radius: var(--border-md);
 		}
 
-		@include respond-below(xs) {
+		@include respond-below(sm) {
 			grid-template-rows: 30vh auto;
 			grid-template-columns: auto;
 			grid-row-gap: 2rem;
@@ -309,6 +390,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		position: relative;
 
 		.group {
 			padding: 0.8rem;
@@ -318,6 +400,13 @@
 			&:hover {
 				background-color: var(--color-background1);
 				cursor: pointer;
+			}
+
+			span.order {
+				font-family: monospace;
+				color: var(--color-text-muted2);
+				width: 3rem;
+				overflow-x: hidden;
 			}
 		}
 
@@ -334,7 +423,7 @@
 		}
 
 		.groups {
-			@include respond-below(xs) {
+			@include respond-below(sm) {
 				overflow-y: scroll;
 			}
 		}

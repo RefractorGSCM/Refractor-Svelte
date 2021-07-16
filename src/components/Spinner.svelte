@@ -39,7 +39,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: rgba(0, 0, 0, 0.1);
+		background: rgba(0, 0, 0, 0.25);
 		z-index: 10000;
 	}
 

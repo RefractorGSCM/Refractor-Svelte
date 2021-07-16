@@ -36,17 +36,19 @@
 {/if}
 
 <style lang="scss">
+	@import "../mixins/mixins";
+
 	.heading {
 		&-default {
-			font-size: 2rem;
+			font-size: clamp(2rem, 1.5vw, 2.8rem);
 		}
 
 		&-title {
-			font-size: 3rem;
+			font-size: clamp(3.5rem, 3vw, 4.2rem);
 		}
 
 		&-subtitle {
-			font-size: 2.5rem;
+			font-size: clamp(2.5rem, 2vw, 3.4rem);
 		}
 	}
 </style>
