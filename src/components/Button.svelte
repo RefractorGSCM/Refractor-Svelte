@@ -21,7 +21,7 @@
 	<slot />
 </button>
 
-<style lang="scss">
+<style lang="scss" global>
 	.btn {
 		background: none;
 		border: none;
