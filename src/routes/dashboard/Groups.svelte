@@ -31,25 +31,66 @@
 	let groups = writable([])
 	$: groups.set([...$allGroups])
 
-	function addGroup() {
-		groups.set([
-			...$groups,
-			{
-				name: "New Group",
-				position: $groups.length + 1,
-				color: 0,
-			},
-		])
-	}
-
+	let editingNewGroup = false
 	let changesWereMade = false
 	let previousGroup: Group = null
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
 
+	function addGroup() {
+		if (changesWereMade) {
+			highlightChangeError()
+			return
+		}
+
+		const newGroup: Group = {
+			name: "New Group",
+			position: $groups.length + 1,
+			color: 0,
+			permissions: BigInt(0),
+		}
+
+		groups.set([...$groups, newGroup])
+
+		switchGroups(newGroup)
+		editingNewGroup = true
+		changesWereMade = true
+	}
+
+	function highlightChangeError() {
+		shakeScreen()
+		applyDangerBorder()
+	}
+
+	function switchGroups(group: Group) {
+		if (changesWereMade) {
+			highlightChangeError()
+			return
+		}
+
+		editingNewGroup = false
+		currentGroup = group
+		previousGroup = group
+		currentPermissions.set(getSetFlags(group.permissions))
+	}
+
 	function revertChanges() {
 		currentGroup = previousGroup
 		currentPermissions.set(getSetFlags(previousGroup.permissions))
+
+		// If we are reverting a new group creation, we filter out all groups which do not have an ID field
+		if (editingNewGroup) {
+			const newGroups: Group[] = []
+
+			for (const group of $allGroups) {
+				if (group.id !== undefined) {
+					newGroups.push(group)
+				}
+			}
+
+			allGroups.set([...newGroups])
+			currentGroup = null
+		}
 
 		changesWereMade = false
 	}
@@ -72,18 +113,6 @@
 		setTimeout(() => {
 			ele.classList.remove("danger-bg")
 		}, 500)
-	}
-
-	function switchGroups(group: Group) {
-		if (changesWereMade) {
-			shakeScreen()
-			applyDangerBorder()
-			return
-		}
-
-		currentGroup = group
-		previousGroup = group
-		currentPermissions.set(getSetFlags(group.permissions))
 	}
 
 	function handlePermissionChange(e) {
@@ -112,6 +141,7 @@
 				{#each $groups as group}
 					<div
 						class="group"
+						class:selected={currentGroup && currentGroup.id === group.id}
 						style={`color: #${group.color.toString(16)}`}
 						on:click={() => switchGroups(group)}
 					>
@@ -289,6 +319,10 @@
 				background-color: var(--color-background1);
 				cursor: pointer;
 			}
+		}
+
+		.group.selected {
+			background-color: var(--color-accent);
 		}
 
 		.bottom {
