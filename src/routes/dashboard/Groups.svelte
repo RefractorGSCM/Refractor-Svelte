@@ -42,14 +42,14 @@
 		])
 	}
 
-	let changesWereMade = true
+	let changesWereMade = false
 	let previousGroup: Group = null
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
 
 	function revertChanges() {
 		currentGroup = previousGroup
-		currentPermissions.set([])
+		currentPermissions.set(getSetFlags(previousGroup.permissions))
 
 		changesWereMade = false
 	}
@@ -166,7 +166,7 @@
 						</div>
 					</div>
 				{:else}
-					<p>Select or create a group on the left sidebar to manage it.</p>
+					<p>Select or create a group to manage it.</p>
 				{/if}
 			</div>
 		</div>
@@ -189,11 +189,7 @@
 
 <style lang="scss">
 	@import "../../effects/effects";
-
-	.wrapper {
-		width: 100%;
-		position: relative;
-	}
+	@import "../../mixins/mixins";
 
 	:global(.shake) {
 		animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -208,11 +204,12 @@
 
 	.container {
 		margin-top: 2rem;
+		margin-bottom: 6rem;
 		display: grid;
 		grid-template-columns: 1fr 3fr;
 		grid-column-gap: 2rem;
 		font-size: 1.6rem;
-		height: 100vh;
+		min-height: 70vh;
 		max-height: 100vh;
 
 		> * {
@@ -220,22 +217,61 @@
 			background-color: var(--color-background2);
 			border-radius: var(--border-md);
 		}
+
+		@include respond-below(xs) {
+			grid-template-rows: 30vh auto;
+			grid-template-columns: auto;
+			grid-row-gap: 2rem;
+		}
 	}
 
 	.changes-bar {
-		padding: 2rem;
-		// background-color: var(--color-accent);
+		height: 6rem;
+		width: 100%;
+		padding: 0 3rem;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		transition: background-color 0.1s ease-in-out;
+		font-size: 1.6rem;
 
-		p {
-			font-size: 1.6rem;
+		.buttons {
+			min-width: 20rem;
+			display: flex;
+			justify-content: right;
 		}
 
 		:global(.btn) {
 			margin-left: 0.5rem;
+		}
+
+		@include respond-below(md) {
+			font-size: 1.4rem;
+		}
+
+		@include respond-below(sm) {
+			height: auto;
+			font-size: 1.2rem;
+			flex-direction: column;
+			padding: 0;
+
+			p {
+				padding: 1rem 3rem;
+			}
+
+			.buttons {
+				width: 100%;
+				display: flex;
+			}
+
+			:global(.btn) {
+				margin-left: 0;
+				font-size: 1.2rem;
+				padding: 0;
+				height: 2.5rem;
+				width: 100%;
+				border-radius: 0;
+			}
 		}
 	}
 
@@ -260,6 +296,12 @@
 
 			:global(.btn) {
 				width: 100%;
+			}
+		}
+
+		.groups {
+			@include respond-below(xs) {
+				overflow-y: scroll;
 			}
 		}
 	}
