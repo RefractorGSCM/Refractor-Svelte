@@ -244,9 +244,9 @@
 						{#if currentGroup.id !== 1}
 							<TextInput
 								name="group-name"
-								title="group name"
 								placeholder="Group Name"
 								value={currentGroup.name}
+								inputStyle="inline"
 								on:change={handleGroupNameChange}
 							/>
 						{:else}
@@ -492,6 +492,10 @@
 
 		.group-name {
 			width: clamp(20rem, 20%, 50rem);
+
+			:global(.text-input-wrapper input) {
+				font-size: 2.5rem;
+			}
 		}
 
 		.group-description {
