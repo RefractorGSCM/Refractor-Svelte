@@ -144,6 +144,11 @@
 				width: calc(100% - 8rem);
 			}
 
+			:global(.bottom-bar) {
+				left: 8rem;
+				width: calc(100% - 8rem);
+			}
+
 			@include respond-below(xl) {
 				margin-left: 6rem;
 
@@ -290,7 +295,7 @@
 			margin-top: 8rem;
 			background: var(--color-background3);
 			min-height: calc(100vh - 8rem);
-			padding: 3rem;
+			width: 100%;
 			position: relative;
 
 			@include respond-below(xl) {
@@ -342,6 +347,11 @@
 				left: 6rem;
 				width: calc(100% - 6rem);
 			}
+
+			:global(.bottom-bar) {
+				left: 6rem;
+				width: calc(100% - 6rem);
+			}
 		}
 
 		// Expand if the checkbox was checked
@@ -376,6 +386,11 @@
 				margin-left: 24rem;
 
 				header {
+					left: 24rem;
+					width: calc(100% - 24rem);
+				}
+
+				:global(.bottom-bar) {
 					left: 24rem;
 					width: calc(100% - 24rem);
 				}
