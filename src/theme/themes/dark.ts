@@ -12,6 +12,7 @@ const dark: Theme = {
 		text2: "#FFF",
 		text3: "#121212",
 		textMuted: "#b8b8ba",
+		textMuted2: "#525252",
 		primaryLight: "#627CD0",
 		primary: "#526ECB",
 		successLight: "#0CE982",

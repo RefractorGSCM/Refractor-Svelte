@@ -4,32 +4,34 @@
 	import Container from "./components/Container.svelte"
 </script>
 
-<Heading type="title">Servers</Heading>
+<Container>
+	<Heading type="title">Servers</Heading>
 
-<div>
-	<div class="servers">
-		<div class="heading">
-			<div class="name">Name</div>
-			<div class="players">Players</div>
-			<div class="status">Status</div>
-			<div class="actions" />
-		</div>
-
-		<div class="server">
-			<div class="name">
-				<span class="icon fas fa-server" />Jedi vs Sith - US East
+	<div>
+		<div class="servers">
+			<div class="heading">
+				<div class="name">Name</div>
+				<div class="players">Players</div>
+				<div class="status">Status</div>
+				<div class="actions" />
 			</div>
-			<div class="players">32</div>
-			<div class="status">Online</div>
-			<div class="actions">
-				<Button color="success" size="inline">Edit</Button>
-				<Button color="danger" size="inline" classes={["server-action-last"]}>
-					Delete
-				</Button>
+
+			<div class="server">
+				<div class="name">
+					<span class="icon fas fa-server" />Jedi vs Sith - US East
+				</div>
+				<div class="players">32</div>
+				<div class="status">Online</div>
+				<div class="actions">
+					<Button color="success" size="inline">Edit</Button>
+					<Button color="danger" size="inline" classes={["server-action-last"]}>
+						Delete
+					</Button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</Container>
 
 <style lang="scss">
 	@import "../../mixins/mixins.scss";

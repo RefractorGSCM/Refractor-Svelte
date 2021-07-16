@@ -10,6 +10,7 @@ export type Theme = {
 		text2: string
 		text3: string
 		textMuted: string
+		textMuted2: string
 		primaryLight: string
 		primary: string
 		successLight: string
