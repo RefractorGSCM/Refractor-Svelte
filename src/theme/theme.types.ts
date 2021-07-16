@@ -11,6 +11,7 @@ export type Theme = {
 		text3: string
 		textMuted: string
 		textMuted2: string
+		textPrimary: string
 		primaryLight: string
 		primary: string
 		successLight: string
