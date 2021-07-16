@@ -309,6 +309,16 @@
 				margin-bottom: 3rem;
 			}
 		}
+
+		:global(.bottom-bar) {
+			width: calc(100% - 26rem);
+			left: 26rem;
+
+			@include respond-below(xl) {
+				left: 24rem;
+				width: calc(100% - 24rem);
+			}
+		}
 	}
 
 	@include respond-below(lg) {
@@ -405,11 +415,22 @@
 		#sidebar-toggle:checked {
 			& ~ .content {
 				margin-left: 4rem;
+				margin-top: 6rem;
+
+				main {
+					z-index: -100;
+				}
 
 				header {
-					left: 0rem;
-					width: calc(100% - 0rem);
-					z-index: -100;
+					z-index: -50;
+					left: 4rem;
+					width: calc(100% - 4rem);
+				}
+
+				:global(.bottom-bar) {
+					z-index: 1;
+					left: 4rem;
+					width: calc(100% - 4rem);
 				}
 			}
 		}
