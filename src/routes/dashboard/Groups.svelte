@@ -18,6 +18,7 @@
 		getFlag,
 		getSetFlags,
 	} from "../../permissions/permissions"
+	import BottomBar from "./components/BottomBar.svelte"
 
 	onMount(async () => {
 		setLoading("groups", true)
@@ -41,7 +42,7 @@
 		])
 	}
 
-	let changesWereMade = false
+	let changesWereMade = true
 	let previousGroup: Group = null
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
@@ -54,7 +55,7 @@
 	}
 
 	function shakeScreen() {
-		const ele = document.getElementById("groups-wrapper")
+		const ele = document.getElementById("groups-container")
 
 		ele.classList.add("shake")
 
@@ -66,11 +67,11 @@
 	function applyDangerBorder() {
 		const ele = document.getElementById("groups-changes")
 
-		ele.classList.add("danger-border")
+		ele.classList.add("danger-bg")
 
 		setTimeout(() => {
-			ele.classList.remove("danger-border")
-		}, 2000)
+			ele.classList.remove("danger-bg")
+		}, 500)
 	}
 
 	function switchGroups(group: Group) {
@@ -103,10 +104,9 @@
 	<Spinner blocking={true} />
 {/if}
 
-<Heading type="title">Groups</Heading>
-
-<div class="wrapper" id="groups-wrapper">
-	<div class="container">
+<Container>
+	<Heading type="title">Groups</Heading>
+	<div class="container" id="groups-container">
 		<div class="groups-list">
 			<div class="groups">
 				{#each $groups as group}
@@ -171,18 +171,20 @@
 			</div>
 		</div>
 	</div>
-</div>
+</Container>
 
 {#if changesWereMade}
-	<div class="changes-bar" id="groups-changes">
-		<p>
-			You have unsaved changes. Please save or revert them before continuing.
-		</p>
-		<div class="buttons">
-			<Button color="danger" on:click={revertChanges}>Revert</Button>
-			<Button>Save</Button>
+	<BottomBar>
+		<div class="changes-bar" id="groups-changes">
+			<p>
+				You have unsaved changes. Please save or revert them before continuing.
+			</p>
+			<div class="buttons">
+				<Button color="danger" on:click={revertChanges}>Revert</Button>
+				<Button>Save</Button>
+			</div>
 		</div>
-	</div>
+	</BottomBar>
 {/if}
 
 <style lang="scss">
@@ -200,8 +202,8 @@
 		perspective: 1000px;
 	}
 
-	:global(.danger-border) {
-		border: 2px solid var(--color-danger);
+	:global(.danger-bg) {
+		background-color: var(--color-danger);
 	}
 
 	.container {
@@ -210,8 +212,8 @@
 		grid-template-columns: 1fr 3fr;
 		grid-column-gap: 2rem;
 		font-size: 1.6rem;
-		height: 70vh;
-		max-height: 70vh;
+		height: 100vh;
+		max-height: 100vh;
 
 		> * {
 			padding: 2rem;
@@ -222,12 +224,11 @@
 
 	.changes-bar {
 		padding: 2rem;
-		background-color: var(--color-accent);
-		margin-top: 2rem;
-		border-radius: var(--border-md);
+		// background-color: var(--color-accent);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		transition: background-color 0.1s ease-in-out;
 
 		p {
 			font-size: 1.6rem;
@@ -235,10 +236,6 @@
 
 		:global(.btn) {
 			margin-left: 0.5rem;
-		}
-
-		.buttons {
-			min-width: 15rem;
 		}
 	}
 
