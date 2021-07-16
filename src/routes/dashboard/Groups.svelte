@@ -11,6 +11,13 @@
 	import Toggle from "../../components/Toggle.svelte"
 	import type { Group } from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
+	import {
+		FLAG_ADMINISTRATOR,
+		FLAG_VIEW_SERVERS,
+		getDescription,
+		getFlag,
+		getSetFlags,
+	} from "../../permissions/permissions"
 
 	onMount(async () => {
 		setLoading("groups", true)
@@ -37,8 +44,14 @@
 	let changesWereMade = false
 	let previousGroup: Group = null
 	let currentGroup: Group = null
+	let currentPermissions = writable([])
 
-	$: currentGroup = $groups[0]
+	function revertChanges() {
+		currentGroup = previousGroup
+		currentPermissions.set([])
+
+		changesWereMade = false
+	}
 
 	function shakeScreen() {
 		const ele = document.getElementById("groups-wrapper")
@@ -69,6 +82,20 @@
 
 		currentGroup = group
 		previousGroup = group
+		currentPermissions.set(getSetFlags(group.permissions))
+	}
+
+	function handlePermissionChange(e) {
+		const name = e.detail.target.name
+		const flag = getFlag(name)
+
+		if (e.detail.target.value === "true") {
+			// currentPermissions = BigInt(currentPermissions) | BigInt(flag)
+		} else {
+			// currentPermissions = BigInt(currentPermissions) & ~BigInt(flag)
+		}
+
+		changesWereMade = true
 	}
 </script>
 
@@ -108,14 +135,33 @@
 
 						<div class="permission">
 							<div class="main">
-								Administrator <Toggle name="administrator" />
+								Administrator <Toggle
+									name={FLAG_ADMINISTRATOR}
+									on:change={handlePermissionChange}
+									value={String(
+										$currentPermissions.includes(FLAG_ADMINISTRATOR),
+									)}
+								/>
 							</div>
 
 							<div class="description">
-								Grants full access to Refractor. Administrator is required to be
-								able to add, edit and delete servers as well as modify admin
-								level settings. Only give this permission to people who
-								absolutely need it.
+								{getDescription(FLAG_ADMINISTRATOR)}
+							</div>
+						</div>
+
+						<div class="permission">
+							<div class="main">
+								View servers <Toggle
+									name={FLAG_VIEW_SERVERS}
+									on:change={handlePermissionChange}
+									value={String(
+										$currentPermissions.includes(FLAG_VIEW_SERVERS),
+									)}
+								/>
+							</div>
+
+							<div class="description">
+								{getDescription(FLAG_VIEW_SERVERS)}
 							</div>
 						</div>
 					</div>
@@ -133,7 +179,7 @@
 			You have unsaved changes. Please save or revert them before continuing.
 		</p>
 		<div class="buttons">
-			<Button color="danger">Revert</Button>
+			<Button color="danger" on:click={revertChanges}>Revert</Button>
 			<Button>Save</Button>
 		</div>
 	</div>

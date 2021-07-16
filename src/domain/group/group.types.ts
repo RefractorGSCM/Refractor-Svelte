@@ -3,6 +3,7 @@ export type Group = {
 	name: string
 	color: number
 	position: number
+	permissions: bigint
 	created_at?: Date
 	modified_at?: Date
 }
