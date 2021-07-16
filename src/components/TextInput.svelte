@@ -7,6 +7,12 @@
 	export let placeholder = ""
 	export let icon = ""
 	export let error = ""
+	export let inputStyle = "normal"
+
+	const inputStyles = {
+		normal: "wrapper-style-normal",
+		inline: "wrapper-style-inline",
+	}
 
 	const hasIcon = !!icon
 
@@ -17,7 +23,7 @@
 	}
 </script>
 
-<div class="text-input-wrapper">
+<div class={`text-input-wrapper ${inputStyles[inputStyle]}`}>
 	<div class="title">{title}</div>
 
 	<div class="input-main">
@@ -41,7 +47,7 @@
 	<div class="error">{error}</div>
 </div>
 
-<style lang="scss">
+<style lang="scss" global>
 	.text-input-wrapper {
 		display: flex;
 		flex-direction: column;
@@ -99,6 +105,26 @@
 				height: 2rem;
 				color: var(--color-primary);
 			}
+		}
+	}
+
+	.wrapper-style-inline {
+		height: 6rem;
+
+		.input-main {
+			height: 4rem;
+			border: none;
+			border-radius: 0;
+			border-bottom: 2px solid var(--color-primary);
+			padding: 0 1rem;
+		}
+
+		.error {
+			height: 2rem;
+		}
+
+		.spacer {
+			display: none;
 		}
 	}
 </style>
