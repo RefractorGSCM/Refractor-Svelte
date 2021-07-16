@@ -25,6 +25,7 @@
 	} from "../../permissions/permissions"
 	import BottomBar from "./components/BottomBar.svelte"
 	import { sortAsc } from "../../utils/sorting"
+	import TextInput from "../../components/TextInput.svelte"
 
 	onMount(async () => {
 		setLoading("groups", true)
@@ -130,12 +131,12 @@
 
 		editingNewGroup = false
 		currentGroup = group
-		previousGroup = group
+		previousGroup = { ...group }
 		currentPermissions.set(getSetFlags(group.permissions))
 	}
 
 	function revertChanges() {
-		currentGroup = previousGroup
+		currentGroup = { ...previousGroup }
 		currentPermissions.set(getSetFlags(previousGroup.permissions))
 
 		// If we are reverting a new group creation, we filter out all groups which do not have an ID field
@@ -188,6 +189,14 @@
 
 		changesWereMade = true
 	}
+
+	function handleGroupNameChange(e) {
+		currentGroup.name = e.detail.target.value
+
+		if (currentGroup.name !== previousGroup.name) {
+			changesWereMade = true
+		}
+	}
 </script>
 
 {#if $loading["groups"]}
@@ -231,7 +240,27 @@
 		<div class="manager">
 			<div class="editor">
 				{#if currentGroup}
-					<Heading type="subtitle">{currentGroup.name}</Heading>
+					<div class="group-name">
+						{#if currentGroup.id !== 1}
+							<TextInput
+								name="group-name"
+								title="group name"
+								placeholder="Group Name"
+								value={currentGroup.name}
+								on:change={handleGroupNameChange}
+							/>
+						{:else}
+							<Heading type="subtitle">Everyone</Heading>
+						{/if}
+					</div>
+
+					{#if currentGroup.id === 1}
+						<p class="group-description">
+							Everyone is the default group assigned to all users. Changing the
+							permission switches below will modify the default permissions of
+							all users.
+						</p>
+					{/if}
 
 					<div class="permissions-list">
 						<Heading>Permissions</Heading>
@@ -313,7 +342,7 @@
 		margin-top: 2rem;
 		margin-bottom: 6rem;
 		display: grid;
-		grid-template-columns: minmax(20rem, 1fr) 3fr;
+		grid-template-columns: minmax(25rem, 1fr) 4fr;
 		grid-column-gap: 2rem;
 		font-size: 1.8rem;
 		min-height: 70vh;
@@ -459,6 +488,16 @@
 				font-size: 1.2rem;
 				color: var(--color-text-muted);
 			}
+		}
+
+		.group-name {
+			width: clamp(20rem, 20%, 50rem);
+		}
+
+		.group-description {
+			margin-top: 1rem;
+			font-size: 1.2rem;
+			color: var(--color-text-muted);
 		}
 	}
 </style>
