@@ -6,7 +6,7 @@
 	export let title = ""
 	export let placeholder = ""
 	export let icon = ""
-	export let error = ""
+	export let error: string
 	export let inputStyle = "normal"
 
 	const inputStyles = {
@@ -21,6 +21,8 @@
 	function handleChange(e) {
 		dispatch("change", e)
 	}
+
+	$: console.log(error)
 </script>
 
 <div class={`text-input-wrapper ${inputStyles[inputStyle]}`}>
@@ -44,7 +46,7 @@
 		/>
 	</div>
 
-	<div class="error">{error}</div>
+	<div class="error">{error ? error : ""}</div>
 </div>
 
 <style lang="scss" global>
