@@ -1,132 +1,126 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte"
-
-	export let name = ""
+	export let name
+	export let type = "text"
 	export let value = ""
-	export let title = ""
-	export let placeholder = ""
-	export let icon = ""
-	export let error: string
-	export let inputStyle = "normal"
+	export let label = name
+	export let error = null
+	export let disabled = false
+	export let ref = null
 
-	const inputStyles = {
-		normal: "wrapper-style-normal",
-		inline: "wrapper-style-inline",
+	function updateValue(e) {
+		const target: HTMLTextAreaElement = e.target
+		value = target.value
 	}
-
-	const hasIcon = !!icon
-
-	const dispatch = createEventDispatcher()
-
-	function handleChange(e) {
-		dispatch("change", e)
-	}
-
-	$: console.log(error)
 </script>
 
-<div class={`text-input-wrapper ${inputStyles[inputStyle]}`}>
-	<div class="title">{title}</div>
-
-	<div class="input-main">
-		{#if hasIcon}
-			<div class="icon-box">
-				<span class={`fas fa-${icon}`} />
-			</div>
-		{:else}
-			<div class="spacer" />
-		{/if}
-
+<div class="input-wrapper">
+	<div class="input-main" class:error={!!error}>
 		<input
-			class="input"
-			{name}
-			{placeholder}
-			on:input={handleChange}
-			bind:value
+			{type}
+			bind:this={ref}
+			{value}
+			{disabled}
+			id="t-i-{name}"
+			required
+			data-invalid={error || undefined}
+			aria-invalid={error || undefined}
+			on:change
+			on:input
+			on:input={updateValue}
+			on:keydown
+			on:keyup
+			on:focus
+			on:blur
 		/>
+		<div class="underline" />
+		<label for="t-i-{name}">{label}</label>
 	</div>
 
-	<div class="error">{error ? error : ""}</div>
+	<div class="error-text">{error ? error : ""}</div>
 </div>
 
-<style lang="scss" global>
-	.text-input-wrapper {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		height: 7rem;
-
-		.error {
-			color: var(--color-danger);
-			font-size: 1.2rem;
-			padding: 0 0.5rem;
-			height: 2rem;
-		}
-
-		.title {
-			font-size: 1rem;
-			color: var(--color-primary);
-			position: absolute;
-			top: -0.6rem;
-			left: 0.6rem;
-			background-color: var(--color-background2);
-		}
-
-		.input-main {
-			display: flex;
-			border: 1px solid var(--color-primary);
-			border-radius: var(--border-sm);
-
-			&:active {
-				outline: 1px solid var(--color-primary);
-			}
-		}
-
-		.spacer {
-			padding-left: 1.5rem;
-		}
-
-		.input {
-			width: 100%;
-			background: none;
-			border: none;
-			outline: none;
-			font-size: 1.6rem;
-			color: var(--color-text2);
-			height: 5rem;
-		}
-
-		.icon-box {
-			width: 5rem;
-			display: flex;
-			align-items: center;
-			padding: 0 0.8rem;
-
-			span {
-				width: 2rem;
-				height: 2rem;
-				color: var(--color-primary);
-			}
-		}
-	}
-
-	.wrapper-style-inline {
+<style lang="scss">
+	.input-wrapper {
 		height: 6rem;
 
 		.input-main {
-			height: 4rem;
-			border: none;
-			border-radius: 0;
-			border-bottom: 2px solid var(--color-primary);
-			padding: 0 1rem;
+			margin-top: 1rem;
+			height: 3rem;
+			width: 100%;
+			position: relative;
+
+			input {
+				height: 100%;
+				width: 100%;
+				border: none;
+				background: none;
+				border-bottom: 2px solid var(--color-primary);
+				line-height: 2rem;
+				font-size: 1.7rem;
+				outline: none;
+				color: var(--color-text2);
+			}
+
+			input:focus ~ label,
+			input:valid ~ label {
+				transform: translateY(-1.8rem);
+				font-size: 1.2rem;
+				color: var(--color-primary-light);
+			}
+
+			label {
+				position: absolute;
+				bottom: 1rem;
+				left: 0;
+				font-size: 1.5rem;
+				color: var(--color-text-muted);
+				pointer-events: none;
+				transition: all 0.3s ease;
+			}
+
+			.underline {
+				position: absolute;
+				bottom: 0;
+				height: 2px;
+				width: 100%;
+			}
+
+			.underline::before {
+				position: absolute;
+				content: "";
+				width: 100%;
+				height: 100%;
+				background: var(--color-primary-light);
+				transform: scaleX(0);
+				transform-origin: center;
+				transition: transform 0.3s ease;
+			}
+
+			input:focus ~ .underline::before,
+			input:valid ~ .underline::before {
+				transform: scaleX(1);
+			}
+
+			&.error {
+				input {
+					border-bottom: 2px solid var(--color-danger);
+				}
+
+				label {
+					color: var(--color-danger) !important;
+				}
+
+				.underline::before {
+					background: var(--color-danger);
+				}
+			}
 		}
 
-		.error {
+		.error-text {
 			height: 2rem;
-		}
-
-		.spacer {
-			display: none;
+			color: var(--color-danger);
+			font-size: 1.2rem;
+			padding-top: 0.5rem;
 		}
 	}
 </style>
