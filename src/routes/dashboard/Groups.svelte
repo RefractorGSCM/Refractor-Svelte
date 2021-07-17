@@ -16,6 +16,7 @@
 	import Toggle from "../../components/Toggle.svelte"
 	import type { Group } from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
+	import type { Writable } from "svelte/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_VIEW_SERVERS,
@@ -44,6 +45,9 @@
 	let previousGroup: Group = null
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
+	let errors: Writable<{
+		name?: string
+	}> = writable({})
 
 	function dragstart(e, index: number) {
 		e.dataTransfer.effectAllowed = "move"
@@ -138,21 +142,33 @@
 	function revertChanges() {
 		currentGroup = { ...previousGroup }
 		currentPermissions.set(getSetFlags(previousGroup.permissions))
+		errors.set({})
 
 		// If we are reverting a new group creation, we filter out all groups which do not have an ID field
 		if (editingNewGroup) {
 			const newGroups: Group[] = []
 
-			for (const group of $allGroups) {
+			for (const group of $groups) {
 				if (group.id !== undefined) {
 					newGroups.push(group)
 				}
 			}
 
-			allGroups.set([...newGroups])
+			groups.set([...newGroups])
 			currentGroup = null
 			editingNewGroup = false
 		}
+
+		const copy = [...$groups]
+
+		// Undo changes committed to groups array
+		copy.forEach((g) => {
+			if (g.id === currentGroup.id) {
+				g.name = currentGroup.name
+			}
+		})
+
+		groups.set([...copy])
 
 		changesWereMade = false
 	}
@@ -196,6 +212,43 @@
 		if (currentGroup.name !== previousGroup.name) {
 			changesWereMade = true
 		}
+
+		// Update name in allGroups array
+		const copy = [...$groups]
+
+		copy.forEach((g) => {
+			if (g.id === currentGroup.id) {
+				g.name = currentGroup.name
+			}
+		})
+
+		groups.set([...copy])
+	}
+
+	function saveChanges() {
+		if (currentGroup.name.trim().length < 1) {
+			errors.set({
+				...$errors,
+				name: "Please enter a group name",
+			})
+		} else {
+			errors.set({
+				...$errors,
+				name: undefined,
+			})
+		}
+
+		if (Object.keys(errors).length > 0) {
+			shakeScreen()
+			return
+		}
+
+		if (editingNewGroup) {
+			// submit new group
+			return
+		}
+
+		// otherwise, update existing group
 	}
 </script>
 
@@ -248,6 +301,7 @@
 									placeholder="Group Name"
 									value={currentGroup.name}
 									inputStyle="inline"
+									error={$errors.name}
 									on:change={handleGroupNameChange}
 								/>
 							{:else}
@@ -315,7 +369,7 @@
 			</p>
 			<div class="buttons">
 				<Button color="danger" on:click={revertChanges}>Revert</Button>
-				<Button>Save</Button>
+				<Button on:click={saveChanges}>Save</Button>
 			</div>
 		</div>
 	</BottomBar>
@@ -424,7 +478,8 @@
 		position: relative;
 
 		.group {
-			padding: 0.8rem;
+			font-size: 1.6rem;
+			padding: 0.6rem;
 			border-radius: var(--border-sm);
 			user-select: none;
 
