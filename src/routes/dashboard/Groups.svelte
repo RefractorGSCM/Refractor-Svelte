@@ -240,27 +240,29 @@
 		<div class="manager">
 			<div class="editor">
 				{#if currentGroup}
-					<div class="group-name">
-						{#if currentGroup.id !== 1}
-							<TextInput
-								name="group-name"
-								placeholder="Group Name"
-								value={currentGroup.name}
-								inputStyle="inline"
-								on:change={handleGroupNameChange}
-							/>
-						{:else}
-							<Heading type="subtitle">Everyone</Heading>
+					<div class="group-header">
+						<div class="group-name">
+							{#if currentGroup.id !== 1}
+								<TextInput
+									name="group-name"
+									placeholder="Group Name"
+									value={currentGroup.name}
+									inputStyle="inline"
+									on:change={handleGroupNameChange}
+								/>
+							{:else}
+								<Heading type="subtitle">Everyone</Heading>
+							{/if}
+						</div>
+
+						{#if currentGroup.id === 1}
+							<p class="group-description">
+								Everyone is the default group assigned to all users. Changing
+								the permission switches below will modify the default
+								permissions of all users.
+							</p>
 						{/if}
 					</div>
-
-					{#if currentGroup.id === 1}
-						<p class="group-description">
-							Everyone is the default group assigned to all users. Changing the
-							permission switches below will modify the default permissions of
-							all users.
-						</p>
-					{/if}
 
 					<div class="permissions-list">
 						<Heading>Permissions</Heading>
@@ -490,18 +492,22 @@
 			}
 		}
 
-		.group-name {
-			width: clamp(20rem, 20%, 50rem);
+		.group-header {
+			min-height: 7rem;
 
-			:global(.text-input-wrapper input) {
-				font-size: 2.5rem;
+			.group-name {
+				width: clamp(20rem, 20%, 50rem);
+
+				:global(.text-input-wrapper input) {
+					font-size: 2.5rem;
+				}
 			}
-		}
 
-		.group-description {
-			margin-top: 1rem;
-			font-size: 1.2rem;
-			color: var(--color-text-muted);
+			.group-description {
+				margin-top: 1rem;
+				font-size: 1.2rem;
+				color: var(--color-text-muted);
+			}
 		}
 	}
 </style>

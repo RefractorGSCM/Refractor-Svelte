@@ -1,55 +1,49 @@
+import { sortAsc } from "../utils/sorting"
+
 export const FLAG_ADMINISTRATOR = "FLAG_ADMINISTRATOR"
 export const FLAG_VIEW_SERVERS = "FLAG_VIEW_SERVERS"
 
-const allFlags = [FLAG_ADMINISTRATOR, FLAG_VIEW_SERVERS]
-const flags = {}
-const descriptions = {}
+const allFlags: string[] = []
+const permissions = {}
 
-type Flag = {
+type Permission = {
+	id?: number
 	name: string
 	description: string
 	flag?: bigint
 }
 
-function registerFlags(newFlags: Flag[]) {
+export function registerPermissions(newPerms: Permission[]) {
+	// JSON maintains the order of array elements through transmissions, but we do an additional sort to make sure that the array
+	// is sorted by the ID field (which represents the order in which a permission had it's flag assigned).
+	newPerms = sortAsc("id", newPerms)
+
 	let i = 0
 
-	for (const flag of newFlags) {
+	for (const perm of newPerms) {
 		const next = 1 << i
 		i++
 
-		flags[flag.name] = next
-		descriptions[flag.name] = flag.description
+		permissions[perm.name] = {
+			name: perm.name,
+			description: perm.description,
+			flag: BigInt(perm.flag),
+		}
+		allFlags.push(perm.name)
 	}
 }
 
-registerFlags([
-	// DO NOT CHANGE THE ORDER OF FLAGS. DOING SO WILL BREAK PERMISSIONS FOR ALL EXISTING INSTALLATIONS OF REFRACTOR.
-	// If you need to add more flags, add them to the end ONLY.
-	{
-		name: FLAG_ADMINISTRATOR,
-		description: `Grants full access to Refractor. Administrator is required to be able to add, edit and delete
-						  servers as well as modify admin level settings. Only give this permission to people who
-						  absolutely need it.`,
-	},
-	{
-		name: FLAG_VIEW_SERVERS,
-		description:
-			"Allows the viewing of servers, their status and their online players.",
-	},
-	// ADD NEW FLAGS HERE
-])
-
 export function getFlag(name: string): bigint {
-	return flags[name]
+	return permissions[name].flag
 }
 
 export function getDescription(name: string): string {
-	return descriptions[name]
+	return permissions[name].description
 }
 
 export function getSetFlags(permissions: bigint): string[] {
 	const setFlags: string[] = []
+	permissions = BigInt(permissions)
 
 	if (permissions === BigInt(0)) {
 		return setFlags

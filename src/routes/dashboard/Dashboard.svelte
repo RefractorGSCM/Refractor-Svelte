@@ -1,11 +1,6 @@
 <script lang="ts">
-	import axios from "axios"
-
-	import { onMount } from "svelte"
 	import { Link, Route, Router } from "svelte-routing"
-
 	import Button from "../../components/Button.svelte"
-	import { checkAuth } from "../../domain/user/store"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 
