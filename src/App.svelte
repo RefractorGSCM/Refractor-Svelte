@@ -8,6 +8,7 @@
 	import { loading, setLoading } from "./domain/loading/store"
 	import Spinner from "./components/Spinner.svelte"
 	import { checkAuth } from "./domain/user/store"
+	import { getPermissions } from "./domain/group/store"
 
 	let authChecked = false
 	onMount(async () => {
@@ -17,6 +18,10 @@
 
 		if (!isAuthentciated) {
 			window.location.replace(`${process.env.authRoot}/k/login`)
+		}
+
+		if (isAuthentciated) {
+			await getPermissions()
 		}
 
 		authChecked = true

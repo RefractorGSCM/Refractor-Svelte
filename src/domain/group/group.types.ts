@@ -7,3 +7,9 @@ export type Group = {
 	created_at?: Date
 	modified_at?: Date
 }
+
+export type Permission = {
+	name: string
+	description?: string
+	flag: string
+}
