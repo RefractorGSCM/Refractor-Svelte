@@ -1,13 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import {
-		get_custom_elements_slots,
-		group_outros,
-		loop_guard,
-		time_ranges_to_array,
-	} from "svelte/internal"
 	import Button from "../../components/Button.svelte"
-	import TripleToggle from "../../components/TripleToggle.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { allGroups, getAllGroups } from "../../domain/group/store"
@@ -47,6 +40,7 @@
 	let currentPermissions = writable([])
 	let errors: Writable<{
 		name?: string
+		color?: string
 	}> = writable({})
 
 	function dragstart(e, index: number) {
@@ -207,18 +201,53 @@
 	}
 
 	function handleGroupNameChange(e) {
-		currentGroup.name = e.detail.target.value
+		currentGroup.name = e.target.value
 
 		if (currentGroup.name !== previousGroup.name) {
 			changesWereMade = true
 		}
 
-		// Update name in allGroups array
+		// Update name in groups array
 		const copy = [...$groups]
 
 		copy.forEach((g) => {
 			if (g.id === currentGroup.id) {
 				g.name = currentGroup.name
+			}
+		})
+
+		groups.set([...copy])
+	}
+
+	function handleGroupColorChange({ target }) {
+		target: HTMLTextAreaElement = target
+
+		if (!/^[0-9A-F]{6}$/i.test(target.value.toString().trim())) {
+			errors.set({
+				...$errors,
+				color: "Invalid hex color code",
+			})
+
+			return
+		} else {
+			errors.set({
+				...$errors,
+				color: undefined,
+			})
+		}
+
+		currentGroup.color = target.value
+
+		if (currentGroup.color !== previousGroup.color) {
+			changesWereMade = true
+		}
+
+		// Update color in groups array
+		const copy = [...$groups]
+
+		copy.forEach((g) => {
+			if (g.id === currentGroup.id) {
+				g.color = currentGroup.color
 			}
 		})
 
@@ -294,19 +323,37 @@
 			<div class="editor">
 				{#if currentGroup}
 					<div class="group-header">
-						<div class="group-name">
-							{#if currentGroup.id !== 1}
-								<TextInput
-									name="group-name"
-									placeholder="Group Name"
-									value={currentGroup.name}
-									inputStyle="inline"
-									error={$errors.name}
-									on:change={handleGroupNameChange}
+						<div class="inputs">
+							<div class="group-name">
+								{#if currentGroup.id !== 1}
+									<TextInput
+										name="group-name"
+										autocomplete="off"
+										label="Group Name"
+										value={currentGroup.name}
+										error={$errors.name}
+										on:input={handleGroupNameChange}
+									/>
+								{:else}
+									<Heading type="subtitle">Everyone</Heading>
+								{/if}
+							</div>
+
+							<div class="group-color">
+								<div
+									class="preview"
+									style={`background: #${currentGroup.color.toString(16)}`}
 								/>
-							{:else}
-								<Heading type="subtitle">Everyone</Heading>
-							{/if}
+
+								<TextInput
+									name="group-color"
+									autocomplete="off"
+									label="Group Color"
+									value={currentGroup.color.toString(16)}
+									error={$errors.color}
+									on:input={handleGroupColorChange}
+								/>
+							</div>
 						</div>
 
 						{#if currentGroup.id === 1}
@@ -550,11 +597,20 @@
 		.group-header {
 			min-height: 7rem;
 
-			.group-name {
-				width: clamp(20rem, 20%, 50rem);
+			.inputs {
+				display: flex;
+				justify-content: space-between;
 
-				:global(.text-input-wrapper input) {
-					font-size: 2.5rem;
+				.group-color {
+					display: flex;
+
+					.preview {
+						height: 3rem;
+						width: 3rem;
+						margin-top: 1rem;
+						margin-right: 1rem;
+						border-radius: var(--border-sm);
+					}
 				}
 			}
 
