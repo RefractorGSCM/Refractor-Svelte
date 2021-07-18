@@ -46,3 +46,18 @@ export async function createGroup(newGroup: NewGroupParams) {
 		console.log(err)
 	}
 }
+
+export async function deleteGroup(id: number) {
+	try {
+		await api.deleteGroup(id)
+
+		// Remove deleted group from the list of allGroups
+		allGroups.update((groups) => {
+			const filtered = groups.filter((g) => g.id !== id)
+
+			return sortAsc("position", filtered)
+		})
+	} catch (err) {
+		console.log(err)
+	}
+}

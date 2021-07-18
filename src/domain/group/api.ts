@@ -17,8 +17,15 @@ const createGroup = (data: NewGroupParams) => {
 	})
 }
 
+const deleteGroup = (id: number) => {
+	return axios.delete(`${process.env.apiRoot}/groups/${id}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllGroups,
 	getAllPermissions,
 	createGroup,
+	deleteGroup,
 }

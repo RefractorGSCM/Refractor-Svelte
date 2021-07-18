@@ -6,6 +6,7 @@
 	import {
 		allGroups,
 		createGroup,
+		deleteGroup,
 		getAllGroups,
 	} from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
@@ -224,6 +225,13 @@
 		groups.set([...copy])
 	}
 
+	function deselectGroup() {
+		currentGroup = null
+		previousGroup = null
+		editingNewGroup = false
+		changesWereMade = false
+	}
+
 	function handleGroupColorChange({ target }) {
 		if (!/^[0-9A-F]{6}$/i.test(target.value.toString().trim())) {
 			errors.set({
@@ -301,10 +309,26 @@
 			await createGroup(newGroup)
 
 			setLoading("groups", false)
+
+			currentGroup = null
+			editingNewGroup = false
+			changesWereMade = false
 			return
 		}
 
 		// otherwise, update existing group
+	}
+
+	async function handleDeleteGroup() {
+		const groupID = currentGroup.id
+
+		setLoading("groups", true)
+		await deleteGroup(groupID)
+		setLoading("groups", false)
+
+		console.log("Group deleted", groupID)
+
+		deselectGroup()
 	}
 </script>
 
@@ -426,6 +450,12 @@
 								{getDescription(FLAG_VIEW_SERVERS)}
 							</div>
 						</div>
+					</div>
+
+					<div class="delete-button">
+						<Button color="danger" on:click={handleDeleteGroup}
+							>Delete Group</Button
+						>
 					</div>
 				{:else}
 					<p>Select or create a group to manage it.</p>
@@ -593,6 +623,8 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;
+		position: relative;
+		padding-bottom: 4rem;
 
 		.editor {
 			flex: 1;
@@ -646,6 +678,12 @@
 				font-size: 1.2rem;
 				color: var(--color-text-muted);
 			}
+		}
+
+		.delete-button {
+			position: absolute;
+			bottom: 2rem;
+			left: 2rem;
 		}
 	}
 </style>
