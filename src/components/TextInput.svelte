@@ -6,6 +6,7 @@
 	export let error = null
 	export let disabled = false
 	export let ref = null
+	export let autocomplete = "off"
 
 	function updateValue(e) {
 		const target: HTMLTextAreaElement = e.target
@@ -20,6 +21,8 @@
 			bind:this={ref}
 			{value}
 			{disabled}
+			{autocomplete}
+			{name}
 			id="t-i-{name}"
 			required
 			data-invalid={error || undefined}
