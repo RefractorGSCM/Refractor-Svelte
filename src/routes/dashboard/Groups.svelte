@@ -3,11 +3,15 @@
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
-	import { allGroups, getAllGroups } from "../../domain/group/store"
+	import {
+		allGroups,
+		createGroup,
+		getAllGroups,
+	} from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Container from "./components/Container.svelte"
 	import Toggle from "../../components/Toggle.svelte"
-	import type { Group } from "../../domain/group/group.types"
+	import type { Group, NewGroupParams } from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
 	import type { Writable } from "svelte/store"
 	import {
@@ -105,7 +109,7 @@
 		const newGroup: Group = {
 			name: "New Group",
 			position: $groups.length,
-			color: 0,
+			color: "cecece",
 			permissions: BigInt(0),
 		}
 
@@ -159,6 +163,7 @@
 		copy.forEach((g) => {
 			if (g.id === currentGroup.id) {
 				g.name = currentGroup.name
+				g.color = currentGroup.color
 			}
 		})
 
@@ -220,8 +225,6 @@
 	}
 
 	function handleGroupColorChange({ target }) {
-		target: HTMLTextAreaElement = target
-
 		if (!/^[0-9A-F]{6}$/i.test(target.value.toString().trim())) {
 			errors.set({
 				...$errors,
@@ -254,7 +257,17 @@
 		groups.set([...copy])
 	}
 
-	function saveChanges() {
+	function errorsExist() {
+		for (const key of Object.keys($errors)) {
+			if ($errors[key]) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	async function saveChanges() {
 		if (currentGroup.name.trim().length < 1) {
 			errors.set({
 				...$errors,
@@ -267,13 +280,27 @@
 			})
 		}
 
-		if (Object.keys(errors).length > 0) {
+		if (errorsExist()) {
+			console.log($errors)
 			shakeScreen()
 			return
 		}
 
 		if (editingNewGroup) {
-			// submit new group
+			setLoading("groups", true)
+
+			const newGroup: NewGroupParams = {
+				name: currentGroup.name,
+				color: parseInt(currentGroup.color.toString(), 16),
+				position: currentGroup.position,
+				permissions: currentGroup.permissions.toString(),
+			}
+
+			console.log("Creating a new group", newGroup)
+
+			await createGroup(newGroup)
+
+			setLoading("groups", false)
 			return
 		}
 
