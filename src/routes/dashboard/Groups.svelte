@@ -26,6 +26,8 @@
 	import { sortAsc } from "../../utils/sorting"
 	import TextInput from "../../components/TextInput.svelte"
 
+	const baseGroupId = -1
+
 	onMount(async () => {
 		setLoading("groups", true)
 
@@ -154,8 +156,8 @@
 			}
 
 			groups.set([...newGroups])
-			currentGroup = null
-			editingNewGroup = false
+			deselectGroup()
+			return
 		}
 
 		const copy = [...$groups]
@@ -357,7 +359,7 @@
 						ondragover={"return false"}
 						on:dragend={() => (hovering = -1)}
 						on:dragenter={() => (hovering = index)}
-						class:hovering={group.id !== 1 && hovering === index}
+						class:hovering={group.id !== baseGroupId && hovering === index}
 					>
 						<span class="order">{index + 1}</span>
 						{group.name}
@@ -376,7 +378,7 @@
 					<div class="group-header">
 						<div class="inputs">
 							<div class="group-name">
-								{#if currentGroup.id !== 1}
+								{#if currentGroup.id !== baseGroupId}
 									<TextInput
 										name="group-name"
 										autocomplete="off"
@@ -407,7 +409,7 @@
 							</div>
 						</div>
 
-						{#if currentGroup.id === 1}
+						{#if currentGroup.id === baseGroupId}
 							<p class="group-description">
 								Everyone is the default group assigned to all users. Changing
 								the permission switches below will modify the default
@@ -452,11 +454,13 @@
 						</div>
 					</div>
 
-					<div class="delete-button">
-						<Button color="danger" on:click={handleDeleteGroup}
-							>Delete Group</Button
-						>
-					</div>
+					{#if currentGroup.id !== baseGroupId}
+						<div class="delete-button">
+							<Button color="danger" on:click={handleDeleteGroup}
+								>Delete Group</Button
+							>
+						</div>
+					{/if}
 				{:else}
 					<p>Select or create a group to manage it.</p>
 				{/if}
