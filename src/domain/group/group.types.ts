@@ -8,6 +8,13 @@ export type Group = {
 	modified_at?: Date
 }
 
+export type NewGroupParams = {
+	name: string
+	color: number
+	position: number
+	permissions: string
+}
+
 export type Permission = {
 	name: string
 	description?: string
