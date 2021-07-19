@@ -136,6 +136,9 @@
 			return
 		}
 
+		const setPerms = getSetFlags(group.permissions)
+		console.log(setPerms)
+
 		editingNewGroup = false
 		currentGroup = group
 		previousGroup = { ...group }
@@ -199,15 +202,28 @@
 
 	function handlePermissionChange(e) {
 		const name = e.detail.target.name
-		const flag = getFlag(name)
 
 		if (e.detail.target.value === "true") {
-			// currentPermissions = BigInt(currentPermissions) | BigInt(flag)
+			currentPermissions.set([...$currentPermissions, name])
 		} else {
-			// currentPermissions = BigInt(currentPermissions) & ~BigInt(flag)
+			currentPermissions.set([...$currentPermissions.filter((f) => f !== name)])
 		}
 
-		changesWereMade = true
+		if ($currentPermissions !== getSetFlags(previousGroup.permissions)) {
+			changesWereMade = true
+		}
+	}
+
+	function getComputedPermissions(): bigint {
+		let computed = BigInt(0)
+
+		for (const flagName of $currentPermissions) {
+			const flag = getFlag(flagName)
+
+			computed = BigInt(computed) | BigInt(flag)
+		}
+
+		return computed
 	}
 
 	function handleGroupNameChange(e) {
@@ -305,7 +321,7 @@
 				name: currentGroup.name,
 				color: parseInt(currentGroup.color.toString(), 16),
 				position: currentGroup.position,
-				permissions: currentGroup.permissions.toString(),
+				permissions: getComputedPermissions().toString(),
 			}
 
 			console.log("Creating a new group", newGroup)

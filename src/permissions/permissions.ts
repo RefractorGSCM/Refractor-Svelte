@@ -1,5 +1,6 @@
 import { sortAsc } from "../utils/sorting"
 
+export const FLAG_SUPER_ADMIN = "FLAG_SUPER_ADMIN"
 export const FLAG_ADMINISTRATOR = "FLAG_ADMINISTRATOR"
 export const FLAG_VIEW_SERVERS = "FLAG_VIEW_SERVERS"
 
@@ -34,7 +35,7 @@ export function registerPermissions(newPerms: Permission[]) {
 }
 
 export function getFlag(name: string): bigint {
-	return permissions[name].flag
+	return BigInt(permissions[name].flag)
 }
 
 export function getDescription(name: string): string {
@@ -52,7 +53,7 @@ export function getSetFlags(permissions: bigint): string[] {
 	for (const flagName of allFlags) {
 		const flag = getFlag(flagName)
 
-		if ((BigInt(permissions) | BigInt(flag)) === BigInt(flag)) {
+		if ((permissions & flag) === flag) {
 			setFlags.push(flagName)
 		}
 	}
