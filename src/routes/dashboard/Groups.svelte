@@ -461,6 +461,7 @@
 							<DeleteModal
 								heading={`Deleting group: ${currentGroup.name}`}
 								message="Are you sure you wish to delete this group?"
+								on:submit={handleDeleteGroup}
 							>
 								<div slot="trigger" let:open>
 									<Button color="danger" on:click={open}>Delete Group</Button>

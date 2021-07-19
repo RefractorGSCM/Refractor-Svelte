@@ -1,9 +1,17 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte"
+
 	import Button from "../Button.svelte"
 	import Modal from "./Modal.svelte"
 
 	export let heading = ""
 	export let message = "Are you sure?"
+
+	const dispatch = createEventDispatcher()
+
+	function submit() {
+		dispatch("submit")
+	}
 </script>
 
 <Modal>
@@ -23,7 +31,7 @@
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button on:click={close}>Cancel</Button>
-		<Button color="danger" on:click={close} on:click>Delete</Button>
+		<Button color="danger" on:click={close} on:click={submit}>Delete</Button>
 	</div>
 </Modal>
 
@@ -41,7 +49,7 @@
 	}
 
 	.header {
-		padding: 2rem 2rem;
+		padding: 1.2rem 2rem;
 		font-size: 2rem;
 		border-bottom: 1px solid var(--color-primary);
 	}
