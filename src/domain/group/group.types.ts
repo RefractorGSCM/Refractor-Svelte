@@ -1,7 +1,7 @@
 export type Group = {
 	id?: number
 	name: string
-	color: number
+	color: number | string
 	position: number
 	permissions: bigint
 	created_at?: Date

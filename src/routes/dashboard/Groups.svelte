@@ -25,6 +25,8 @@
 	import BottomBar from "./components/BottomBar.svelte"
 	import { sortAsc } from "../../utils/sorting"
 	import TextInput from "../../components/TextInput.svelte"
+	import Modal from "../../components/Modals/Modal.svelte"
+	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
 
 	const baseGroupId = -1
 
@@ -454,11 +456,16 @@
 						</div>
 					</div>
 
-					{#if currentGroup.id !== baseGroupId}
+					{#if currentGroup.id !== baseGroupId && !editingNewGroup}
 						<div class="delete-button">
-							<Button color="danger" on:click={handleDeleteGroup}
-								>Delete Group</Button
+							<DeleteModal
+								heading={`Deleting group: ${currentGroup.name}`}
+								message="Are you sure you wish to delete this group?"
 							>
+								<div slot="trigger" let:open>
+									<Button color="danger" on:click={open}>Delete Group</Button>
+								</div>
+							</DeleteModal>
 						</div>
 					{/if}
 				{:else}
