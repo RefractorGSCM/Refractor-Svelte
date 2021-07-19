@@ -355,7 +355,7 @@
 						class:selected={currentGroup && currentGroup.id === group.id}
 						style={`color: #${group.color.toString(16)}`}
 						on:click={() => switchGroups(group)}
-						draggable={group.id !== 1}
+						draggable={group.id !== baseGroupId}
 						on:dragstart={(e) => dragstart(e, index)}
 						on:drop|preventDefault={(e) => drop(e, index)}
 						ondragover={"return false"}
