@@ -22,6 +22,8 @@
 </button>
 
 <style lang="scss" global>
+	@import "../mixins/mixins";
+
 	.btn {
 		background: none;
 		border: none;
@@ -30,20 +32,32 @@
 
 		// sizes
 		&-default {
-			padding: 0.8rem 1.6rem;
+			padding: 1rem 2rem;
 			border-radius: var(--border-md);
-			font-size: 1.4rem;
+			font-size: 1.5rem;
+
+			@include respond-below(xl) {
+				padding: 0.8rem 1.6rem;
+				border-radius: var(--border-md);
+				font-size: 1.4rem;
+			}
 		}
 
 		&-inline {
-			padding: 0.5rem;
+			padding: 0.8rem;
 			border-radius: var(--border-sm);
-			font-size: 1.2rem;
+			font-size: 1.5rem;
 
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			text-align: center;
+
+			@include respond-below(xl) {
+				padding: 0.5rem;
+				border-radius: var(--border-sm);
+				font-size: 1.2rem;
+			}
 		}
 
 		// colors
