@@ -4,12 +4,6 @@
 	export let name = "toggle"
 	export let value = "unset"
 
-	// if (value !== "true" && value !== "unset" && value !== "false") {
-	// 	value = "unset"
-	// }
-
-	console.log("tripple val", value)
-
 	const dispatch = createEventDispatcher()
 
 	const change = (e) => {
