@@ -21,3 +21,8 @@ export type Permission = {
 	description?: string
 	flag: string
 }
+
+export type GroupReorderInfo = {
+	id: number
+	pos: number
+}

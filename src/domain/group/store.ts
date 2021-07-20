@@ -3,7 +3,12 @@ import { registerPermissions } from "../../permissions/permissions"
 import { sortAsc } from "../../utils/sorting"
 import { getAllServers } from "../server/store"
 import api from "./api"
-import type { Group, NewGroupParams, Permission } from "./group.types"
+import type {
+	Group,
+	GroupReorderInfo,
+	NewGroupParams,
+	Permission,
+} from "./group.types"
 
 export const allGroups: Writable<Group[]> = writable([])
 const permissions: Writable<Permission[]> = writable([])
@@ -65,6 +70,14 @@ export async function deleteGroup(id: number) {
 export async function updateGroup(id: number, data: NewGroupParams) {
 	try {
 		await api.updateGroup(id, data)
+	} catch (err) {
+		console.log(err)
+	}
+}
+
+export async function reorederGroups(data: GroupReorderInfo[]) {
+	try {
+		await api.reorderGroups(data)
 	} catch (err) {
 		console.log(err)
 	}
