@@ -398,6 +398,12 @@
 
 		deselectGroup()
 	}
+
+	function preventDragOver(e: DragEvent) {
+		e.preventDefault()
+
+		return false
+	}
 </script>
 
 {#if $loading["groups"]}
@@ -414,6 +420,7 @@
 
 			<div class="groups">
 				{#each $groups as group, index}
+					<!-- @ts-ignore -->
 					<div
 						class="group"
 						class:selected={currentGroup && currentGroup.id === group.id}
@@ -421,8 +428,8 @@
 						on:click={() => switchGroups(group)}
 						draggable={group.id !== baseGroupId}
 						on:dragstart={(e) => dragstart(e, index)}
+						on:dragover={preventDragOver}
 						on:drop|preventDefault={(e) => drop(e, index)}
-						ondragover={"return false"}
 						on:dragend={() => (hovering = -1)}
 						on:dragenter={() => (hovering = index)}
 						class:hovering={group.id !== baseGroupId && hovering === index}
