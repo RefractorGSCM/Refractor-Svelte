@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { Group, NewGroupParams } from "./group.types"
+import type { Group, GroupReorderInfo, NewGroupParams } from "./group.types"
 
 const getAllGroups = () => {
 	return axios.get(`${process.env.apiRoot}/groups/`, { withCredentials: true })
@@ -24,8 +24,14 @@ const deleteGroup = (id: number) => {
 }
 
 const updateGroup = (id: number, data: NewGroupParams) => {
-	return axios.put(`${process.env.apiRoot}/groups/${id}`, data {
-		withCredentials: true
+	return axios.put(`${process.env.apiRoot}/groups/${id}`, data, {
+		withCredentials: true,
+	})
+}
+
+const reorderGroups = (data: GroupReorderInfo[]) => {
+	return axios.put(`${process.env.apiRoot}/groups/order`, data, {
+		withCredentials: true,
 	})
 }
 
@@ -35,4 +41,5 @@ export default {
 	createGroup,
 	deleteGroup,
 	updateGroup,
+	reorderGroups,
 }

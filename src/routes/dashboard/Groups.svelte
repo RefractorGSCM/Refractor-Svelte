@@ -8,12 +8,17 @@
 		createGroup,
 		deleteGroup,
 		getAllGroups,
+		reorederGroups,
 		updateGroup,
 	} from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Container from "./components/Container.svelte"
 	import Toggle from "../../components/Toggle.svelte"
-	import type { Group, NewGroupParams } from "../../domain/group/group.types"
+	import type {
+		Group,
+		GroupReorderInfo,
+		NewGroupParams,
+	} from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
 	import type { Writable } from "svelte/store"
 	import {
@@ -95,15 +100,30 @@
 
 		hovering = -1
 		groups.set(newTrackgroups)
-		submitGroupReorder(newTrackgroups)
+		submitGroupReorder()
 	}
 
-	function submitGroupReorder(ordered) {
+	async function submitGroupReorder() {
 		setLoading("groups-reorder", true)
 
-		setTimeout(() => {
-			setLoading("groups-reorder", false)
-		}, 300)
+		const newOrder: GroupReorderInfo[] = []
+
+		for (let i = 0; i < $groups.length; i++) {
+			const group = $groups[i]
+
+			if (group.id === baseGroupId) {
+				continue
+			}
+
+			newOrder.push({
+				id: group.id,
+				pos: i + 1,
+			})
+		}
+
+		await reorederGroups(newOrder)
+
+		setLoading("groups-reorder", false)
 	}
 
 	function addGroup() {
