@@ -29,6 +29,12 @@ const updateGroup = (id: number, data: NewGroupParams) => {
 	})
 }
 
+const updateBaseGroup = (data: NewGroupParams) => {
+	return axios.put(`${process.env.apiRoot}/groups/base`, data, {
+		withCredentials: true,
+	})
+}
+
 const reorderGroups = (data: GroupReorderInfo[]) => {
 	return axios.put(`${process.env.apiRoot}/groups/order`, data, {
 		withCredentials: true,
@@ -41,5 +47,6 @@ export default {
 	createGroup,
 	deleteGroup,
 	updateGroup,
+	updateBaseGroup,
 	reorderGroups,
 }

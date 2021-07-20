@@ -69,6 +69,13 @@ export async function deleteGroup(id: number) {
 
 export async function updateGroup(id: number, data: NewGroupParams) {
 	try {
+		// If we are updating the base group, we use the endpoint specifically for the base group.
+		if (id === -1) {
+			await api.updateBaseGroup(data)
+			return
+		}
+
+		// Otherwise we use the generic group update endpoint
 		await api.updateGroup(id, data)
 	} catch (err) {
 		console.log(err)
