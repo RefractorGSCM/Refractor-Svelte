@@ -115,8 +115,9 @@
 		const newGroup: Group = {
 			name: "New Group",
 			position: $groups.length,
-			color: "cecece",
+			color: 0xcecece,
 			permissions: BigInt(0),
+			displayColor: (0xcecece).toString(16),
 		}
 
 		groups.set(sortAsc("position", [...$groups, newGroup]))
