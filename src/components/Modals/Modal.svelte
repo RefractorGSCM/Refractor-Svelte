@@ -83,6 +83,8 @@
 {/if}
 
 <style lang="scss">
+	@import "../../mixins/mixins";
+
 	div.modal {
 		position: fixed;
 		top: 0;
@@ -100,6 +102,10 @@
 			width: 100%;
 			height: 100%;
 			background-color: rgba(0, 0, 0, 0.4);
+
+			@include respond-below(sm) {
+				background-color: rgba(0, 0, 0, 0.6);
+			}
 		}
 
 		div.content-wrapper {
@@ -109,6 +115,10 @@
 			background-color: var(--color-background1);
 			overflow: hidden;
 			border-radius: var(--border-md);
+
+			@include respond-below(sm) {
+				max-width: 100%;
+			}
 		}
 
 		div.content {

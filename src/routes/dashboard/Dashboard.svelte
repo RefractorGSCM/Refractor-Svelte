@@ -403,28 +403,29 @@
 		}
 	}
 
-	@include respond-below(sm) {
+	@include respond-below(md) {
 		nav.sidebar {
 		}
 
 		#sidebar-toggle:checked {
 			& ~ .content {
-				margin-left: 4rem;
+				margin-left: 6rem;
 				margin-top: 6rem;
+				z-index: -100;
 
 				main {
 					z-index: -100;
 				}
 
 				header {
-					z-index: -50;
-					left: 4rem;
-					width: calc(100% - 4rem);
+					z-index: -100;
+					left: 6rem;
+					width: calc(100% - 6rem);
 				}
 
 				:global(.bottom-bar) {
 					z-index: 1;
-					left: 4rem;
+					// left: 4rem;
 					width: calc(100% - 4rem);
 				}
 			}

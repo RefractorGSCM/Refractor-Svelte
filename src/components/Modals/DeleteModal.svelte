@@ -36,6 +36,8 @@
 </Modal>
 
 <style lang="scss">
+	@import "../../mixins/mixins";
+
 	.buttons {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -59,5 +61,10 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
+
+		@include respond-below(sm) {
+			min-width: 100%;
+			width: 100%;
+		}
 	}
 </style>
