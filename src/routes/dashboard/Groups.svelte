@@ -343,6 +343,7 @@
 			return
 		}
 
+		// If we are editing a new group create the group
 		if (editingNewGroup) {
 			setLoading("groups", true)
 
@@ -365,8 +366,7 @@
 			return
 		}
 
-		// otherwise, update existing group
-
+		// Otherwise, update existing group
 		setLoading("groups", true)
 
 		const updatedGroup: NewGroupParams = {
