@@ -8,6 +8,7 @@
 		createGroup,
 		deleteGroup,
 		getAllGroups,
+		updateGroup,
 	} from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Container from "./components/Container.svelte"
@@ -140,7 +141,10 @@
 		console.log(setPerms)
 
 		editingNewGroup = false
-		currentGroup = group
+		currentGroup = {
+			...group,
+			displayColor: group.color.toString(16),
+		}
 		previousGroup = { ...group }
 		currentPermissions.set(getSetFlags(group.permissions))
 	}
@@ -267,7 +271,8 @@
 			})
 		}
 
-		currentGroup.color = target.value
+		currentGroup.displayColor = target.value
+		currentGroup.color = parseInt(`0x${currentGroup.displayColor}`)
 
 		if (currentGroup.color !== previousGroup.color) {
 			changesWereMade = true
@@ -319,7 +324,7 @@
 
 			const newGroup: NewGroupParams = {
 				name: currentGroup.name,
-				color: parseInt(currentGroup.color.toString(), 16),
+				color: currentGroup.color,
 				position: currentGroup.position,
 				permissions: getComputedPermissions().toString(),
 			}
@@ -337,6 +342,21 @@
 		}
 
 		// otherwise, update existing group
+
+		setLoading("groups", true)
+
+		const updatedGroup: NewGroupParams = {
+			name: currentGroup.name,
+			color: currentGroup.color,
+			position: currentGroup.position,
+			permissions: getComputedPermissions().toString(),
+		}
+
+		console.log("Updating group", updatedGroup)
+
+		await updateGroup(currentGroup.id, updatedGroup)
+
+		setLoading("groups", false)
 	}
 
 	async function handleDeleteGroup() {
@@ -420,7 +440,7 @@
 									name="group-color"
 									autocomplete="off"
 									label="Group Color"
-									value={currentGroup.color.toString(16)}
+									value={currentGroup.displayColor}
 									error={$errors.color}
 									on:input={handleGroupColorChange}
 								/>
