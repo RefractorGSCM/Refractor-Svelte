@@ -61,3 +61,11 @@ export async function deleteGroup(id: number) {
 		console.log(err)
 	}
 }
+
+export async function updateGroup(id: number, data: NewGroupParams) {
+	try {
+		await api.updateGroup(id, data)
+	} catch (err) {
+		console.log(err)
+	}
+}

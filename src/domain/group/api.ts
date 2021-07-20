@@ -23,9 +23,16 @@ const deleteGroup = (id: number) => {
 	})
 }
 
+const updateGroup = (id: number, data: NewGroupParams) => {
+	return axios.put(`${process.env.apiRoot}/groups/${id}`, data {
+		withCredentials: true
+	})
+}
+
 export default {
 	getAllGroups,
 	getAllPermissions,
 	createGroup,
 	deleteGroup,
+	updateGroup,
 }
