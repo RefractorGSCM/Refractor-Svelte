@@ -33,6 +33,7 @@
 	import TextInput from "../../components/TextInput.svelte"
 	import Modal from "../../components/Modals/Modal.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import DualPane from "./components/DualPane.svelte"
 
 	const baseGroupId = -1
 
@@ -412,8 +413,8 @@
 
 <Container>
 	<Heading type="title">Groups</Heading>
-	<div class="container" id="groups-container">
-		<div class="groups-list">
+	<DualPane id="groups-container">
+		<div slot="left-pane" class="groups-list">
 			{#if $loading["groups-reorder"]}
 				<Spinner />
 			{/if}
@@ -445,7 +446,7 @@
 			</div>
 		</div>
 
-		<div class="manager">
+		<div slot="right-pane" class="manager">
 			<div class="editor">
 				{#if currentGroup}
 					<div class="group-header">
@@ -545,7 +546,7 @@
 				{/if}
 			</div>
 		</div>
-	</div>
+	</DualPane>
 </Container>
 
 {#if changesWereMade}
@@ -579,33 +580,6 @@
 
 	:global(.hovering) {
 		outline: 2px dashed var(--color-primary);
-	}
-
-	.container {
-		margin-top: 2rem;
-		margin-bottom: 6rem;
-		display: grid;
-		grid-template-columns: minmax(25rem, 1fr) 4fr;
-		grid-column-gap: 2rem;
-		font-size: 1.8rem;
-		min-height: 70vh;
-		max-height: 100vh;
-
-		@include respond-below(lg) {
-			font-size: 1.6rem;
-		}
-
-		> * {
-			padding: 2rem;
-			background-color: var(--color-background2);
-			border-radius: var(--border-md);
-		}
-
-		@include respond-below(sm) {
-			grid-template-rows: 30vh auto;
-			grid-template-columns: auto;
-			grid-row-gap: 2rem;
-		}
 	}
 
 	.changes-bar {
@@ -663,6 +637,7 @@
 		flex-direction: column;
 		justify-content: space-between;
 		position: relative;
+		height: 100%;
 
 		.group {
 			font-size: 1.6rem;
@@ -708,6 +683,7 @@
 		justify-content: space-around;
 		position: relative;
 		padding-bottom: 4rem;
+		height: 100%;
 
 		.editor {
 			flex: 1;
@@ -801,8 +777,8 @@
 
 		.delete-button {
 			position: absolute;
-			bottom: 2rem;
-			left: 2rem;
+			left: 0;
+			bottom: 0;
 		}
 	}
 </style>

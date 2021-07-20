@@ -3,6 +3,7 @@
 	import Button from "../../components/Button.svelte"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
+	import Users from "./Users.svelte"
 
 	function logout() {
 		window.location.replace(
@@ -56,16 +57,23 @@
 				</a>
 			</li>
 
-			<div class="link">
-				<Link to="/groups">
-					<li>
-						<span class="fas fa-lock" />
-						<span>Manage Groups</span>
-					</li>
-				</Link>
-			</div>
-
 			<div class="bottom">
+				<div class="link">
+					<Link to="/groups">
+						<li>
+							<span class="fas fa-lock" />
+							<span>Manage Groups</span>
+						</li>
+					</Link>
+				</div>
+				<div class="link">
+					<Link to="/users">
+						<li>
+							<span class="fas fa-users" />
+							<span>Manage Users</span>
+						</li>
+					</Link>
+				</div>
 				<li>
 					<a href="#">
 						<span class="fas fa-cog" />
@@ -87,6 +95,7 @@
 	<main>
 		<Router {url}>
 			<Route path="/groups" component={Groups} />
+			<Route path="/users" component={Users} />
 			<Route path="/" component={Home} />
 		</Router>
 	</main>
