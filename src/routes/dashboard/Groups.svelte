@@ -150,7 +150,10 @@
 	}
 
 	function revertChanges() {
-		currentGroup = { ...previousGroup }
+		currentGroup = {
+			...previousGroup,
+			displayColor: previousGroup.color.toString(16),
+		}
 		currentPermissions.set(getSetFlags(previousGroup.permissions))
 		errors.set({})
 
@@ -357,6 +360,10 @@
 		await updateGroup(currentGroup.id, updatedGroup)
 
 		setLoading("groups", false)
+
+		editingNewGroup = false
+		changesWereMade = false
+		return
 	}
 
 	async function handleDeleteGroup() {
@@ -676,6 +683,7 @@
 
 		.editor {
 			flex: 1;
+			max-width: 80rem;
 		}
 
 		.permissions-list {
@@ -705,11 +713,25 @@
 			min-height: 7rem;
 
 			.inputs {
+				width: 100%;
 				display: flex;
 				justify-content: space-between;
 
+				@include respond-below(sm) {
+					flex-direction: column;
+				}
+
+				.group-name {
+					width: 30rem;
+				}
+
+				:global(.input-wrapper) {
+					width: 100%;
+				}
+
 				.group-color {
 					display: flex;
+					width: 30rem;
 
 					.preview {
 						height: 3rem;
@@ -717,6 +739,27 @@
 						margin-top: 1rem;
 						margin-right: 1rem;
 						border-radius: var(--border-sm);
+					}
+				}
+
+				@include respond-below(lg) {
+					.group-name,
+					.group-color {
+						width: 20rem;
+					}
+				}
+
+				@include respond-below(md) {
+					.group-name,
+					.group-color {
+						width: 15rem;
+					}
+				}
+
+				@include respond-below(sm) {
+					.group-name,
+					.group-color {
+						width: 100%;
 					}
 				}
 			}
