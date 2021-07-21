@@ -31,9 +31,10 @@
 	import BottomBar from "./components/BottomBar.svelte"
 	import { sortAsc } from "../../utils/sorting"
 	import TextInput from "../../components/TextInput.svelte"
-	import Modal from "../../components/Modals/Modal.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
 	import DualPane from "./components/DualPane.svelte"
+	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
+	import { decimalToHex, hexToDecimal } from "../../utils/color"
 
 	const baseGroupId = -1
 
@@ -138,7 +139,7 @@
 			position: $groups.length,
 			color: 0xcecece,
 			permissions: BigInt(0),
-			displayColor: (0xcecece).toString(16),
+			displayColor: decimalToHex(0xcecece),
 		}
 
 		groups.set(sortAsc("position", [...$groups, newGroup]))
@@ -165,7 +166,7 @@
 		editingNewGroup = false
 		currentGroup = {
 			...group,
-			displayColor: group.color.toString(16),
+			displayColor: decimalToHex(group.color),
 		}
 		previousGroup = { ...group }
 		currentPermissions.set(getSetFlags(group.permissions))
@@ -174,7 +175,7 @@
 	function revertChanges() {
 		currentGroup = {
 			...previousGroup,
-			displayColor: previousGroup.color.toString(16),
+			displayColor: decimalToHex(previousGroup.color),
 		}
 		currentPermissions.set(getSetFlags(previousGroup.permissions))
 		errors.set({})
@@ -281,23 +282,11 @@
 		changesWereMade = false
 	}
 
-	function handleGroupColorChange({ target }) {
-		if (!/^[0-9A-F]{6}$/i.test(target.value.toString().trim())) {
-			errors.set({
-				...$errors,
-				color: "Invalid hex color code",
-			})
+	function changeColor(color: number) {
+		console.log("Changing color to:", color, decimalToHex(color))
 
-			return
-		} else {
-			errors.set({
-				...$errors,
-				color: undefined,
-			})
-		}
-
-		currentGroup.displayColor = target.value
-		currentGroup.color = parseInt(`0x${currentGroup.displayColor}`)
+		currentGroup.displayColor = decimalToHex(color)
+		currentGroup.color = color
 
 		if (currentGroup.color !== previousGroup.color) {
 			changesWereMade = true
@@ -313,6 +302,24 @@
 		})
 
 		groups.set([...copy])
+	}
+
+	function handleGroupColorChange({ target }) {
+		if (!/^[0-9A-F]{6}$/i.test(target.value.toString().trim())) {
+			errors.set({
+				...$errors,
+				color: "Invalid hex color code",
+			})
+
+			return
+		} else {
+			errors.set({
+				...$errors,
+				color: undefined,
+			})
+		}
+
+		changeColor(hexToDecimal(target.value))
 	}
 
 	function errorsExist() {
@@ -425,7 +432,7 @@
 					<div
 						class="group"
 						class:selected={currentGroup && currentGroup.id === group.id}
-						style={`color: #${group.color.toString(16)}`}
+						style={`color: #${decimalToHex(group.color)}`}
 						on:click={() => switchGroups(group)}
 						draggable={group.id !== baseGroupId}
 						on:dragstart={(e) => dragstart(e, index)}
@@ -467,10 +474,18 @@
 							</div>
 
 							<div class="group-color">
-								<div
-									class="preview"
-									style={`background: #${currentGroup.color.toString(16)}`}
-								/>
+								<ColorPicker
+									on:submit={(e) => changeColor(e.detail)}
+									color={decimalToHex(currentGroup.color)}
+								>
+									<div slot="trigger" let:open>
+										<div
+											class="preview"
+											style={`background: #${decimalToHex(currentGroup.color)}`}
+											on:click={open}
+										/>
+									</div>
+								</ColorPicker>
 
 								<TextInput
 									name="group-color"
@@ -743,6 +758,7 @@
 						margin-top: 1rem;
 						margin-right: 1rem;
 						border-radius: var(--border-sm);
+						cursor: pointer;
 					}
 				}
 
