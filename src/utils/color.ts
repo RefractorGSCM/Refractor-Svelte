@@ -36,3 +36,34 @@ export function stringToHSL(str: string, opts: HSLOpts): string {
 
 	return `hsl(${h}, ${s}%, ${l}%)`
 }
+
+export function decimalToHex(dec: number): string {
+	var hex = dec.toString(16)
+	const padding = 6
+
+	while (hex.length < padding) {
+		hex = "0" + hex
+	}
+
+	return hex
+}
+
+export function hexToDecimal(hex: string): number {
+	return parseInt(hex, 16)
+}
+
+export function rgbToHex(
+	r: number | string,
+	g: number | string,
+	b: number | string,
+): string {
+	r = r.toString(16)
+	g = g.toString(16)
+	b = b.toString(16)
+
+	if (r.length == 1) r = "0" + r
+	if (g.length == 1) g = "0" + g
+	if (b.length == 1) b = "0" + b
+
+	return r + g + b
+}
