@@ -60,6 +60,18 @@
 			}
 		}
 
+		&-large {
+			padding: 2rem 3rem;
+			border-radius: var(--border-md);
+			font-size: 2.4rem;
+
+			@include respond-below(xl) {
+				padding: 1.25rem 2rem;
+				border-radius: var(--border-md);
+				font-size: 1.8rem;
+			}
+		}
+
 		// colors
 		&-primary {
 			background-color: var(--color-primary);

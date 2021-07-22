@@ -74,12 +74,14 @@
 						</li>
 					</Link>
 				</div>
-				<li>
-					<a href="#">
-						<span class="fas fa-cog" />
-						<span>Settings</span>
+				<div class="link">
+					<a href={`${process.env.authRoot}/k/settings`}>
+						<li>
+							<span class="fas fa-cog" />
+							<span>Settings</span>
+						</li>
 					</a>
-				</li>
+				</div>
 			</div>
 		</ul>
 	</div>
