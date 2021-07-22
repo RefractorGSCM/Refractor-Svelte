@@ -7,22 +7,29 @@
 	import ProtectedRoute from "./components/ProtectedRoute.svelte"
 	import { loading, setLoading } from "./domain/loading/store"
 	import Spinner from "./components/Spinner.svelte"
-	import { checkAuth } from "./domain/user/store"
+	import {
+		checkAuth,
+		isAuthenticated,
+		needsActivation,
+	} from "./domain/user/store"
 	import { getPermissions } from "./domain/group/store"
+	import Activate from "./routes/Activate.svelte"
 
 	let authChecked = false
 	onMount(async () => {
 		setLoading("app", true)
 
-		const isAuthentciated = await checkAuth()
+		await checkAuth()
 
-		if (!isAuthentciated) {
+		if (!$isAuthenticated && !$needsActivation) {
 			window.location.replace(`${process.env.authRoot}/k/login`)
 		}
 
-		if (isAuthentciated) {
+		if ($isAuthenticated) {
 			await getPermissions()
 		}
+
+		console.log("isAuthenticated", $isAuthenticated)
 
 		authChecked = true
 		setLoading("app", false)
@@ -36,12 +43,14 @@
 		<Spinner fullscreen={true} blocking={true} />
 	{/if}
 
-	{#if authChecked}
-		<Router>
+	<Router>
+		{#if authChecked && $isAuthenticated}
 			<Route path="/styleguide" component={StyleGuide} />
 			<ProtectedRoute path="/*" component={Dashboard} />
-		</Router>
-	{/if}
+		{:else if authChecked && $needsActivation}
+			<Route path="/" component={Activate} />
+		{/if}
+	</Router>
 </div>
 
 <style lang="scss" global>
