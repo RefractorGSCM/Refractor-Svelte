@@ -10,6 +10,8 @@ export type Theme = {
 		text1: string
 		text2: string
 		text3: string
+		disabled: string
+		disabledDark: string
 		textMuted: string
 		textMuted2: string
 		textPrimary: string

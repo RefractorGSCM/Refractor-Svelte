@@ -15,6 +15,7 @@
 	import { allGroups, getAllGroups } from "../../domain/group/store"
 	import Checkbox from "../../components/Checkbox.svelte"
 	import { group_outros } from "svelte/internal"
+	import Groups from "./Groups.svelte"
 
 	const baseGroupId = -1
 
@@ -38,6 +39,22 @@
 		currentUser = user
 	}
 
+	function toggleGroup({ target }, group: Group) {
+		target: HTMLInputElement = target
+		const grant = target.checked
+
+		if (grant) {
+			console.log("Adding group", group.name, "to user", currentUser.username)
+		} else {
+			console.log(
+				"Removing group",
+				group.name,
+				"from user",
+				currentUser.username,
+			)
+		}
+	}
+
 	$: if ($users.length > 0) {
 		selectUser($users[0])
 	}
@@ -58,7 +75,6 @@
 						class="user"
 						class:selected={currentUser && currentUser.id === user.id}
 						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
-						on:click={() => selectUser(user)}
 					>
 						{user.username}
 					</div>
@@ -82,9 +98,17 @@
 									<Checkbox
 										name={`${group.id}-${group.name}`}
 										label={group.name}
+										checked={currentUser.groups.filter((g) => g.id === group.id)
+											.length > 0}
+										on:change={(e) => toggleGroup(e, group)}
 									/>
 								{:else}
-									<div>{group.name}</div>
+									<Checkbox
+										name={`${group.id}-${group.name}`}
+										label={group.name}
+										checked={true}
+										disabled={true}
+									/>
 								{/if}
 							</div>
 						{/each}
