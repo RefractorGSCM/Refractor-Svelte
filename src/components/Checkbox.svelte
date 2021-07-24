@@ -33,7 +33,8 @@
 			width: 2rem;
 			height: 2rem;
 			border: 1px solid var(--color-text-muted2);
-			border-radius: 1px;
+			border-radius: 2px;
+			color: var(--color-text-muted2);
 		}
 
 		label:hover::after,
@@ -43,6 +44,7 @@
 
 		input[type="checkbox"]:focus + label::after {
 			outline: 1px solid var(--color-primary);
+			color: var(--color-accent);
 		}
 
 		input[type="checkbox"]:checked + label::after {
@@ -52,6 +54,7 @@
 			justify-content: center;
 			align-items: center;
 			border: 1px solid var(--color-primary);
+			color: var(--color-primary-light);
 		}
 	}
 </style>

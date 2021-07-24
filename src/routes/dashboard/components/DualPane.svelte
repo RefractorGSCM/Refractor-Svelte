@@ -27,7 +27,8 @@
 		grid-column-gap: 2rem;
 		font-size: 1.8rem;
 		min-height: 70vh;
-		max-height: 100vh;
+		max-height: calc(100vh - 20rem);
+		height: 100%;
 
 		@include respond-below(lg) {
 			font-size: 1.6rem;
@@ -39,6 +40,7 @@
 			border-radius: var(--border-md);
 			width: 100%;
 			height: 100%;
+			max-height: inherit;
 		}
 
 		@include respond-below(sm) {
