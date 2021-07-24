@@ -1,7 +1,11 @@
 import axios from "axios"
 
-export function getSession() {
-	return axios.get(`${process.env.kratosRoot}/sessions/whoami`, {
+const getAllUsers = () => {
+	return axios.get(`${process.env.apiRoot}/users/`, {
 		withCredentials: true,
 	})
+}
+
+export default {
+	getAllUsers,
 }

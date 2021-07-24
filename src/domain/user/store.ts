@@ -1,40 +1,16 @@
 import { Writable, writable } from "svelte/store"
-import { getSession } from "./api"
+import type { Group } from "../group/group.types"
+import api from "./api"
+import type { User } from "./user.types"
 
-export const isAuthenticated: Writable<boolean> = writable(false)
-export const needsActivation: Writable<boolean> = writable(false)
-export const user = writable(null)
+export const allUsers: Writable<User[]> = writable([])
 
-export async function checkAuth(): Promise<boolean> {
+export async function getAllUsers() {
 	try {
-		const { data } = await getSession()
+		const { data } = await api.getAllUsers()
 
-		let accountActivated = false
-		for (const address of data.identity.verifiable_addresses) {
-			console.log(address)
-			if (address.verified === true) {
-				accountActivated = true
-				break
-			}
-		}
-
-		user.set(data)
-
-		if (!accountActivated) {
-			isAuthenticated.set(false)
-			needsActivation.set(true)
-			return false
-		} else {
-			needsActivation.set(false)
-		}
-
-		isAuthenticated.set(true)
-
-		return true
+		allUsers.set(data.payload)
 	} catch (err) {
-		isAuthenticated.set(false)
-		user.set(null)
-
-		return false
+		console.log(err)
 	}
 }

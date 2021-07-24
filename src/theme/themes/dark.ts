@@ -4,6 +4,7 @@ const dark: Theme = {
 	colors: {
 		background1: "#1F2B5E",
 		background2: "#141C3D",
+		background2Dark: "#121936",
 		background3: "#0A0E1F",
 		accentLight: "#29387A",
 		accent: "#1F2B5E",

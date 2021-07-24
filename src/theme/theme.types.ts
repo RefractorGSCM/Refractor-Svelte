@@ -2,6 +2,7 @@ export type Theme = {
 	colors: {
 		background3: string
 		background2: string
+		background2Dark: string
 		background1: string
 		accentLight: string
 		accent: string

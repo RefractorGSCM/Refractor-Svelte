@@ -653,6 +653,8 @@
 		justify-content: space-between;
 		position: relative;
 		height: 100%;
+		max-height: 100%;
+		overflow-y: scroll;
 
 		.group {
 			font-size: 1.6rem;

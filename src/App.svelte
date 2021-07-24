@@ -11,7 +11,7 @@
 		checkAuth,
 		isAuthenticated,
 		needsActivation,
-	} from "./domain/user/store"
+	} from "./domain/auth/store"
 	import { getPermissions } from "./domain/group/store"
 	import Activate from "./routes/Activate.svelte"
 
