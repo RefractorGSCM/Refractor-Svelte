@@ -40,7 +40,6 @@
 	}
 
 	function toggleGroup({ target }, group: Group) {
-		target: HTMLInputElement = target
 		const grant = target.checked
 
 		if (grant) {
