@@ -21,6 +21,7 @@ const dark: Theme = {
 		primary: "#526ECB",
 		successLight: "#0CE982",
 		success: "#0BD577",
+		successDark: "#0cb064",
 		warningLight: "#F3AE3F",
 		warning: "#F1A01D",
 		dangerLight: "#D54856",

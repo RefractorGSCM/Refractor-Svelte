@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
+	import { user } from "../../domain/auth/store"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Users from "./Users.svelte"
@@ -91,7 +92,11 @@
 	<header>
 		<div class="brand-name">{"selectedGame.name"}</div>
 
-		<Button size="inline" on:click={() => logout()}>Log out</Button>
+		<div class="right">
+			<div>{$user.identity.traits.username}</div>
+
+			<Button size="inline" on:click={() => logout()}>Log out</Button>
+		</div>
 	</header>
 
 	<main>
@@ -271,6 +276,16 @@
 			justify-content: space-between;
 			transition: all 0.1s;
 			user-select: none;
+
+			.right {
+				display: flex;
+				align-items: center;
+
+				div {
+					margin-right: 2rem;
+					font-size: 1.4rem;
+				}
+			}
 
 			@include respond-below(xl) {
 				height: 6rem;

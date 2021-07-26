@@ -4,7 +4,12 @@
 	import DualPane from "./components/DualPane.svelte"
 	import { onMount } from "svelte"
 	import { loading, setLoading } from "../../domain/loading/store"
-	import { allUsers, getAllUsers } from "../../domain/user/store"
+	import {
+		addUserGroup,
+		allUsers,
+		getAllUsers,
+		removeUserGroup,
+	} from "../../domain/user/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import { writable } from "svelte/store"
 	import type { User } from "../../domain/user/user.types"
@@ -39,11 +44,12 @@
 		currentUser = user
 	}
 
-	function toggleGroup({ target }, group: Group) {
+	async function toggleGroup({ target }, group: Group) {
 		const grant = target.checked
 
 		if (grant) {
 			console.log("Adding group", group.name, "to user", currentUser.username)
+			await addUserGroup(currentUser.id, group)
 		} else {
 			console.log(
 				"Removing group",
@@ -51,11 +57,8 @@
 				"from user",
 				currentUser.username,
 			)
+			await removeUserGroup(currentUser.id, group.id)
 		}
-	}
-
-	$: if ($users.length > 0) {
-		selectUser($users[0])
 	}
 </script>
 
@@ -73,7 +76,10 @@
 					<div
 						class="user"
 						class:selected={currentUser && currentUser.id === user.id}
-						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
+						on:click={() => selectUser(user)}
+						style={user.groups.length > 0
+							? `color: #${decimalToHex(getTopGroup(user.groups).color)}`
+							: `color: #cecece`}
 					>
 						{user.username}
 					</div>
