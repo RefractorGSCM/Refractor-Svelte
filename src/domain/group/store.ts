@@ -1,6 +1,7 @@
 import { Writable, writable } from "svelte/store"
 import { registerPermissions } from "../../permissions/permissions"
 import { sortAsc } from "../../utils/sorting"
+import { successToast } from "../../utils/toast"
 import { getAllServers } from "../server/store"
 import api from "./api"
 import type {
@@ -47,6 +48,8 @@ export async function createGroup(newGroup: NewGroupParams) {
 		allGroups.update((groups) => {
 			return sortAsc("position", [...groups, created])
 		})
+
+		successToast("Group created")
 	} catch (err) {
 		console.log(err)
 	}
@@ -62,6 +65,8 @@ export async function deleteGroup(id: number) {
 
 			return sortAsc("position", filtered)
 		})
+
+		successToast("Group deleted")
 	} catch (err) {
 		console.log(err)
 	}
@@ -77,6 +82,8 @@ export async function updateGroup(id: number, data: NewGroupParams) {
 
 		// Otherwise we use the generic group update endpoint
 		await api.updateGroup(id, data)
+
+		successToast("Group updated")
 	} catch (err) {
 		console.log(err)
 	}

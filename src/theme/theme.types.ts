@@ -19,6 +19,7 @@ export type Theme = {
 		primary: string
 		successLight: string
 		success: string
+		successDark: string
 		warningLight: string
 		warning: string
 		dangerLight: string

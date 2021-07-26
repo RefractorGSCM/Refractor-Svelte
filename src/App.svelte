@@ -14,6 +14,7 @@
 	} from "./domain/auth/store"
 	import { getPermissions } from "./domain/group/store"
 	import Activate from "./routes/Activate.svelte"
+	import { SvelteToast } from "@zerodevx/svelte-toast"
 
 	let authChecked = false
 	onMount(async () => {
@@ -43,6 +44,10 @@
 		<Spinner fullscreen={true} blocking={true} />
 	{/if}
 
+	<div class="toast-wrap">
+		<SvelteToast />
+	</div>
+
 	<Router>
 		{#if authChecked && $isAuthenticated}
 			<Route path="/styleguide" component={StyleGuide} />
@@ -56,5 +61,15 @@
 <style lang="scss" global>
 	.refractor-app {
 		box-sizing: border-box;
+		--toastBackground: var(--color-background1);
+		--toastWidth: 22rem;
+		--toastMinHeight: 6rem;
+		--toastMsgPadding: 0 1rem;
+		--toastBorderRadius: var(--border-sm);
+	}
+
+	.toast-wrap {
+		font-size: 1.4rem;
+		color: var(--color-text1);
 	}
 </style>
