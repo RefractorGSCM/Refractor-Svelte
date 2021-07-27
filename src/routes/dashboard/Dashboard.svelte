@@ -3,7 +3,12 @@
 	import Button from "../../components/Button.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { self } from "../../domain/auth/store"
-	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
+	import {
+		FLAG_ADMINISTRATOR,
+		FLAG_VIEW_CHAT_RECORDS,
+		FLAG_VIEW_INFRACTION_RECORDS,
+		FLAG_VIEW_PLAYER_RECORDS,
+	} from "../../permissions/permissions"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Users from "./Users.svelte"
@@ -41,24 +46,38 @@
 				</Link>
 			</div>
 
-			<li>
-				<a href="#">
-					<span class="fas fa-user" />
-					<span>Players</span>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<span class="fas fa-list" />
-					<span>Infractions</span>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<span class="fas fa-comments" />
-					<span>Chat Logs</span>
-				</a>
-			</li>
+			<RequirePerms allOf={[FLAG_VIEW_PLAYER_RECORDS]}>
+				<div class="link">
+					<Link to="/records/players">
+						<li>
+							<span class="fas fa-user" />
+							<span>Players</span>
+						</li>
+					</Link>
+				</div>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_INFRACTION_RECORDS]}>
+				<div class="link">
+					<Link to="/records/infractions">
+						<li>
+							<span class="fas fa-list" />
+							<span>Infractions</span>
+						</li>
+					</Link>
+				</div>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_CHAT_RECORDS]}>
+				<div class="link">
+					<Link to="/records/chat">
+						<li>
+							<span class="fas fa-comments" />
+							<span>Chat Logs</span>
+						</li>
+					</Link>
+				</div>
+			</RequirePerms>
 
 			<div class="bottom">
 				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
