@@ -60,3 +60,14 @@ export function getSetFlags(permissions: bigint): string[] {
 
 	return setFlags
 }
+
+export function checkFlag(permissions, flag): boolean {
+	permissions = BigInt(permissions)
+	flag = BigInt(flag)
+
+	if ((permissions & flag) === flag) {
+		return true
+	}
+
+	return false
+}

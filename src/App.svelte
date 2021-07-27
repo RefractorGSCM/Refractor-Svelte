@@ -16,6 +16,7 @@
 	import { getPermissions } from "./domain/group/store"
 	import Activate from "./routes/Activate.svelte"
 	import { SvelteToast } from "@zerodevx/svelte-toast"
+	import RequirePerms from "./components/RequirePerms.svelte"
 
 	let authChecked = false
 	onMount(async () => {
@@ -40,7 +41,6 @@
 
 <div class="refractor-app">
 	<ThemeProvider />
-
 	{#if $loading["app"]}
 		<Spinner fullscreen={true} blocking={true} />
 	{/if}
