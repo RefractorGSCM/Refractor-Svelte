@@ -109,8 +109,11 @@
 
 	<main>
 		<Router {url}>
-			<Route path="/groups" component={Groups} />
-			<Route path="/users" component={Users} />
+			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+				<Route path="/groups" component={Groups} />
+				<Route path="/users" component={Users} />
+			</RequirePerms>
+
 			<Route path="/" component={Home} />
 		</Router>
 	</main>
