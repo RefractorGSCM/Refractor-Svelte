@@ -1,13 +1,15 @@
 import { Writable, writable } from "svelte/store"
-import { getSession } from "./api"
+import { errorToast } from "../../utils/toast"
+import api from "./api"
 
 export const isAuthenticated: Writable<boolean> = writable(false)
 export const needsActivation: Writable<boolean> = writable(false)
-export const user = writable(null)
+export const session = writable(null)
+export const self = writable(null)
 
 export async function checkAuth(): Promise<boolean> {
 	try {
-		const { data } = await getSession()
+		const { data } = await api.getSession()
 
 		let accountActivated = false
 		for (const address of data.identity.verifiable_addresses) {
@@ -18,7 +20,7 @@ export async function checkAuth(): Promise<boolean> {
 			}
 		}
 
-		user.set(data)
+		session.set(data)
 
 		if (!accountActivated) {
 			isAuthenticated.set(false)
@@ -33,8 +35,18 @@ export async function checkAuth(): Promise<boolean> {
 		return true
 	} catch (err) {
 		isAuthenticated.set(false)
-		user.set(null)
+		session.set(null)
 
 		return false
+	}
+}
+
+export async function getSelfInfo() {
+	try {
+		const { data } = await api.getSelfInfo()
+
+		self.set(data.payload)
+	} catch (err) {
+		errorToast("Could not get user info")
 	}
 }

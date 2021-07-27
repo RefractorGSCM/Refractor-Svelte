@@ -9,6 +9,7 @@
 	import Spinner from "./components/Spinner.svelte"
 	import {
 		checkAuth,
+		getSelfInfo,
 		isAuthenticated,
 		needsActivation,
 	} from "./domain/auth/store"
@@ -24,13 +25,13 @@
 
 		if (!$isAuthenticated && !$needsActivation) {
 			window.location.replace(`${process.env.authRoot}/k/login`)
+			return
 		}
 
 		if ($isAuthenticated) {
+			await getSelfInfo()
 			await getPermissions()
 		}
-
-		console.log("isAuthenticated", $isAuthenticated)
 
 		authChecked = true
 		setLoading("app", false)
