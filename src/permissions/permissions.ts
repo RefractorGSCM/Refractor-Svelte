@@ -3,6 +3,9 @@ import { sortAsc } from "../utils/sorting"
 export const FLAG_SUPER_ADMIN = "FLAG_SUPER_ADMIN"
 export const FLAG_ADMINISTRATOR = "FLAG_ADMINISTRATOR"
 export const FLAG_VIEW_SERVERS = "FLAG_VIEW_SERVERS"
+export const FLAG_VIEW_PLAYER_RECORDS = "FLAG_VIEW_PLAYER_RECORDS"
+export const FLAG_VIEW_INFRACTION_RECORDS = "FLAG_VIEW_INFRACTION_RECORDS"
+export const FLAG_VIEW_CHAT_RECORDS = "FLAG_VIEW_CHAT_RECORDS"
 
 const allFlags: string[] = []
 const permissions = {}

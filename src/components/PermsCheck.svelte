@@ -3,6 +3,7 @@
 
 	import {
 		checkFlag,
+		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
 		getAllFlags,
 		getFlag,
@@ -13,10 +14,15 @@
 	}
 
 	export let checker: (permissions: bigint, cmp: comparators) => boolean
+	export let adminBypass: boolean = true
+
 	let show = false
 
 	let skip = false
-	if (checkFlag($self.permissions, getFlag(FLAG_SUPER_ADMIN))) {
+	if (
+		checkFlag($self.permissions, getFlag(FLAG_SUPER_ADMIN)) ||
+		(adminBypass && checkFlag($self.permissions, getFlag(FLAG_ADMINISTRATOR)))
+	) {
 		skip = true
 		show = true
 	}
