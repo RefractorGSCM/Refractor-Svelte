@@ -71,3 +71,7 @@ export function checkFlag(permissions, flag): boolean {
 
 	return false
 }
+
+export function getAllFlags(): string[] {
+	return allFlags
+}
