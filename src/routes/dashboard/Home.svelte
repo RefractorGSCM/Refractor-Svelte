@@ -1,6 +1,13 @@
 <script>
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
+	import {
+		FLAG_ADMINISTRATOR,
+		FLAG_SUPER_ADMIN,
+		FLAG_VIEW_SERVERS,
+		getFlag,
+	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
 </script>
 

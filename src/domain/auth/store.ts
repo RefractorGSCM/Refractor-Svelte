@@ -1,11 +1,12 @@
 import { Writable, writable } from "svelte/store"
 import { errorToast } from "../../utils/toast"
+import type { User } from "../user/user.types"
 import api from "./api"
 
 export const isAuthenticated: Writable<boolean> = writable(false)
 export const needsActivation: Writable<boolean> = writable(false)
 export const session = writable(null)
-export const self = writable(null)
+export const self: Writable<User> = writable(null)
 
 export async function checkAuth(): Promise<boolean> {
 	try {
