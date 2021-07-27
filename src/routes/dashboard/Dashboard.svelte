@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
-	import { user } from "../../domain/auth/store"
+	import { self } from "../../domain/auth/store"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Users from "./Users.svelte"
@@ -93,7 +93,7 @@
 		<div class="brand-name">{"selectedGame.name"}</div>
 
 		<div class="right">
-			<div>{$user.identity.traits.username}</div>
+			<div>{$self.username}</div>
 
 			<Button size="inline" on:click={() => logout()}>Log out</Button>
 		</div>
