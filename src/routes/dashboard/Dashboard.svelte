@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { self } from "../../domain/auth/store"
+	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Users from "./Users.svelte"
@@ -59,22 +61,28 @@
 			</li>
 
 			<div class="bottom">
-				<div class="link">
-					<Link to="/groups">
-						<li>
-							<span class="fas fa-lock" />
-							<span>Manage Groups</span>
-						</li>
-					</Link>
-				</div>
-				<div class="link">
-					<Link to="/users">
-						<li>
-							<span class="fas fa-users" />
-							<span>Manage Users</span>
-						</li>
-					</Link>
-				</div>
+				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+					<div class="link">
+						<Link to="/groups">
+							<li>
+								<span class="fas fa-lock" />
+								<span>Manage Groups</span>
+							</li>
+						</Link>
+					</div>
+				</RequirePerms>
+
+				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+					<div class="link">
+						<Link to="/users">
+							<li>
+								<span class="fas fa-users" />
+								<span>Manage Users</span>
+							</li>
+						</Link>
+					</div>
+				</RequirePerms>
+
 				<div class="link">
 					<a href={`${process.env.authRoot}/k/settings`}>
 						<li>
