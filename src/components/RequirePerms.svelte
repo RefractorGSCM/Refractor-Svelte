@@ -2,12 +2,14 @@
 	import { self } from "../domain/auth/store"
 	import {
 		checkFlag,
+		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
 		getFlag,
 	} from "../permissions/permissions"
 
-	export let oneOf = []
-	export let allOf = []
+	export let oneOf: string[] = []
+	export let allOf: string[] = []
+	export let adminBypass: boolean = true
 
 	let permissions = BigInt($self.permissions)
 
@@ -24,8 +26,11 @@
 		allOfSatisfied = true
 	}
 
-	// Check if the user is a super admin. If they are, satisfy permission requirements without check
-	if (checkFlag(permissions, getFlag(FLAG_SUPER_ADMIN))) {
+	// Check if the user is an admin or super admin. If they are, satisfy permission requirements without check
+	if (
+		checkFlag(permissions, getFlag(FLAG_SUPER_ADMIN)) ||
+		(adminBypass && checkFlag($self.permissions, getFlag(FLAG_ADMINISTRATOR)))
+	) {
 		oneOfSatisfied = true
 		allOfSatisfied = true
 	}
