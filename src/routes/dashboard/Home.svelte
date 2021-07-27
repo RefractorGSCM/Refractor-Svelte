@@ -1,6 +1,8 @@
 <script>
+	import { component_subscribe } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import {
 		FLAG_ADMINISTRATOR,
