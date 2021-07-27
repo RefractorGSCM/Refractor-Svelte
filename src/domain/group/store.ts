@@ -1,7 +1,7 @@
 import { Writable, writable } from "svelte/store"
 import { registerPermissions } from "../../permissions/permissions"
 import { sortAsc } from "../../utils/sorting"
-import { successToast } from "../../utils/toast"
+import { errorToast, successToast } from "../../utils/toast"
 import { getAllServers } from "../server/store"
 import api from "./api"
 import type {
@@ -13,6 +13,8 @@ import type {
 
 export const allGroups: Writable<Group[]> = writable([])
 const permissions: Writable<Permission[]> = writable([])
+export let baseGroup: Group = null
+export const baseGroupId = -1
 
 export async function getAllGroups() {
 	try {
@@ -21,8 +23,16 @@ export async function getAllGroups() {
 		const groups: Group[] = data.payload
 
 		allGroups.set(sortAsc("position", groups))
+
+		for (const group of groups) {
+			if (group.id === baseGroupId) {
+				baseGroup = group
+				break
+			}
+		}
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not get all groups")
 	}
 }
 
@@ -34,7 +44,8 @@ export async function getPermissions() {
 
 		registerPermissions(data.payload)
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not get permissions")
 	}
 }
 
@@ -51,7 +62,8 @@ export async function createGroup(newGroup: NewGroupParams) {
 
 		successToast("Group created")
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not create group")
 	}
 }
 
@@ -68,7 +80,8 @@ export async function deleteGroup(id: number) {
 
 		successToast("Group deleted")
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not delete group")
 	}
 }
 
@@ -77,6 +90,7 @@ export async function updateGroup(id: number, data: NewGroupParams) {
 		// If we are updating the base group, we use the endpoint specifically for the base group.
 		if (id === -1) {
 			await api.updateBaseGroup(data)
+			successToast("Base group updated")
 			return
 		}
 
@@ -85,7 +99,8 @@ export async function updateGroup(id: number, data: NewGroupParams) {
 
 		successToast("Group updated")
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not update group")
 	}
 }
 
@@ -93,6 +108,7 @@ export async function reorederGroups(data: GroupReorderInfo[]) {
 	try {
 		await api.reorderGroups(data)
 	} catch (err) {
-		console.log(err)
+		const { data } = err.response
+		errorToast(data.message ? data.message : "Error: could not reorder groups")
 	}
 }
