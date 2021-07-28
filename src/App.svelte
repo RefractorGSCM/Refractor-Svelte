@@ -30,8 +30,8 @@
 		}
 
 		if ($isAuthenticated) {
-			await getSelfInfo()
 			await getPermissions()
+			await getSelfInfo()
 		}
 
 		authChecked = true

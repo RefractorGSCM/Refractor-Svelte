@@ -1,4 +1,10 @@
 import { Writable, writable } from "svelte/store"
+import {
+	checkFlag,
+	FLAG_ADMINISTRATOR,
+	FLAG_SUPER_ADMIN,
+	getFlag,
+} from "../../permissions/permissions"
 import { errorToast } from "../../utils/toast"
 import type { User } from "../user/user.types"
 import api from "./api"
@@ -7,6 +13,8 @@ export const isAuthenticated: Writable<boolean> = writable(false)
 export const needsActivation: Writable<boolean> = writable(false)
 export const session = writable(null)
 export const self: Writable<User> = writable(null)
+export const isSuperAdmin: Writable<boolean> = writable(false)
+export const isAdmin: Writable<boolean> = writable(false)
 
 export async function checkAuth(): Promise<boolean> {
 	try {
@@ -45,9 +53,19 @@ export async function checkAuth(): Promise<boolean> {
 export async function getSelfInfo() {
 	try {
 		const { data } = await api.getSelfInfo()
+		const payload = data.payload
 
-		self.set(data.payload)
+		self.set(payload)
+
+		if (checkFlag(payload.permissions, getFlag(FLAG_SUPER_ADMIN))) {
+			isSuperAdmin.set(true)
+		}
+
+		if (checkFlag(payload.permissions, getFlag(FLAG_ADMINISTRATOR))) {
+			isAdmin.set(true)
+		}
 	} catch (err) {
+		console.log(err)
 		errorToast("Could not get user info")
 	}
 }

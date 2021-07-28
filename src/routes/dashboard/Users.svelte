@@ -21,6 +21,13 @@
 	import Checkbox from "../../components/Checkbox.svelte"
 	import { group_outros } from "svelte/internal"
 	import Groups from "./Groups.svelte"
+	import {
+		checkFlag,
+		FLAG_ADMINISTRATOR,
+		FLAG_SUPER_ADMIN,
+		getFlag,
+	} from "../../permissions/permissions"
+	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
 
 	const baseGroupId = -1
 
@@ -59,6 +66,22 @@
 			)
 			await removeUserGroup(currentUser.id, group.id)
 		}
+	}
+
+	function canSetGroup(group: Group): boolean {
+		// If the user is a superadmin, return true
+		if ($isSuperAdmin) return true
+
+		// If the group does not have admin permissions and the user is an admin, return true
+		if (
+			!checkFlag(group.permissions, getFlag(FLAG_ADMINISTRATOR)) &&
+			$isAdmin
+		) {
+			return true
+		}
+
+		// Otherwise, return false
+		return false
 	}
 </script>
 
@@ -106,6 +129,7 @@
 										checked={currentUser.groups.filter((g) => g.id === group.id)
 											.length > 0}
 										on:change={(e) => toggleGroup(e, group)}
+										disabled={!canSetGroup(group)}
 									/>
 								{:else}
 									<Checkbox
