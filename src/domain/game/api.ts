@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const getEnabledGames = () => {
-	return axios.get(`${process.env.apiRoot}/games`, { withCredentials: true })
+	return axios.get(`${API_ROOT}/games`, { withCredentials: true })
 }
 
 export default {

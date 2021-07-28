@@ -1,13 +1,13 @@
 import axios from "axios"
 
 const getSession = () => {
-	return axios.get(`${process.env.kratosRoot}/sessions/whoami`, {
+	return axios.get(`${KRATOS_ROOT}/sessions/whoami`, {
 		withCredentials: true,
 	})
 }
 
 const getSelfInfo = () => {
-	return axios.get(`${process.env.apiRoot}/users/me`, {
+	return axios.get(`${API_ROOT}/users/me`, {
 		withCredentials: true,
 	})
 }
