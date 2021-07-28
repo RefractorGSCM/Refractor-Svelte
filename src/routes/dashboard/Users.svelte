@@ -58,6 +58,7 @@
 			user.permissions,
 			getFlag(FLAG_ADMINISTRATOR),
 		)
+
 		currentUserIsSuperAdmin = checkFlag(
 			user.permissions,
 			getFlag(FLAG_SUPER_ADMIN),
@@ -137,7 +138,7 @@
 						<Flair background="#D02F3F">Super Admin</Flair>
 					{/if}
 
-					{#if currentUserIsSuperAdmin}
+					{#if currentUserIsAdmin}
 						<Flair background="#D54856">Admin</Flair>
 					{/if}
 				</div>
