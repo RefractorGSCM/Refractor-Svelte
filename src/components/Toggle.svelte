@@ -3,6 +3,7 @@
 
 	export let name = "toggle"
 	export let value = "false"
+	export let disabled = false
 
 	if (value !== "true" && value !== "false") {
 		value = "false"
@@ -20,6 +21,7 @@
 		bind:group={value}
 		id={`${name}-t-no`}
 		type="radio"
+		{disabled}
 		{name}
 		value="false"
 		on:change={change}
@@ -27,11 +29,11 @@
 	<label for={`${name}-t-no`}>
 		<i class="fas fa-times" />
 	</label>
-
 	<input
 		bind:group={value}
 		id={`${name}-t-yes`}
 		type="radio"
+		{disabled}
 		{name}
 		value="true"
 		on:change={change}
@@ -51,6 +53,7 @@
 		border-radius: var(--border-sm);
 		position: relative;
 		background: var(--color-background3);
+		user-select: none;
 
 		label {
 			text-align: center;
@@ -113,6 +116,28 @@
 		input[value="false"]:checked + label,
 		input[value="true"]:checked + label {
 			color: var(--color-text1);
+		}
+
+		// DISABLED STYLING
+		input:disabled,
+		input:disabled + label i {
+			cursor: unset;
+		}
+
+		input:disabled ~ span {
+			background: var(--color-disabled) !important;
+		}
+
+		input:disabled + label {
+			color: var(--color-text-muted2);
+		}
+
+		input[value="true"]:checked:disabled + label {
+			color: var(--color-success);
+		}
+
+		input[value="false"]:checked:disabled + label {
+			color: var(--color-danger);
 		}
 	}
 </style>
