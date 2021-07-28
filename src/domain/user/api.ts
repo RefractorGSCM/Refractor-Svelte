@@ -1,4 +1,5 @@
 import axios from "axios"
+import type { UserTraits } from "./user.types"
 
 const getAllUsers = () => {
 	return axios.get(`${API_ROOT}/users/`, {
@@ -18,8 +19,15 @@ const removeUserGroup = (data: { user_id: string; group_id: number }) => {
 	})
 }
 
+const createUser = (data: UserTraits) => {
+	return axios.post(`${API_ROOT}/users/`, data, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllUsers,
 	addUserGroup,
 	removeUserGroup,
+	createUser,
 }

@@ -166,7 +166,6 @@
 		}
 
 		const setPerms = getSetFlags(group.permissions)
-		console.log(setPerms)
 
 		editingNewGroup = false
 		currentGroup = {
@@ -288,8 +287,6 @@
 	}
 
 	function changeColor(color: number) {
-		console.log("Changing color to:", color, decimalToHex(color))
-
 		currentGroup.displayColor = decimalToHex(color)
 		currentGroup.color = color
 
@@ -351,7 +348,6 @@
 		}
 
 		if (errorsExist()) {
-			console.log($errors)
 			shakeScreen()
 			return
 		}
@@ -366,8 +362,6 @@
 				position: currentGroup.position,
 				permissions: getComputedPermissions().toString(),
 			}
-
-			console.log("Creating a new group", newGroup)
 
 			await createGroup(newGroup)
 
@@ -389,8 +383,6 @@
 			permissions: getComputedPermissions().toString(),
 		}
 
-		console.log("Updating group", updatedGroup)
-
 		await updateGroup(currentGroup.id, updatedGroup)
 
 		setLoading("groups", false)
@@ -407,8 +399,6 @@
 		await deleteGroup(groupID)
 		setLoading("groups", false)
 
-		console.log("Group deleted", groupID)
-
 		deselectGroup()
 	}
 
@@ -416,10 +406,6 @@
 		e.preventDefault()
 
 		return false
-	}
-
-	$: if ($groups.length > 0) {
-		switchGroups($groups[0])
 	}
 </script>
 
@@ -477,6 +463,7 @@
 										label="Group Name"
 										value={currentGroup.name}
 										error={$errors.name}
+										required
 										on:input={handleGroupNameChange}
 									/>
 								{:else}
@@ -504,6 +491,7 @@
 									label="Group Color"
 									value={currentGroup.displayColor}
 									error={$errors.color}
+									required
 									on:input={handleGroupColorChange}
 								/>
 							</div>

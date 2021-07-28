@@ -7,6 +7,7 @@
 	export let disabled = false
 	export let ref = null
 	export let autocomplete = "off"
+	export let required = false
 
 	function updateValue(e) {
 		const target: HTMLTextAreaElement = e.target
@@ -24,7 +25,7 @@
 			{autocomplete}
 			{name}
 			id="t-i-{name}"
-			required
+			{required}
 			data-invalid={error || undefined}
 			aria-invalid={error || undefined}
 			on:change
@@ -110,7 +111,7 @@
 				}
 
 				label {
-					color: var(--color-danger) !important;
+					color: var(--color-text-muted) !important;
 				}
 
 				.underline::before {
