@@ -1,6 +1,5 @@
 /// <reference types="svelte" />
 
-export type Community = {
-	id: number
-	name: string
-}
+declare var API_ROOT: any
+declare var KRATOS_ROOT: any
+declare var AUTH_ROOT: any
