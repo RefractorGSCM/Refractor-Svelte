@@ -3,6 +3,8 @@
 </script>
 
 <script lang="ts">
+	import { noop } from "svelte/internal"
+
 	import Button from "../Button.svelte"
 	import { modalStore } from "./Modal.store"
 
@@ -17,35 +19,44 @@
 		}
 	}
 
-	function transitionEnd(e: TransitionEvent) {
-		const node = e.target as HTMLElement
-		node.focus()
-	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	// The following commented code is a focus trap. It's disabled because it doesn't play well with
+	// input elements and it isn't worth fixing at this time.
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// function transitionEnd(e: TransitionEvent) {
+	// 	const node = e.target as HTMLElement
+	// 	node.focus()
+	// }
+
+	// function modalAction(node: HTMLElement) {
+	// 	const retFunc = []
+
+	// 	if (document.body.style.overflow !== "hidden") {
+	// 		const original = document.body.style.overflow
+	// 		document.body.style.overflow = "hidden"
+	// 		retFunc.push(() => {
+	// 			document.body.style.overflow = original
+	// 		})
+	// 	}
+	// 	node.addEventListener("keydown", keydown)
+	// 	node.addEventListener("transitionend", transitionEnd)
+	// 	node.focus()
+	// 	modalList.push(node)
+	// 	retFunc.push(() => {
+	// 		node.removeEventListener("keydown", keydown)
+	// 		node.removeEventListener("transitionend", transitionEnd)
+	// 		modalList.pop()
+	// 		// Optional chaining to guard against empty array.
+	// 		modalList[modalList.length - 1]?.focus()
+	// 	})
+	// 	return {
+	// 		destroy: () => retFunc.forEach((fn) => fn()),
+	// 	}
+	// }
 
 	function modalAction(node: HTMLElement) {
-		const retFunc = []
-
-		if (document.body.style.overflow !== "hidden") {
-			const original = document.body.style.overflow
-			document.body.style.overflow = "hidden"
-			retFunc.push(() => {
-				document.body.style.overflow = original
-			})
-		}
-		node.addEventListener("keydown", keydown)
-		node.addEventListener("transitionend", transitionEnd)
-		node.focus()
-		modalList.push(node)
-		retFunc.push(() => {
-			node.removeEventListener("keydown", keydown)
-			node.removeEventListener("transitionend", transitionEnd)
-			modalList.pop()
-			// Optional chaining to guard against empty array.
-			modalList[modalList.length - 1]?.focus()
-		})
-		return {
-			destroy: () => retFunc.forEach((fn) => fn()),
-		}
+		noop
 	}
 </script>
 
@@ -117,7 +128,11 @@
 			border-radius: var(--border-md);
 
 			@include respond-below(sm) {
-				max-width: 100%;
+				max-width: 80%;
+			}
+
+			@include respond-below(xs) {
+				max-width: 90%;
 			}
 		}
 
