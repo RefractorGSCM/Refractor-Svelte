@@ -23,6 +23,7 @@
 	import type { Writable } from "svelte/store"
 	import {
 		FLAG_ADMINISTRATOR,
+		FLAG_SUPER_ADMIN,
 		FLAG_VIEW_SERVERS,
 		getAllPermissions,
 		getDescription,
@@ -36,6 +37,7 @@
 	import DualPane from "./components/DualPane.svelte"
 	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
 	import { decimalToHex, hexToDecimal } from "../../utils/color"
+	import RequirePerms from "../../components/RequirePerms.svelte"
 
 	const baseGroupId = -1
 
@@ -450,9 +452,11 @@
 				{/each}
 			</div>
 
-			<div class="bottom">
-				<Button on:click={addGroup}>New Group</Button>
-			</div>
+			<RequirePerms allOf={[FLAG_SUPER_ADMIN]} adminBypass={false}>
+				<div class="bottom">
+					<Button on:click={addGroup}>New Group</Button>
+				</div>
+			</RequirePerms>
 		</div>
 
 		<div slot="right-pane" class="manager">
