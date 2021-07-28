@@ -1,7 +1,7 @@
 import { Writable, writable } from "svelte/store"
 import type { Group } from "../group/group.types"
 import api from "./api"
-import type { User } from "./user.types"
+import type { User, UserTraits } from "./user.types"
 import { toast } from "@zerodevx/svelte-toast"
 import { errorToast, successToast } from "../../utils/toast"
 
@@ -60,5 +60,28 @@ export async function removeUserGroup(userId: string, groupId: number) {
 	} catch (err) {
 		const { data } = err.response
 		errorToast(data.message ? data.message : "Error: could not remove group")
+	}
+}
+
+export async function createUser(traits: UserTraits): Promise<UserTraits> {
+	try {
+		const { data } = await api.createUser(traits)
+
+		// Add new user to allUsers on success
+		allUsers.update((users) => {
+			return [...users, data.payload]
+		})
+
+		successToast("User created!")
+	} catch (err) {
+		const { data } = err.response
+
+		if (data.errors) {
+			return {
+				...data.errors,
+			}
+		}
+
+		errorToast("Could not create user")
 	}
 }

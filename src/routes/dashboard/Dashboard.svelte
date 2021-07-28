@@ -14,9 +14,7 @@
 	import Users from "./Users.svelte"
 
 	function logout() {
-		window.location.replace(
-			`${process.env.kratosRoot}/self-service/browser/flows/logout`,
-		)
+		window.location.replace(`${KRATOS_ROOT}/self-service/browser/flows/logout`)
 	}
 
 	let showAvatarMenu = false
@@ -103,7 +101,7 @@
 				</RequirePerms>
 
 				<div class="link">
-					<a href={`${process.env.authRoot}/k/settings`}>
+					<a href={`${AUTH_ROOT}/k/settings`}>
 						<li>
 							<span class="fas fa-cog" />
 							<span>Settings</span>

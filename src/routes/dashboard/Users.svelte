@@ -28,14 +28,15 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
+	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
 
 	const baseGroupId = -1
 
 	onMount(async () => {
 		setLoading("users", true)
 
-		await getAllUsers()
 		await getAllGroups()
+		await getAllUsers()
 
 		setLoading("users", false)
 	})
@@ -55,15 +56,8 @@
 		const grant = target.checked
 
 		if (grant) {
-			console.log("Adding group", group.name, "to user", currentUser.username)
 			await addUserGroup(currentUser.id, group)
 		} else {
-			console.log(
-				"Removing group",
-				group.name,
-				"from user",
-				currentUser.username,
-			)
 			await removeUserGroup(currentUser.id, group.id)
 		}
 	}
@@ -100,9 +94,7 @@
 						class="user"
 						class:selected={currentUser && currentUser.id === user.id}
 						on:click={() => selectUser(user)}
-						style={user.groups.length > 0
-							? `color: #${decimalToHex(getTopGroup(user.groups).color)}`
-							: `color: #cecece`}
+						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
 					>
 						{user.username}
 					</div>
@@ -110,7 +102,11 @@
 			</div>
 
 			<div class="bottom">
-				<Button>Invite User</Button>
+				<CreateUserModal>
+					<div slot="trigger" let:open>
+						<Button on:click={open}>Invite User</Button>
+					</div>
+				</CreateUserModal>
 			</div>
 		</div>
 
@@ -145,6 +141,8 @@
 
 					<div class="other" />
 				</div>
+			{:else}
+				<p>Select a user to manage them.</p>
 			{/if}
 		</div>
 	</DualPane>

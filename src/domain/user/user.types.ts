@@ -6,3 +6,8 @@ export type User = {
 	permissions: string | number | bigint
 	groups: Group[]
 }
+
+export type UserTraits = {
+	email: string
+	username: string
+}

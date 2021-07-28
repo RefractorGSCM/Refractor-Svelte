@@ -25,7 +25,7 @@
 		await checkAuth()
 
 		if (!$isAuthenticated && !$needsActivation) {
-			window.location.replace(`${process.env.authRoot}/k/login`)
+			window.location.replace(`${AUTH_ROOT}/k/login`)
 			return
 		}
 
