@@ -41,12 +41,9 @@
 			const flag = getFlag(flagName)
 
 			if (checkFlag($self.permissions, flag)) {
-				console.log("Has flag", flagName)
 				oneOfSatisfied = true
 				break
 			}
-
-			console.log("Does not have flag", flagName)
 		}
 	}
 
@@ -56,10 +53,8 @@
 
 		for (const flagName of allOf) {
 			const flag = getFlag(flagName)
-			console.log("Needs flag", flagName)
 
 			if (!checkFlag($self.permissions, flag)) {
-				console.log("Does not have flag", flagName)
 				satisfied = false
 				break
 			}

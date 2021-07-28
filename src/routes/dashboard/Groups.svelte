@@ -38,6 +38,7 @@
 	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
 	import { decimalToHex, hexToDecimal } from "../../utils/color"
 	import RequirePerms from "../../components/RequirePerms.svelte"
+	import { isSuperAdmin } from "../../domain/auth/store"
 
 	const baseGroupId = -1
 
@@ -416,6 +417,10 @@
 
 		return false
 	}
+
+	$: if ($groups.length > 0) {
+		switchGroups($groups[0])
+	}
 </script>
 
 {#if $loading["groups"]}
@@ -523,6 +528,7 @@
 										{permission.display_name}
 										<Toggle
 											name={permission.name}
+											disabled={!$isSuperAdmin}
 											on:change={handlePermissionChange}
 											value={String(
 												$currentPermissions.includes(permission.name),
