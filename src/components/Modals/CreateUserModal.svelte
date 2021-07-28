@@ -177,6 +177,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
+		max-width: 70rem;
 
 		p {
 			margin-bottom: 1rem;

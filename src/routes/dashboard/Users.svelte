@@ -66,6 +66,14 @@
 		// If the user is a superadmin, return true
 		if ($isSuperAdmin) return true
 
+		// If the target user is an admin or super admin, return false
+		if (
+			checkFlag(currentUser.permissions, getFlag(FLAG_ADMINISTRATOR)) ||
+			checkFlag(currentUser.permissions, getFlag(FLAG_SUPER_ADMIN))
+		) {
+			return false
+		}
+
 		// If the group does not have admin permissions and the user is an admin, return true
 		if (
 			!checkFlag(group.permissions, getFlag(FLAG_ADMINISTRATOR)) &&
