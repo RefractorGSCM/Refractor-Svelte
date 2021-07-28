@@ -29,6 +29,7 @@
 	} from "../../permissions/permissions"
 	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
 	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
+	import Flair from "../../components/Flair.svelte"
 
 	const baseGroupId = -1
 
@@ -46,10 +47,21 @@
 	let changesWereMade = false
 	let previousUser: User = null
 	let currentUser: User = null
+	let currentUserIsAdmin = false
+	let currentUserIsSuperAdmin = false
 
 	function selectUser(user: User) {
 		previousUser = user
 		currentUser = user
+
+		currentUserIsAdmin = checkFlag(
+			user.permissions,
+			getFlag(FLAG_ADMINISTRATOR),
+		)
+		currentUserIsSuperAdmin = checkFlag(
+			user.permissions,
+			getFlag(FLAG_SUPER_ADMIN),
+		)
 	}
 
 	async function toggleGroup({ target }, group: Group) {
@@ -67,10 +79,7 @@
 		if ($isSuperAdmin) return true
 
 		// If the target user is an admin or super admin, return false
-		if (
-			checkFlag(currentUser.permissions, getFlag(FLAG_ADMINISTRATOR)) ||
-			checkFlag(currentUser.permissions, getFlag(FLAG_SUPER_ADMIN))
-		) {
+		if (currentUserIsAdmin || currentUserIsSuperAdmin) {
 			return false
 		}
 
@@ -120,7 +129,18 @@
 
 		<div slot="right-pane" class="user-manager">
 			{#if currentUser !== null}
-				<Heading type="subtitle">Managing: {currentUser.username}</Heading>
+				<Heading type="subtitle">
+					{currentUser.username}
+				</Heading>
+				<div class="flairs">
+					{#if currentUserIsSuperAdmin}
+						<Flair background="#D02F3F">Super Admin</Flair>
+					{/if}
+
+					{#if currentUserIsSuperAdmin}
+						<Flair background="#D54856">Admin</Flair>
+					{/if}
+				</div>
 
 				<div class="manager">
 					<div class="role-select">
@@ -203,6 +223,10 @@
 		max-height: 100%;
 		display: flex;
 		flex-direction: column;
+
+		.flairs {
+			margin-top: 0.5rem;
+		}
 
 		.manager {
 			margin-top: 1rem;
