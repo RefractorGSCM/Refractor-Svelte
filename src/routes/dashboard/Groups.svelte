@@ -24,6 +24,7 @@
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_VIEW_SERVERS,
+		getAllPermissions,
 		getDescription,
 		getFlag,
 		getSetFlags,
@@ -59,6 +60,7 @@
 		name?: string
 		color?: string
 	}> = writable({})
+	const permissions = getAllPermissions()
 
 	function dragstart(e, index: number) {
 		e.dataTransfer.effectAllowed = "move"
@@ -510,37 +512,26 @@
 					<div class="permissions-list">
 						<Heading>Permissions</Heading>
 
-						<div class="permission">
-							<div class="main">
-								Administrator <Toggle
-									name={FLAG_ADMINISTRATOR}
-									on:change={handlePermissionChange}
-									value={String(
-										$currentPermissions.includes(FLAG_ADMINISTRATOR),
-									)}
-								/>
-							</div>
+						{#each permissions as permission}
+							{#if permission.id !== 1}
+								<div class="permission">
+									<div class="main">
+										{permission.display_name}
+										<Toggle
+											name={permission.name}
+											on:change={handlePermissionChange}
+											value={String(
+												$currentPermissions.includes(permission.name),
+											)}
+										/>
+									</div>
 
-							<div class="description">
-								{getDescription(FLAG_ADMINISTRATOR)}
-							</div>
-						</div>
-
-						<div class="permission">
-							<div class="main">
-								View servers <Toggle
-									name={FLAG_VIEW_SERVERS}
-									on:change={handlePermissionChange}
-									value={String(
-										$currentPermissions.includes(FLAG_VIEW_SERVERS),
-									)}
-								/>
-							</div>
-
-							<div class="description">
-								{getDescription(FLAG_VIEW_SERVERS)}
-							</div>
-						</div>
+									<div class="description">
+										{permission.description}
+									</div>
+								</div>
+							{/if}
+						{/each}
 					</div>
 
 					{#if currentGroup.id !== baseGroupId && !editingNewGroup}
@@ -705,6 +696,8 @@
 		.editor {
 			flex: 1;
 			max-width: 80rem;
+			max-height: 100%;
+			overflow-y: scroll;
 		}
 
 		.permissions-list {
@@ -727,6 +720,7 @@
 			.description {
 				font-size: 1.2rem;
 				color: var(--color-text-muted);
+				text-align: justify;
 			}
 		}
 
