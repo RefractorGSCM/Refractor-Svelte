@@ -13,6 +13,7 @@ const permissions = {}
 type Permission = {
 	id?: number
 	name: string
+	display_name: string
 	description: string
 	flag?: bigint
 }
@@ -29,7 +30,9 @@ export function registerPermissions(newPerms: Permission[]) {
 		i++
 
 		permissions[perm.name] = {
+			id: perm.id,
 			name: perm.name,
+			display_name: perm.display_name,
 			description: perm.description,
 			flag: BigInt(perm.flag),
 		}
@@ -77,4 +80,14 @@ export function checkFlag(permissions, flag): boolean {
 
 export function getAllFlags(): string[] {
 	return allFlags
+}
+
+export function getAllPermissions(): Permission[] {
+	const permissionsArr: Permission[] = []
+
+	for (const key of Object.keys(permissions)) {
+		permissionsArr.push(permissions[key])
+	}
+
+	return permissionsArr
 }
