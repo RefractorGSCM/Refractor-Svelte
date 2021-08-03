@@ -30,6 +30,7 @@
 	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
 	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
 	import Flair from "../../components/Flair.svelte"
+	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
 
 	const baseGroupId = -1
 
@@ -95,6 +96,10 @@
 		// Otherwise, return false
 		return false
 	}
+
+	function deactivateUser() {}
+
+	function reactivateUser() {}
 </script>
 
 {#if $loading["users"]}
@@ -168,7 +173,47 @@
 						{/each}
 					</div>
 
-					<div class="other" />
+					<div class="other">
+						<div class="deactivate">
+							{#if currentUser.meta && !currentUser.meta.deactivated}
+								<p>
+									To maintain the integrity of data, user accounts cannot be
+									deleted. Instead, they can be deactivated to prevent access to
+									Refractor.
+								</p>
+
+								<DeleteModal
+									heading={`Deactivating User ${currentUser.username}`}
+									message="Are you sure you wish to deactivate this user account?"
+									on:submit={deactivateUser}
+								>
+									<div slot="trigger" let:open>
+										<Button color="danger" on:click={open}
+											>Deactivate Account</Button
+										>
+									</div>
+								</DeleteModal>
+							{:else if currentUser.meta && currentUser.meta.deactivated}
+								<p>
+									This user account is deactivated meaning that they currently
+									have no access to Refractor. If you wish, you can reactivate
+									their account using the button below.
+								</p>
+
+								<DeleteModal
+									heading={`Reactivating User ${currentUser.username}`}
+									message="Are you sure you wish to activate this user account?"
+									on:submit={reactivateUser}
+								>
+									<div slot="trigger" let:open>
+										<Button color="warning" on:click={open}
+											>Reactivate Account</Button
+										>
+									</div>
+								</DeleteModal>
+							{/if}
+						</div>
+					</div>
 				</div>
 			{:else}
 				<p>Select a user to manage them.</p>
@@ -237,11 +282,15 @@
 			grid-template-columns: minmax(20rem, 1fr) 3fr;
 			grid-column-gap: 2rem;
 
-			> * {
-				padding: 1rem;
+			@include respond-below(sm) {
+				grid-template-rows: auto auto;
+				grid-template-columns: auto;
+				grid-column-gap: 0;
+				grid-row-gap: 2rem;
 			}
 
 			.role-select {
+				padding: 1rem;
 				border-radius: var(--border-sm);
 				background-color: var(--color-background2-dark);
 				height: 100%;
@@ -261,6 +310,15 @@
 			}
 
 			.other {
+				.deactivate {
+					p {
+						font-size: 1.2rem;
+						color: var(--color-text-muted);
+						margin-bottom: 1rem;
+					}
+
+					margin-bottom: 2rem;
+				}
 			}
 		}
 	}
