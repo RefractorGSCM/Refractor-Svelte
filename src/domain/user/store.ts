@@ -45,6 +45,8 @@ export async function removeUserGroup(userId: string, groupId: number) {
 		await api.removeUserGroup({ user_id: userId, group_id: groupId })
 
 		allUsers.update((users) => {
+			users = [...users]
+
 			for (let i = 0; i < users.length; i++) {
 				const user = users[i]
 
