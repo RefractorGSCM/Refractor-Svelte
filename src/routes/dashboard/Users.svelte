@@ -7,7 +7,9 @@
 	import {
 		addUserGroup,
 		allUsers,
+		deactivateUser,
 		getAllUsers,
+		reactivateUser,
 		removeUserGroup,
 	} from "../../domain/user/store"
 	import Spinner from "../../components/Spinner.svelte"
@@ -97,9 +99,15 @@
 		return false
 	}
 
-	function deactivateUser() {}
+	async function deactivateCurrentUser() {
+		await deactivateUser(currentUser.id)
+	}
 
-	function reactivateUser() {}
+	async function reactivateCurrentUser() {
+		await reactivateUser(currentUser.id)
+	}
+
+	$: console.log($users)
 </script>
 
 {#if $loading["users"]}
@@ -112,10 +120,11 @@
 	<DualPane>
 		<div slot="left-pane" class="users-list">
 			<div class="users">
-				{#each $users as user, index}
+				{#each $users as user}
 					<div
 						class="user"
 						class:selected={currentUser && currentUser.id === user.id}
+						class:deactivated={!!user.meta?.deactivated}
 						on:click={() => selectUser(user)}
 						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
 					>
@@ -145,6 +154,10 @@
 
 					{#if currentUserIsAdmin}
 						<Flair background="#D54856">Admin</Flair>
+					{/if}
+
+					{#if currentUser.meta?.deactivated}
+						<Flair color="disabled">Deactivated</Flair>
 					{/if}
 				</div>
 
@@ -184,8 +197,9 @@
 
 								<DeleteModal
 									heading={`Deactivating User ${currentUser.username}`}
-									message="Are you sure you wish to deactivate this user account?"
-									on:submit={deactivateUser}
+									message="Are you sure you wish to deactivate this user account? This will revoke their access to Refractor."
+									submitText="Deactivate"
+									on:submit={deactivateCurrentUser}
 								>
 									<div slot="trigger" let:open>
 										<Button color="danger" on:click={open}
@@ -202,8 +216,9 @@
 
 								<DeleteModal
 									heading={`Reactivating User ${currentUser.username}`}
-									message="Are you sure you wish to activate this user account?"
-									on:submit={reactivateUser}
+									message="Are you sure you wish to activate this user account? This will restore their access to Refractor."
+									submitText="Reactivate"
+									on:submit={reactivateCurrentUser}
 								>
 									<div slot="trigger" let:open>
 										<Button color="warning" on:click={open}
@@ -242,6 +257,13 @@
 				background-color: var(--color-background1);
 				cursor: pointer;
 			}
+		}
+
+		.deactivated {
+			color: var(--color-text-muted2) !important;
+			border-right: 4px solid var(--color-text-muted2);
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
 		}
 
 		.user.selected {

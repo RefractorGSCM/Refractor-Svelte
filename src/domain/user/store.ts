@@ -87,3 +87,49 @@ export async function createUser(traits: UserTraits): Promise<UserTraits> {
 		errorToast("Could not create user")
 	}
 }
+
+export async function deactivateUser(id: string) {
+	try {
+		await api.deactivateUser(id)
+
+		allUsers.update((users) => {
+			let newUsers = [...users]
+
+			for (const usr of newUsers) {
+				if (usr.id === id) {
+					usr.meta.deactivated = true
+					break
+				}
+			}
+
+			return newUsers
+		})
+
+		successToast("Account deactivated")
+	} catch (err) {
+		errorToast("Could not deactivate account")
+	}
+}
+
+export async function reactivateUser(id: string) {
+	try {
+		await api.reactivateUser(id)
+
+		allUsers.update((users) => {
+			let newUsers = [...users]
+
+			for (const usr of newUsers) {
+				if (usr.id === id) {
+					usr.meta.deactivated = false
+					break
+				}
+			}
+
+			return newUsers
+		})
+
+		successToast("Account reactivated")
+	} catch (err) {
+		errorToast("Could not reactivate account")
+	}
+}

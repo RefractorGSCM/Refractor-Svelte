@@ -40,5 +40,9 @@
 		&-danger {
 			background-color: var(--color-danger);
 		}
+
+		&-disabled {
+			background-color: var(--color-disabled);
+		}
 	}
 </style>

@@ -25,9 +25,23 @@ const createUser = (data: UserTraits) => {
 	})
 }
 
+const deactivateUser = (id: string) => {
+	return axios.patch(`${API_ROOT}/users/deactivate/${id}`, null, {
+		withCredentials: true,
+	})
+}
+
+const reactivateUser = (id: string) => {
+	return axios.patch(`${API_ROOT}/users/reactivate/${id}`, null, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllUsers,
 	addUserGroup,
 	removeUserGroup,
 	createUser,
+	deactivateUser,
+	reactivateUser,
 }
