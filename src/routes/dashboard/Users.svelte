@@ -137,18 +137,20 @@
 					</div>
 				{/each}
 
-				<div class="deactivated-heading">Deactivated Users</div>
-				{#each $deactivatedUsers as user}
-					<div
-						class="user"
-						class:selected={currentUser && currentUser.id === user.id}
-						class:deactivated={true}
-						on:click={() => selectUser(user)}
-						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
-					>
-						{user.username}
-					</div>
-				{/each}
+				{#if $deactivatedUsers.length > 0}
+					<div class="deactivated-heading">Deactivated Users</div>
+					{#each $deactivatedUsers as user}
+						<div
+							class="user"
+							class:selected={currentUser && currentUser.id === user.id}
+							class:deactivated={true}
+							on:click={() => selectUser(user)}
+							style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
+						>
+							{user.username}
+						</div>
+					{/each}
+				{/if}
 			</div>
 
 			<div class="bottom">
