@@ -46,7 +46,13 @@
 	})
 
 	let users = writable([])
+	let activatedUsers = writable([])
+	let deactivatedUsers = writable([])
 	$: users.set([...$allUsers])
+	$: activatedUsers.set([...$allUsers].filter((usr) => !usr?.meta?.deactivated))
+	$: deactivatedUsers.set(
+		[...$allUsers].filter((usr) => usr?.meta?.deactivated),
+	)
 	let changesWereMade = false
 	let previousUser: User = null
 	let currentUser: User = null
@@ -120,11 +126,23 @@
 	<DualPane>
 		<div slot="left-pane" class="users-list">
 			<div class="users">
-				{#each $users as user}
+				{#each $activatedUsers as user}
 					<div
 						class="user"
 						class:selected={currentUser && currentUser.id === user.id}
-						class:deactivated={!!user.meta?.deactivated}
+						on:click={() => selectUser(user)}
+						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
+					>
+						{user.username}
+					</div>
+				{/each}
+
+				<div class="deactivated-heading">Deactivated Users</div>
+				{#each $deactivatedUsers as user}
+					<div
+						class="user"
+						class:selected={currentUser && currentUser.id === user.id}
+						class:deactivated={true}
 						on:click={() => selectUser(user)}
 						style={`color: #${decimalToHex(getTopGroup(user.groups).color)}`}
 					>
@@ -273,6 +291,14 @@
 		.users {
 			@include respond-below(sm) {
 				overflow-y: scroll;
+			}
+
+			.deactivated-heading {
+				font-size: 1.2rem;
+				padding-top: 0.5rem;
+				margin-top: 1rem;
+				color: var(--color-text-muted);
+				border-top: 1px solid var(--color-accent);
 			}
 		}
 
