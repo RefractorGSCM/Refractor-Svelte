@@ -33,6 +33,7 @@
 	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
 	import Flair from "../../components/Flair.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import PermsCheck from "../../components/PermsCheck.svelte"
 
 	const baseGroupId = -1
 
@@ -58,6 +59,7 @@
 	let currentUser: User = null
 	let currentUserIsAdmin = false
 	let currentUserIsSuperAdmin = false
+	let currentUserPermissions
 
 	function selectUser(user: User) {
 		previousUser = user
@@ -207,47 +209,79 @@
 					</div>
 
 					<div class="other">
-						<div class="deactivate">
-							{#if currentUser.meta && !currentUser.meta.deactivated}
-								<p>
-									To maintain the integrity of data, user accounts cannot be
-									deleted. Instead, they can be deactivated to prevent access to
-									Refractor.
-								</p>
+						<PermsCheck
+							checker={(perms) => {
+								// if (
+								// 	checkFlag(perms, FLAG_ADMINISTRATOR) &&
+								// 	(checkFlag(
+								// 		currentUser.permissions,
+								// 		getFlag(FLAG_ADMINISTRATOR),
+								// 	) ||
+								// 		checkFlag(
+								// 			currentUser.permissions,
+								// 			getFlag(FLAG_SUPER_ADMIN),
+								// 		))
+								// ) {
+								// 	return false
+								// }
 
-								<DeleteModal
-									heading={`Deactivating User ${currentUser.username}`}
-									message="Are you sure you wish to deactivate this user account? This will revoke their access to Refractor."
-									submitText="Deactivate"
-									on:submit={deactivateCurrentUser}
-								>
-									<div slot="trigger" let:open>
-										<Button color="danger" on:click={open}
-											>Deactivate Account</Button
-										>
-									</div>
-								</DeleteModal>
-							{:else if currentUser.meta && currentUser.meta.deactivated}
-								<p>
-									This user account is deactivated meaning that they currently
-									have no access to Refractor. If you wish, you can reactivate
-									their account using the button below.
-								</p>
+								if (
+									(checkFlag(perms, getFlag(FLAG_ADMINISTRATOR)) &&
+										checkFlag(
+											currentUser.permissions,
+											getFlag(FLAG_ADMINISTRATOR),
+										)) ||
+									checkFlag(currentUser.permissions, getFlag(FLAG_SUPER_ADMIN))
+								) {
+									return false
+								}
 
-								<DeleteModal
-									heading={`Reactivating User ${currentUser.username}`}
-									message="Are you sure you wish to activate this user account? This will restore their access to Refractor."
-									submitText="Reactivate"
-									on:submit={reactivateCurrentUser}
-								>
-									<div slot="trigger" let:open>
-										<Button color="warning" on:click={open}
-											>Reactivate Account</Button
-										>
-									</div>
-								</DeleteModal>
-							{/if}
-						</div>
+								return true
+							}}
+							adminBypass={false}
+						>
+							<div class="deactivate">
+								{#if currentUser.meta && !currentUser.meta.deactivated}
+									<p>
+										To maintain the integrity of data, user accounts cannot be
+										deleted. Instead, they can be deactivated to prevent access
+										to Refractor.
+									</p>
+
+									<DeleteModal
+										heading={`Deactivating User ${currentUser.username}`}
+										message="Are you sure you wish to deactivate this user account? This will revoke their access to Refractor."
+										submitText="Deactivate"
+										on:submit={deactivateCurrentUser}
+									>
+										<div slot="trigger" let:open>
+											<Button color="danger" on:click={open}
+												>Deactivate Account</Button
+											>
+										</div>
+									</DeleteModal>
+								{:else if currentUser.meta && currentUser.meta.deactivated}
+									<p>
+										This user account is deactivated meaning that they currently
+										have no access to Refractor. If you wish, you can reactivate
+										their account using the button below.
+									</p>
+
+									<DeleteModal
+										heading={`Reactivating User ${currentUser.username}`}
+										message="Are you sure you wish to activate this user account? This will restore their access to Refractor."
+										submitText="Reactivate"
+										on:submit={reactivateCurrentUser}
+									>
+										<div slot="trigger" let:open>
+											<Button color="warning" on:click={open}
+												>Reactivate Account</Button
+											>
+										</div>
+									</DeleteModal>
+								{/if}
+							</div>
+						</PermsCheck>
 					</div>
 				</div>
 			{:else}
