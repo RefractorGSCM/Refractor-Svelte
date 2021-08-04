@@ -11,6 +11,7 @@ import api from "./api"
 
 export const isAuthenticated: Writable<boolean> = writable(false)
 export const needsActivation: Writable<boolean> = writable(false)
+export const isDeactivated: Writable<boolean> = writable(false)
 export const session = writable(null)
 export const self: Writable<User> = writable(null)
 export const isSuperAdmin: Writable<boolean> = writable(false)
@@ -56,6 +57,11 @@ export async function getSelfInfo() {
 		const payload = data.payload
 
 		self.set(payload)
+
+		if (payload.meta.deactivated) {
+			console.log(payload.meta)
+			isDeactivated.set(true)
+		}
 
 		if (checkFlag(payload.permissions, getFlag(FLAG_SUPER_ADMIN))) {
 			isSuperAdmin.set(true)

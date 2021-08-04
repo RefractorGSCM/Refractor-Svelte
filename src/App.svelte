@@ -11,12 +11,15 @@
 		checkAuth,
 		getSelfInfo,
 		isAuthenticated,
+		isDeactivated,
 		needsActivation,
+		self,
 	} from "./domain/auth/store"
 	import { getPermissions } from "./domain/group/store"
 	import Activate from "./routes/Activate.svelte"
 	import { SvelteToast } from "@zerodevx/svelte-toast"
 	import RequirePerms from "./components/RequirePerms.svelte"
+	import Unauthorized from "./routes/Unauthorized.svelte"
 
 	let authChecked = false
 	onMount(async () => {
@@ -50,11 +53,15 @@
 	</div>
 
 	<Router>
-		{#if authChecked && $isAuthenticated}
-			<Route path="/styleguide" component={StyleGuide} />
-			<ProtectedRoute path="/*" component={Dashboard} />
-		{:else if authChecked && $needsActivation}
-			<Route path="/" component={Activate} />
+		{#if authChecked}
+			{#if $needsActivation}
+				<Route path="/*" component={Activate} />
+			{:else if $isDeactivated}
+				<Route path="/*" component={Unauthorized} />
+			{:else}
+				<Route path="/styleguide" component={StyleGuide} />
+				<ProtectedRoute path="/*" component={Dashboard} />
+			{/if}
 		{/if}
 	</Router>
 </div>
