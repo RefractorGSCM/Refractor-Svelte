@@ -6,6 +6,7 @@
 
 	export let heading = ""
 	export let message = "Are you sure?"
+	export let submitText = "Delete"
 
 	const dispatch = createEventDispatcher()
 
@@ -31,7 +32,9 @@
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button on:click={close}>Cancel</Button>
-		<Button color="danger" on:click={close} on:click={submit}>Delete</Button>
+		<Button color="danger" on:click={close} on:click={submit}
+			>{submitText}</Button
+		>
 	</div>
 </Modal>
 
@@ -61,6 +64,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
+		max-width: 55rem;
 
 		@include respond-below(sm) {
 			min-width: 100%;
