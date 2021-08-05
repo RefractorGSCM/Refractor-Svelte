@@ -1,9 +1,10 @@
 <script>
-	import { component_subscribe } from "svelte/internal"
+	import { component_subscribe, onMount } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
+	import { getAllServers } from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
@@ -11,6 +12,10 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
+
+	onMount(async () => {
+		await getAllServers()
+	})
 </script>
 
 <Container>
