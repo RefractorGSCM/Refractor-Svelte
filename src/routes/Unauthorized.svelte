@@ -24,7 +24,9 @@
 			</div>
 		</div>
 
-		<div />
+		<div>
+			<a href={`${KRATOS_ROOT}/self-service/browser/flows/logout`}>Log out</a>
+		</div>
 	</div>
 </div>
 
@@ -80,6 +82,12 @@
 		.fa-lock {
 			font-size: 14rem;
 			color: var(--color-primary);
+		}
+
+		a {
+			color: var(--color-primary-light);
+			text-decoration: underline;
+			font-size: 1.4rem;
 		}
 	}
 </style>
