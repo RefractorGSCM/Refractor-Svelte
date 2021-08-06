@@ -54,6 +54,7 @@
 		position: relative;
 		background: var(--color-background3);
 		user-select: none;
+		max-height: $option-height;
 
 		label {
 			text-align: center;
