@@ -513,7 +513,9 @@
 							{#if permission.id !== 1}
 								<div class="permission">
 									<div class="main">
-										{permission.display_name}
+										<div class="name">
+											{permission.display_name}
+										</div>
 										<Toggle
 											name={permission.name}
 											disabled={!$isSuperAdmin}
@@ -707,12 +709,21 @@
 			margin: 2rem 0;
 
 			.main {
-				font-size: 1.8rem;
 				margin-bottom: 1rem;
 				width: 100%;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+
+				.name {
+					font-size: 1.8rem;
+					width: calc(100% - 6.5rem);
+				}
+
+				@include respond-below(sm) {
+					font-size: 1.4rem;
+					font-weight: 600;
+				}
 			}
 
 			.description {
