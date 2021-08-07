@@ -2,9 +2,10 @@
 	import { component_subscribe, onMount } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import CreateServerModal from "../../components/Modals/CreateServerModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
-	import { getAllServers } from "../../domain/server/store"
+	import { getAllServers, servers } from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
@@ -21,6 +22,14 @@
 <Container>
 	<Heading type="title">Servers</Heading>
 
+	<div class="add-button">
+		<CreateServerModal>
+			<div slot="trigger" let:open>
+				<Button on:click={open}>Add Server</Button>
+			</div>
+		</CreateServerModal>
+	</div>
+
 	<div>
 		<div class="servers">
 			<div class="heading">
@@ -30,25 +39,35 @@
 				<div class="actions" />
 			</div>
 
-			<div class="server">
-				<div class="name">
-					<span class="icon fas fa-server" />Jedi vs Sith - US East
+			{#each $servers as server}
+				<div class="server">
+					<div class="name">
+						<span class="icon fas fa-server" />{server.name}
+					</div>
+					<div class="players">?</div>
+					<div class="status">?</div>
+					<div class="actions">
+						<Button color="success" size="inline">Edit</Button>
+						<Button
+							color="danger"
+							size="inline"
+							classes={["server-action-last"]}
+						>
+							Delete
+						</Button>
+					</div>
 				</div>
-				<div class="players">32</div>
-				<div class="status">Online</div>
-				<div class="actions">
-					<Button color="success" size="inline">Edit</Button>
-					<Button color="danger" size="inline" classes={["server-action-last"]}>
-						Delete
-					</Button>
-				</div>
-			</div>
+			{/each}
 		</div>
 	</div>
 </Container>
 
 <style lang="scss">
 	@import "../../mixins/mixins.scss";
+
+	.add-button {
+		margin-top: 2rem;
+	}
 
 	.servers {
 		margin-top: 1rem;
