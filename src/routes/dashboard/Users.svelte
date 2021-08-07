@@ -109,10 +109,14 @@
 
 	async function deactivateCurrentUser() {
 		await deactivateUser(currentUser.id)
+
+		users.set([...$allUsers])
 	}
 
 	async function reactivateCurrentUser() {
 		await reactivateUser(currentUser.id)
+
+		users.set([...$allUsers])
 	}
 
 	$: console.log($users)
