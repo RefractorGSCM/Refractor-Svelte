@@ -1,8 +1,10 @@
-<script>
+<script lang="ts">
 	import { component_subscribe, onMount } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import CreateServerModal from "../../components/Modals/CreateServerModal.svelte"
+	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import EditServerModal from "../../components/Modals/EditServerModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { getAllServers, servers } from "../../domain/server/store"
@@ -17,6 +19,10 @@
 	onMount(async () => {
 		await getAllServers()
 	})
+
+	async function deleteServer(id: number) {
+		console.log("Deleting server", id)
+	}
 </script>
 
 <Container>
@@ -47,14 +53,25 @@
 					<div class="players">?</div>
 					<div class="status">?</div>
 					<div class="actions">
-						<Button color="success" size="inline">Edit</Button>
-						<Button
-							color="danger"
-							size="inline"
-							classes={["server-action-last"]}
+						<EditServerModal initialValues={server}>
+							<div slot="trigger" let:open>
+								<Button color="success" size="inline" on:click={open}
+									>Edit</Button
+								>
+							</div>
+						</EditServerModal>
+
+						<DeleteModal
+							heading={`Deleting server: ${server.name}`}
+							message="Are you sure you wish to delete this server?"
+							on:submit={() => deleteServer(server.id)}
 						>
-							Delete
-						</Button>
+							<div slot="trigger" let:open>
+								<Button color="danger" size="inline" on:click={open}
+									>Delete</Button
+								>
+							</div>
+						</DeleteModal>
 					</div>
 				</div>
 			{/each}

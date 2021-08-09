@@ -1,8 +1,11 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte"
+	import { createEventDispatcher, onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
-	import type { CreateServerParams } from "../../domain/server/server.types"
+	import type {
+		CreateServerParams,
+		EditServerParams,
+	} from "../../domain/server/server.types"
 	import { createServer } from "../../domain/server/store"
 	import { createUser } from "../../domain/user/store"
 	import type { UserTraits } from "../../domain/user/user.types"
@@ -11,6 +14,8 @@
 	import Button from "../Button.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
+
+	export let initialValues: EditServerParams = {}
 
 	type fields = {
 		values: {
@@ -40,7 +45,30 @@
 		errors: {},
 	} as fields)
 
-	const dispatch = createEventDispatcher()
+	onMount(() => {
+		if (Object.keys(initialValues).length < 1) {
+			return
+		}
+
+		store.set({
+			...$store,
+			values: {
+				...$store.values,
+				...initialValues,
+			},
+		})
+	})
+
+	function cleanup() {
+		// Reset to initial values
+		store.set({
+			...$store,
+			values: {
+				...initialValues,
+			},
+			errors: {},
+		})
+	}
 
 	function onChange({ target }) {
 		store.set({
@@ -59,46 +87,85 @@
 		}
 	}
 
+	const shouldValidate = (field) => {
+		if (typeof field === "string" && field.length > 0) {
+			return true
+		}
+
+		return false
+	}
+
 	const schema = yup.object().shape({
-		game: yup.string().trim().required("Game is required"),
-		name: yup
-			.string()
-			.trim()
-			.required("Name is required")
-			.min(1, "Must be no less than 1 character in length")
-			.max(20, "Must be nore more than 20 characters in length"),
-		address: yup
-			.string()
-			// @ts-ignore
-			.ipv4()
-			.required("RCON address is required"),
-		rcon_port: yup
-			.string()
-			.required("RCON port is required")
-			.test("min", "Port number can't be less than 1", (val) => {
-				const num = parseInt(val)
+		game: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup
+						.string()
+						.trim()
+						.required("Game is required")
+						.min(1, "Must be no less than 1 character in length")
+						.max(32, "Must be no more than 32 characters in length")
+				: yup.string(),
+		),
+		name: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup
+						.string()
+						.trim()
+						.min(1, "Must be no less than 1 character in length")
+						.max(20, "Must be nore more than 20 characters in length")
+				: yup.string(),
+		),
+		address: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup
+						.string()
+						// @ts-ignore
+						.ipv4()
+				: yup.string(),
+		),
+		rcon_port: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup
+						.string()
+						.notRequired()
+						.test("min", "Port number can't be less than 1", (val) => {
+							if (!val) {
+								return true
+							}
 
-				if (num > 0) {
-					return true
-				}
+							const num = parseInt(val)
 
-				return false
-			})
-			.test("max", "Port number can't be greater than 65535", (val) => {
-				const num = parseInt(val)
+							if (num > 0) {
+								return true
+							}
 
-				if (num <= 65535) {
-					return true
-				}
+							return false
+						})
+						.test("max", "Port number can't be greater than 65535", (val) => {
+							if (!val) {
+								return true
+							}
 
-				return false
-			}),
-		rcon_password: yup
-			.string()
-			.trim()
-			.required("RCON password is required")
-			.min(1, "Must be no less than 1 character in length")
-			.max(128, "Must be no more than 128 characters in length"),
+							const num = parseInt(val)
+
+							if (num <= 65535) {
+								return true
+							}
+
+							return false
+						})
+				: yup.string(),
+		),
+		rcon_password: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup
+						.string()
+						.notRequired()
+						.trim()
+						.min(1, "Must be no less than 1 character in length")
+						.max(128, "Must be no more than 128 characters in length")
+				: yup.string(),
+		),
 	})
 
 	async function submit(e, close) {
@@ -135,28 +202,36 @@
 		}
 
 		// Create user and report any errors back
-		const errors = await createServer(values as CreateServerParams)
-		store.set({
-			...$store,
-			errors,
-		})
+		// const errors = await createServer(values as CreateServerParams)
+		// store.set({
+		// 	...$store,
+		// 	errors,
+		// })
+
+		console.log("Editing server")
+		close()
 
 		// If no errors were returned, the user creation succeeded. Close the form.
-		if (!errors) {
-			close()
-		}
+		// if (!errors) {
+		// 	close()
+		// }
 	}
 </script>
 
-<Modal>
+<Modal on:close={cleanup}>
 	<div slot="trigger" let:open>
 		<slot name="trigger" {open} />
 	</div>
 	<div slot="header">
-		<div class="header">Add Server</div>
+		<div class="header">Editing Server</div>
 	</div>
 	<div slot="content">
 		<div class="content">
+			<p>
+				Update the fields you want to change and then click "Save Changes". If
+				you don't want to update a field, then don't modify it's value.
+			</p>
+
 			<form class="form" on:submit|preventDefault={() => {}}>
 				<TextInput
 					name="game"
@@ -164,7 +239,6 @@
 					label="Game"
 					value={$store.values.game}
 					error={$store.errors.game}
-					required
 					on:input={onChange}
 				/>
 
@@ -174,7 +248,6 @@
 					label="Name"
 					value={$store.values.name}
 					error={$store.errors.name}
-					required
 					on:input={onChange}
 				/>
 
@@ -184,7 +257,6 @@
 					label="RCON Address"
 					value={$store.values.address}
 					error={$store.errors.address}
-					required
 					on:input={onChange}
 				/>
 
@@ -192,10 +264,9 @@
 					name="rcon_port"
 					autocomplete="off"
 					label="RCON Port"
-					type="number"
+					type="text"
 					value={$store.values.rcon_port}
 					error={$store.errors.rcon_port}
-					required
 					on:keydown={onPortKeyDown}
 					on:input={onChange}
 				/>
@@ -206,7 +277,6 @@
 					label="RCON Password"
 					value={$store.values.rcon_password}
 					error={$store.errors.rcon_password}
-					required
 					on:input={onChange}
 				/>
 			</form>
