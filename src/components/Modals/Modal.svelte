@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { noop } from "svelte/internal"
+	import { createEventDispatcher, noop } from "svelte/internal"
 
 	import Button from "../Button.svelte"
 	import { modalStore } from "./Modal.store"
@@ -11,49 +11,20 @@
 	const store = modalStore(false)
 	const { isOpen, open, close } = store
 
+	const dispatch = createEventDispatcher()
+
+	function preClose() {
+		dispatch("close", null)
+		close()
+	}
+
 	function keydown(e: KeyboardEvent) {
 		e.stopPropagation()
 
 		if (e.key === "Escape") {
-			close()
+			preClose()
 		}
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// The following commented code is a focus trap. It's disabled because it doesn't play well with
-	// input elements and it isn't worth fixing at this time.
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	// function transitionEnd(e: TransitionEvent) {
-	// 	const node = e.target as HTMLElement
-	// 	node.focus()
-	// }
-
-	// function modalAction(node: HTMLElement) {
-	// 	const retFunc = []
-
-	// 	if (document.body.style.overflow !== "hidden") {
-	// 		const original = document.body.style.overflow
-	// 		document.body.style.overflow = "hidden"
-	// 		retFunc.push(() => {
-	// 			document.body.style.overflow = original
-	// 		})
-	// 	}
-	// 	node.addEventListener("keydown", keydown)
-	// 	node.addEventListener("transitionend", transitionEnd)
-	// 	node.focus()
-	// 	modalList.push(node)
-	// 	retFunc.push(() => {
-	// 		node.removeEventListener("keydown", keydown)
-	// 		node.removeEventListener("transitionend", transitionEnd)
-	// 		modalList.pop()
-	// 		// Optional chaining to guard against empty array.
-	// 		modalList[modalList.length - 1]?.focus()
-	// 	})
-	// 	return {
-	// 		destroy: () => retFunc.forEach((fn) => fn()),
-	// 	}
-	// }
 
 	function modalAction(node: HTMLElement) {
 		noop
@@ -67,7 +38,7 @@
 
 {#if $isOpen}
 	<div class="modal" use:modalAction tabindex="0">
-		<div class="backdrop" on:click={close} />
+		<div class="backdrop" on:click={preClose} />
 
 		<div class="content-wrapper">
 			<slot name="header" {store}>
@@ -84,10 +55,10 @@
 				<slot name="content" {store} />
 			</div>
 
-			<slot name="footer" {store}>
+			<slot name="footer" store={{ ...store, close: preClose }}>
 				<!-- footer -->
 				<p class="fallback-message">Footer content goes in the "footer" slot</p>
-				<Button on:click={close}>Close</Button>
+				<Button on:click={preClose}>Close</Button>
 			</slot>
 		</div>
 	</div>

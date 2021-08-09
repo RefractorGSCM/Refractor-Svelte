@@ -16,3 +16,11 @@ export type CreateServerParams = {
 	rcon_port: string
 	rcon_password: string
 }
+
+export type EditServerParams = {
+	game?: string
+	name?: string
+	address?: string
+	rcon_port?: string
+	rcon_password?: string
+}
