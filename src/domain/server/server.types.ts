@@ -17,7 +17,7 @@ export type CreateServerParams = {
 	rcon_password: string
 }
 
-export type EditServerParams = {
+export type UpdateServerParams = {
 	game?: string
 	name?: string
 	address?: string

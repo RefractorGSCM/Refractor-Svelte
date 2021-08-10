@@ -5,10 +5,12 @@
 	import type {
 		CreateServerParams,
 		EditServerParams,
+		UpdateServerParams,
 	} from "../../domain/server/server.types"
-	import { createServer } from "../../domain/server/store"
+	import { createServer, updateServer } from "../../domain/server/store"
 	import { createUser } from "../../domain/user/store"
 	import type { UserTraits } from "../../domain/user/user.types"
+	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
@@ -16,6 +18,7 @@
 	import Modal from "./Modal.svelte"
 
 	export let initialValues: EditServerParams = {}
+	export let serverId: number
 
 	type fields = {
 		values: {
@@ -201,20 +204,23 @@
 			return
 		}
 
-		// Create user and report any errors back
-		// const errors = await createServer(values as CreateServerParams)
-		// store.set({
-		// 	...$store,
-		// 	errors,
-		// })
+		// Filter out empty strings
+		const updateArgs = filterEmptyStrings(values) as UpdateServerParams
+
+		// Update server and report any errors back
+		const errors = await updateServer(serverId, updateArgs)
+		store.set({
+			...$store,
+			errors,
+		})
 
 		console.log("Editing server")
 		close()
 
-		// If no errors were returned, the user creation succeeded. Close the form.
-		// if (!errors) {
-		// 	close()
-		// }
+		// If no errors were returned, the server update succeeded. Close the form.
+		if (!errors) {
+			close()
+		}
 	}
 </script>
 
@@ -285,7 +291,7 @@
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
-		<Button on:click={(e) => submit(e, close)}>Invite User</Button>
+		<Button on:click={(e) => submit(e, close)}>Save Changes</Button>
 	</div>
 </Modal>
 

@@ -8,9 +8,11 @@
 		FLAG_VIEW_CHAT_RECORDS,
 		FLAG_VIEW_INFRACTION_RECORDS,
 		FLAG_VIEW_PLAYER_RECORDS,
+		FLAG_VIEW_SERVERS,
 	} from "../../permissions/permissions"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
+	import Server from "./Server.svelte"
 	import Users from "./Users.svelte"
 
 	function logout() {
@@ -129,6 +131,12 @@
 			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
 				<Route path="/groups" component={Groups} />
 				<Route path="/users" component={Users} />
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
+				<Route path="/server/:id" let:params>
+					<Server id={params.id} />
+				</Route>
 			</RequirePerms>
 
 			<Route path="/" component={Home} />
