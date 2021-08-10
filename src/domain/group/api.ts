@@ -24,19 +24,19 @@ const deleteGroup = (id: number) => {
 }
 
 const updateGroup = (id: number, data: NewGroupParams) => {
-	return axios.put(`${API_ROOT}/groups/${id}`, data, {
+	return axios.patch(`${API_ROOT}/groups/${id}`, data, {
 		withCredentials: true,
 	})
 }
 
 const updateBaseGroup = (data: NewGroupParams) => {
-	return axios.put(`${API_ROOT}/groups/base`, data, {
+	return axios.patch(`${API_ROOT}/groups/base`, data, {
 		withCredentials: true,
 	})
 }
 
 const reorderGroups = (data: GroupReorderInfo[]) => {
-	return axios.put(`${API_ROOT}/groups/order`, data, {
+	return axios.patch(`${API_ROOT}/groups/order`, data, {
 		withCredentials: true,
 	})
 }

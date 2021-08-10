@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Link, navigate } from "svelte-routing"
 	import { component_subscribe, onMount } from "svelte/internal"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
@@ -7,7 +8,7 @@
 	import EditServerModal from "../../components/Modals/EditServerModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
-	import { getAllServers, servers } from "../../domain/server/store"
+	import { getAllServers, allServers } from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
@@ -15,6 +16,7 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
+	import Server from "./Server.svelte"
 
 	onMount(async () => {
 		await getAllServers()
@@ -45,15 +47,22 @@
 				<div class="actions" />
 			</div>
 
-			{#each $servers as server}
-				<div class="server">
+			{#each $allServers as server}
+				<div
+					class="server"
+					on:click|self={() =>
+						navigate(`/server/${server.id}`, {
+							replace: true,
+							state: { serverId: server.id },
+						})}
+				>
 					<div class="name">
 						<span class="icon fas fa-server" />{server.name}
 					</div>
 					<div class="players">?</div>
 					<div class="status">?</div>
 					<div class="actions">
-						<EditServerModal initialValues={server}>
+						<EditServerModal initialValues={server} serverId={server.id}>
 							<div slot="trigger" let:open>
 								<Button color="success" size="inline" on:click={open}
 									>Edit</Button
