@@ -9,7 +9,11 @@ export async function getAllServers() {
 	try {
 		const { data } = await api.getServers()
 
-		allServers.set(data.payload)
+		if (Array.isArray(data.payload)) {
+			allServers.set(data.payload)
+		} else {
+			allServers.set([])
+		}
 	} catch (err) {
 		errorToast("Could not get servers")
 	}
