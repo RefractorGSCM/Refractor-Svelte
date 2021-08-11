@@ -1,15 +1,9 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte"
+	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
-	import type {
-		CreateServerParams,
-		EditServerParams,
-		UpdateServerParams,
-	} from "../../domain/server/server.types"
-	import { createServer, updateServer } from "../../domain/server/store"
-	import { createUser } from "../../domain/user/store"
-	import type { UserTraits } from "../../domain/user/user.types"
+	import type { UpdateServerParams } from "../../domain/server/server.types"
+	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
 
@@ -17,7 +11,7 @@
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
-	export let initialValues: EditServerParams = {}
+	export let initialValues: UpdateServerParams = {}
 	export let serverId: number
 
 	type fields = {

@@ -215,7 +215,7 @@
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
-		<Button on:click={(e) => submit(e, close)}>Invite User</Button>
+		<Button on:click={(e) => submit(e, close)}>Add Server</Button>
 	</div>
 </Modal>
 
