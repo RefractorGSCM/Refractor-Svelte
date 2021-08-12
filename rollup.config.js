@@ -90,6 +90,7 @@ export default {
 			KRATOS_ROOT: JSON.stringify("http://127.0.0.1:4433"),
 			AUTH_ROOT: JSON.stringify("http://127.0.0.1:4455"),
 			API_ROOT: JSON.stringify("http://127.0.0.1:4000/api/v1"),
+			WS_ROOT: JSON.stringify("ws://127.0.0.1:4000/ws"),
 		}),
 	],
 	watch: {
