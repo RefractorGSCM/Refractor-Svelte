@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { onMount } from "svelte"
+
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { self } from "../../domain/auth/store"
+	import { openWebsocketConnection } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_VIEW_CHAT_RECORDS,
@@ -14,6 +17,10 @@
 	import Home from "./Home.svelte"
 	import Server from "./Server.svelte"
 	import Users from "./Users.svelte"
+
+	onMount(() => {
+		openWebsocketConnection()
+	})
 
 	function logout() {
 		window.location.replace(`${KRATOS_ROOT}/self-service/browser/flows/logout`)
