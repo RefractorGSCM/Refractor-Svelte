@@ -50,7 +50,7 @@
 			{#each $allServers as server}
 				<div
 					class="server"
-					on:click|self={() =>
+					on:click={() =>
 						navigate(`/server/${server.id}`, {
 							replace: true,
 							state: { serverId: server.id },
@@ -64,8 +64,13 @@
 					<div class="actions">
 						<EditServerModal initialValues={server} serverId={server.id}>
 							<div slot="trigger" let:open>
-								<Button color="success" size="inline" on:click={open}
-									>Edit</Button
+								<Button
+									color="success"
+									size="inline"
+									on:click={(e) => {
+										e.stopPropagation()
+										open()
+									}}>Edit</Button
 								>
 							</div>
 						</EditServerModal>
@@ -76,8 +81,13 @@
 							on:submit={() => deleteServer(server.id)}
 						>
 							<div slot="trigger" let:open>
-								<Button color="danger" size="inline" on:click={open}
-									>Delete</Button
+								<Button
+									color="danger"
+									size="inline"
+									on:click={(e) => {
+										e.stopPropagation()
+										open()
+									}}>Delete</Button
 								>
 							</div>
 						</DeleteModal>

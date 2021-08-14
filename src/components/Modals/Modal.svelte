@@ -38,7 +38,7 @@
 
 {#if $isOpen}
 	<div class="modal" use:modalAction tabindex="0">
-		<div class="backdrop" on:click={preClose} />
+		<div class="backdrop" on:click|stopPropagation={preClose} />
 
 		<div class="content-wrapper">
 			<slot name="header" {store}>
