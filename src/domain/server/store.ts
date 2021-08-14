@@ -1,7 +1,11 @@
 import { writable } from "svelte/store"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type { CreateServerParams, UpdateServerParams } from "./server.types"
+import type {
+	CreateServerParams,
+	Server,
+	UpdateServerParams,
+} from "./server.types"
 
 export const allServers = writable([])
 
@@ -71,5 +75,17 @@ export async function updateServer(
 		}
 
 		errorToast(data.message ? data.message : "Error: could not update server")
+	}
+}
+
+export async function getServerById(id: number): Promise<Server> {
+	try {
+		const { data } = await api.getServerById(id)
+
+		return data.payload as Server
+	} catch (err) {
+		const { data } = err.response
+
+		errorToast(data.message ? data.message : "Error: could not get server info")
 	}
 }
