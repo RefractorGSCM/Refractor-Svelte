@@ -15,8 +15,13 @@ const updateServer = (id: number, data: UpdateServerParams) => {
 	})
 }
 
+const getServerById = (id: number) => {
+	return axios.get(`${API_ROOT}/servers/${id}`, { withCredentials: true })
+}
+
 export default {
 	getServers,
 	createServer,
 	updateServer,
+	getServerById,
 }
