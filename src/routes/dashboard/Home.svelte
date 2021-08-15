@@ -52,7 +52,7 @@
 					class="server"
 					on:click={() =>
 						navigate(`/server/${server.id}`, {
-							replace: true,
+							replace: false,
 							state: { serverId: server.id },
 						})}
 				>

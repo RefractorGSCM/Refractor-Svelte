@@ -41,6 +41,12 @@ const reorderGroups = (data: GroupReorderInfo[]) => {
 	})
 }
 
+const getServerOverrides = (id: number) => {
+	return axios.get(`${API_ROOT}/groups/servers/${id}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllGroups,
 	getAllPermissions,
@@ -49,4 +55,5 @@ export default {
 	updateGroup,
 	updateBaseGroup,
 	reorderGroups,
+	getServerOverrides,
 }

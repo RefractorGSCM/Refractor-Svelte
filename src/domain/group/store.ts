@@ -9,6 +9,7 @@ import type {
 	GroupReorderInfo,
 	NewGroupParams,
 	Permission,
+	ServerOverrides,
 } from "./group.types"
 
 export const allGroups: Writable<Group[]> = writable([])
@@ -110,5 +111,25 @@ export async function reorederGroups(data: GroupReorderInfo[]) {
 	} catch (err) {
 		const { data } = err.response
 		errorToast(data.message ? data.message : "Error: could not reorder groups")
+	}
+}
+
+export async function getServerOverrides(
+	id: number,
+): Promise<ServerOverrides[]> {
+	try {
+		const { data } = await api.getServerOverrides(id)
+
+		if (!data.payload) {
+			data.payload = []
+		}
+
+		return data.payload
+	} catch (err) {
+		const { data } = err.response
+		errorToast(
+			data.message ? data.message : "Error: could not get server overrides",
+		)
+		return null
 	}
 }
