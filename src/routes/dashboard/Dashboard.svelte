@@ -16,6 +16,7 @@
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Server from "./Server.svelte"
+	import ServerGroups from "./ServerGroups.svelte"
 	import Users from "./Users.svelte"
 
 	onMount(() => {
@@ -143,6 +144,9 @@
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
 				<Route path="/server/:id" let:params>
 					<Server id={params.id} />
+				</Route>
+				<Route path="/server/:id/groups" let:params>
+					<ServerGroups id={params.id} />
 				</Route>
 			</RequirePerms>
 

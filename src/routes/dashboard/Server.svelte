@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { Route, Router } from "svelte-routing"
 	import Heading from "../../components/Heading.svelte"
 	import type { Server } from "../../domain/server/server.types"
 	import {
@@ -8,6 +9,7 @@
 		getServerById,
 	} from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
+	import ServerGroups from "./ServerGroups.svelte"
 
 	export let id
 	let server: Server = null

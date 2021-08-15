@@ -26,3 +26,9 @@ export type GroupReorderInfo = {
 	id: number
 	pos: number
 }
+
+export type ServerOverrides = {
+	group_id: number
+	deny_overrides: string
+	allow_overrides: string
+}
