@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
+	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import type { ServerOverrides } from "../../domain/group/group.types"
 	import {
@@ -10,10 +11,11 @@
 	} from "../../domain/group/store"
 	import type { Server } from "../../domain/server/server.types"
 	import { allServers, getAllServers } from "../../domain/server/store"
+	import { decimalToHex } from "../../utils/color"
+	import BottomBar from "./components/BottomBar.svelte"
 
 	import Container from "./components/Container.svelte"
 	import DualPane from "./components/DualPane.svelte"
-	import Server from "./Server.svelte"
 
 	export let id
 	let server: Server = null
@@ -99,6 +101,45 @@
 			])
 		}
 	})
+
+	let currentGroup: GroupWithOverrides = null
+	let previousGroup: GroupWithOverrides = null
+	let changesWereMade = false
+
+	function switchGroups(group: GroupWithOverrides) {
+		if (changesWereMade) {
+			highlightChangeError()
+			return
+		}
+
+		currentGroup = { ...group }
+		previousGroup = { ...group }
+	}
+
+	function highlightChangeError() {
+		shakeScreen()
+		applyDangerBorder()
+	}
+
+	function shakeScreen() {
+		const ele = document.getElementById("groups-container")
+
+		ele.classList.add("shake")
+
+		setTimeout(() => {
+			ele.classList.remove("shake")
+		}, 500)
+	}
+
+	function applyDangerBorder() {
+		const ele = document.getElementById("groups-changes")
+
+		ele.classList.add("danger-bg")
+
+		setTimeout(() => {
+			ele.classList.remove("danger-bg")
+		}, 500)
+	}
 </script>
 
 <Container>
@@ -107,20 +148,95 @@
 	{:else}
 		<Heading type="subtitle">{server.name} Group Management</Heading>
 		<DualPane>
-			<div slot="left-pane">
-				{#each $groups as group}
-					<div class="group">
-						{group.name}
-					</div>
-				{/each}
+			<div slot="left-pane" class="groups-list">
+				<div class="groups">
+					{#each $groups as group}
+						<div
+							class="group"
+							style={`color: #${decimalToHex(group.color)}`}
+							on:click={() => switchGroups(group)}
+						>
+							{group.name}
+						</div>
+					{/each}
+				</div>
 			</div>
 
 			<div slot="right-pane">
-				<h1>Test 2</h1>
+				{#if currentGroup === null}
+					<p>
+						Please select a group to manage it's permission overrides for this
+						server.
+					</p>
+				{:else}
+					<Heading>{currentGroup.name}</Heading>
+				{/if}
 			</div>
 		</DualPane>
 	{/if}
 </Container>
 
+{#if changesWereMade}
+	<BottomBar>
+		<div class="changes-bar" id="groups-changes">
+			<p>
+				You have unsaved changes. Please save or revert them before continuing.
+			</p>
+			<div class="buttons">
+				<Button color="danger">Revert</Button>
+				<Button>Save</Button>
+			</div>
+		</div>
+	</BottomBar>
+{/if}
+
 <style lang="scss">
+	@import "../../mixins/mixins";
+
+	.groups-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		position: relative;
+		height: 100%;
+		max-height: 100%;
+		overflow-y: scroll;
+
+		.group {
+			font-size: 1.6rem;
+			padding: 0.6rem;
+			border-radius: var(--border-sm);
+			user-select: none;
+
+			&:hover {
+				background-color: var(--color-background1);
+				cursor: pointer;
+			}
+
+			span.order {
+				font-family: monospace;
+				color: var(--color-text-muted2);
+				width: 3rem;
+				overflow-x: hidden;
+			}
+		}
+
+		.group.selected {
+			background-color: var(--color-accent);
+		}
+
+		.bottom {
+			margin-top: 1rem;
+
+			:global(.btn) {
+				width: 100%;
+			}
+		}
+
+		.groups {
+			@include respond-below(sm) {
+				overflow-y: scroll;
+			}
+		}
+	}
 </style>
