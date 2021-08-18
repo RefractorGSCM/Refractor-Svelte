@@ -5,10 +5,14 @@
 	export let value = "unset"
 	export let disabled = false
 
+	if (value !== "unset" && value !== "true" && value !== "false") {
+		value = "unset"
+	}
+
 	const dispatch = createEventDispatcher()
 
 	const change = (e) => {
-		dispatch("change", e.target.value)
+		dispatch("change", e)
 	}
 </script>
 

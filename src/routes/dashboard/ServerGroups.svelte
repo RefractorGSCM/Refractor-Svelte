@@ -5,7 +5,10 @@
 	import Heading from "../../components/Heading.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { isSuperAdmin } from "../../domain/auth/store"
-	import type { ServerOverrides } from "../../domain/group/group.types"
+	import type {
+		Permission,
+		ServerOverrides,
+	} from "../../domain/group/group.types"
 	import {
 		allGroups,
 		getAllGroups,
@@ -13,7 +16,11 @@
 	} from "../../domain/group/store"
 	import type { Server } from "../../domain/server/server.types"
 	import { allServers, getAllServers } from "../../domain/server/store"
-	import { getAllPermissions } from "../../permissions/permissions"
+	import {
+		getAllPermissions,
+		getFlag,
+		getSetFlags,
+	} from "../../permissions/permissions"
 	import { decimalToHex } from "../../utils/color"
 	import BottomBar from "./components/BottomBar.svelte"
 
@@ -108,6 +115,10 @@
 	let currentGroup: GroupWithOverrides = null
 	let previousGroup: GroupWithOverrides = null
 	let changesWereMade = false
+	let previousAllowOverrides: string[] = []
+	let previousDenyOverrides: string[] = []
+	let currentAllowOverrides = writable([] as string[])
+	let currentDenyOverrides = writable([] as string[])
 	const permissions = getAllPermissions()
 	permissions.filter((p) => p.scope === "any" || p.scope === "server")
 
@@ -119,6 +130,25 @@
 
 		currentGroup = { ...group }
 		previousGroup = { ...group }
+		previousAllowOverrides = getSetFlags(BigInt(group.allow_overrides))
+		previousDenyOverrides = getSetFlags(BigInt(group.deny_overrides))
+		currentAllowOverrides = writable([...previousAllowOverrides])
+		currentDenyOverrides = writable([...previousDenyOverrides])
+
+		changesWereMade = false
+
+		console.log(group.name, "deny", group.deny_overrides)
+		console.log(group.name, "allow", group.allow_overrides)
+	}
+
+	function revertChanges() {
+		currentGroup = {
+			...previousGroup,
+		}
+		previousAllowOverrides = getSetFlags(BigInt(currentGroup.allow_overrides))
+		previousDenyOverrides = getSetFlags(BigInt(currentGroup.deny_overrides))
+
+		changesWereMade = false
 	}
 
 	function highlightChangeError() {
@@ -144,6 +174,56 @@
 		setTimeout(() => {
 			ele.classList.remove("danger-bg")
 		}, 500)
+	}
+
+	function handlePermissionChange(e) {
+		const name = e.detail.target.name
+
+		if (e.detail.target.value === "true") {
+			currentDenyOverrides.set($currentDenyOverrides.filter((p) => p !== name))
+			$currentAllowOverrides.push(name)
+		} else if (e.detail.target.value === "false") {
+			currentAllowOverrides.set(
+				$currentAllowOverrides.filter((p) => p !== name),
+			)
+			$currentDenyOverrides.push(name)
+		} else {
+			currentDenyOverrides.set($currentDenyOverrides.filter((p) => p !== name))
+			currentAllowOverrides.set(
+				$currentAllowOverrides.filter((p) => p !== name),
+			)
+		}
+
+		if (
+			$currentAllowOverrides !== previousAllowOverrides ||
+			$currentDenyOverrides !== previousDenyOverrides
+		) {
+			changesWereMade = true
+		}
+	}
+
+	function computeOverrides(): ServerOverrides {
+		let computedAllow = BigInt(0)
+
+		for (const flagName of $currentAllowOverrides) {
+			const flag = getFlag(flagName)
+
+			computedAllow = BigInt(computedAllow) | BigInt(flag)
+		}
+
+		let computedDeny = BigInt(0)
+
+		for (const flagName of $currentDenyOverrides) {
+			const flag = getFlag(flagName)
+
+			computedDeny = BigInt(computedDeny) | BigInt(flag)
+		}
+
+		return {
+			group_id: currentGroup.id,
+			allow_overrides: computedAllow.toString(),
+			deny_overrides: computedDeny.toString(),
+		}
 	}
 </script>
 
@@ -186,7 +266,21 @@
 										<div class="name">
 											{permission.display_name}
 										</div>
-										<TripleToggle name={permission.name} />
+										<TripleToggle
+											name={permission.name}
+											on:change={handlePermissionChange}
+											value={(function () {
+												if ($currentAllowOverrides.includes(permission.name)) {
+													return "true"
+												}
+
+												if ($currentDenyOverrides.includes(permission.name)) {
+													return "false"
+												}
+
+												return "unset"
+											})()}
+										/>
 									</div>
 
 									<div class="description">
@@ -209,7 +303,7 @@
 				You have unsaved changes. Please save or revert them before continuing.
 			</p>
 			<div class="buttons">
-				<Button color="danger">Revert</Button>
+				<Button color="danger" on:click={revertChanges}>Revert</Button>
 				<Button>Save</Button>
 			</div>
 		</div>
@@ -297,6 +391,56 @@
 				font-size: 1.2rem;
 				color: var(--color-text-muted);
 				text-align: justify;
+			}
+		}
+	}
+
+	.changes-bar {
+		height: 6rem;
+		width: 100%;
+		padding: 0 3rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		transition: background-color 0.1s ease-in-out;
+		font-size: 1.6rem;
+
+		.buttons {
+			min-width: 20rem;
+			display: flex;
+			justify-content: right;
+		}
+
+		:global(.btn) {
+			margin-left: 0.5rem;
+		}
+
+		@include respond-below(md) {
+			font-size: 1.4rem;
+		}
+
+		@include respond-below(sm) {
+			height: auto;
+			font-size: 1.2rem;
+			flex-direction: column;
+			padding: 0;
+
+			p {
+				padding: 1rem 3rem;
+			}
+
+			.buttons {
+				width: 100%;
+				display: flex;
+			}
+
+			:global(.btn) {
+				margin-left: 0;
+				font-size: 1.2rem;
+				padding: 0;
+				height: 2.5rem;
+				width: 100%;
+				border-radius: 0;
 			}
 		}
 	}
