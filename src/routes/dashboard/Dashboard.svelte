@@ -4,6 +4,7 @@
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
+	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { self } from "../../domain/auth/store"
 	import { openWebsocketConnection } from "../../domain/websocket/store"
 	import {

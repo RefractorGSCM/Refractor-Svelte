@@ -8,6 +8,7 @@
 	import EditServerModal from "../../components/Modals/EditServerModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
+	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { getAllServers, allServers } from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,

@@ -3,6 +3,8 @@
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import TripleToggle from "../../components/TripleToggle.svelte"
+	import { isSuperAdmin } from "../../domain/auth/store"
 	import type { ServerOverrides } from "../../domain/group/group.types"
 	import {
 		allGroups,
@@ -11,6 +13,7 @@
 	} from "../../domain/group/store"
 	import type { Server } from "../../domain/server/server.types"
 	import { allServers, getAllServers } from "../../domain/server/store"
+	import { getAllPermissions } from "../../permissions/permissions"
 	import { decimalToHex } from "../../utils/color"
 	import BottomBar from "./components/BottomBar.svelte"
 
@@ -105,6 +108,8 @@
 	let currentGroup: GroupWithOverrides = null
 	let previousGroup: GroupWithOverrides = null
 	let changesWereMade = false
+	const permissions = getAllPermissions()
+	permissions.filter((p) => p.scope === "any" || p.scope === "server")
 
 	function switchGroups(group: GroupWithOverrides) {
 		if (changesWereMade) {
@@ -162,7 +167,7 @@
 				</div>
 			</div>
 
-			<div slot="right-pane">
+			<div slot="right-pane" class="manager">
 				{#if currentGroup === null}
 					<p>
 						Please select a group to manage it's permission overrides for this
@@ -170,6 +175,27 @@
 					</p>
 				{:else}
 					<Heading>{currentGroup.name}</Heading>
+
+					<div class="permissions-list">
+						<Heading>Permissions</Heading>
+
+						{#each permissions as permission}
+							{#if permission.id !== 1}
+								<div class="permission">
+									<div class="main">
+										<div class="name">
+											{permission.display_name}
+										</div>
+										<TripleToggle name={permission.name} />
+									</div>
+
+									<div class="description">
+										{permission.description}
+									</div>
+								</div>
+							{/if}
+						{/each}
+					</div>
 				{/if}
 			</div>
 		</DualPane>
@@ -236,6 +262,41 @@
 		.groups {
 			@include respond-below(sm) {
 				overflow-y: scroll;
+			}
+		}
+	}
+
+	.manager {
+		.permissions-list {
+			margin-top: 2rem;
+		}
+
+		.permission {
+			width: 100%;
+			margin: 2rem 0;
+
+			.main {
+				margin-bottom: 1rem;
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				.name {
+					font-size: 1.8rem;
+					width: calc(100% - 11rem);
+				}
+
+				@include respond-below(sm) {
+					font-size: 1.4rem;
+					font-weight: 600;
+				}
+			}
+
+			.description {
+				font-size: 1.2rem;
+				color: var(--color-text-muted);
+				text-align: justify;
 			}
 		}
 	}
