@@ -16,6 +16,7 @@ type Permission = {
 	display_name: string
 	description: string
 	flag?: bigint
+	scope: string
 }
 
 export function registerPermissions(newPerms: Permission[]) {
@@ -35,6 +36,7 @@ export function registerPermissions(newPerms: Permission[]) {
 			display_name: perm.display_name,
 			description: perm.description,
 			flag: BigInt(perm.flag),
+			scope: perm.scope,
 		}
 		allFlags.push(perm.name)
 	}
