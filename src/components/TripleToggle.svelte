@@ -3,6 +3,7 @@
 
 	export let name = "toggle"
 	export let value = "unset"
+	export let disabled = false
 
 	const dispatch = createEventDispatcher()
 
@@ -14,37 +15,40 @@
 <div class="triple-toggle">
 	<input
 		bind:group={value}
-		id="tt-no"
+		id={`${name}-tt-no`}
 		type="radio"
+		{disabled}
 		{name}
 		value="false"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for="tt-no">
+	<label class="toggle toggle-yes" for={`${name}-tt-no`}>
 		<i class="fas fa-times" />
 	</label>
 
 	<input
 		bind:group={value}
-		id="tt-unset"
+		id={`${name}-tt-unset`}
 		type="radio"
+		{disabled}
 		{name}
 		value="unset"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for="tt-unset">
+	<label class="toggle toggle-yes" for={`${name}-tt-unset`}>
 		<i class="fas fa-asterisk" />
 	</label>
 
 	<input
 		bind:group={value}
-		id="tt-yes"
+		id={`${name}-tt-yes`}
 		type="radio"
+		{disabled}
 		{name}
 		value="true"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for="tt-yes">
+	<label class="toggle toggle-yes" for={`${name}-tt-yes`}>
 		<i class="fas fa-check" />
 	</label>
 	<span />
@@ -59,6 +63,8 @@
 		border-radius: var(--border-sm);
 		position: relative;
 		background: var(--color-background3);
+		user-select: none;
+		max-height: $option-height;
 
 		label {
 			text-align: center;
@@ -70,6 +76,7 @@
 			text-align: center;
 			font-size: 1.5rem;
 			transition: color 0.3s ease-in-out;
+			background: none;
 
 			i {
 				width: $option-width;
