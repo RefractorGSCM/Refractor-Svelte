@@ -20,6 +20,7 @@ export type Permission = {
 	name: string
 	description?: string
 	flag: string
+	scope: string
 }
 
 export type GroupReorderInfo = {
