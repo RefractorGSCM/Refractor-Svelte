@@ -133,3 +133,20 @@ export async function getServerOverrides(
 		return null
 	}
 }
+
+export async function setServerOverrides(
+	id: number,
+	body: ServerOverrides,
+): Promise<ServerOverrides> {
+	try {
+		const { data } = await api.setServerOverrides(id, body)
+
+		return data.payload
+	} catch (err) {
+		const { data } = err.response
+		errorToast(
+			data.message ? data.message : "Error: could not get server overrides",
+		)
+		return null
+	}
+}

@@ -1,5 +1,10 @@
 import axios from "axios"
-import type { Group, GroupReorderInfo, NewGroupParams } from "./group.types"
+import type {
+	Group,
+	GroupReorderInfo,
+	NewGroupParams,
+	ServerOverrides,
+} from "./group.types"
 
 const getAllGroups = () => {
 	return axios.get(`${API_ROOT}/groups/`, { withCredentials: true })
@@ -47,6 +52,12 @@ const getServerOverrides = (id: number) => {
 	})
 }
 
+const setServerOverrides = (id: number, body: ServerOverrides) => {
+	return axios.patch(`${API_ROOT}/groups/servers/${id}`, body, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllGroups,
 	getAllPermissions,
@@ -56,4 +67,5 @@ export default {
 	updateBaseGroup,
 	reorderGroups,
 	getServerOverrides,
+	setServerOverrides,
 }
