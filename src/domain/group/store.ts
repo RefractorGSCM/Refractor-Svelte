@@ -141,6 +141,8 @@ export async function setServerOverrides(
 	try {
 		const { data } = await api.setServerOverrides(id, body)
 
+		successToast("Server overrides saved")
+
 		return data.payload
 	} catch (err) {
 		const { data } = err.response
