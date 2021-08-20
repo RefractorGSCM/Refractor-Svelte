@@ -13,6 +13,7 @@
 		allGroups,
 		getAllGroups,
 		getServerOverrides,
+		setServerOverrides,
 	} from "../../domain/group/store"
 	import type { Server } from "../../domain/server/server.types"
 	import { allServers, getAllServers } from "../../domain/server/store"
@@ -228,7 +229,27 @@
 		}
 	}
 
-	function saveChanges() {}
+	async function saveChanges() {
+		const body = computeOverrides()
+		body.group_id = currentGroup.id
+
+		const overrides = await setServerOverrides(id, body)
+
+		console.log("Saved overrides", overrides)
+
+		const updatedGroups = []
+		for (const g of $groups) {
+			if (g.id === overrides.group_id) {
+				g.allow_overrides = overrides.allow_overrides
+				g.deny_overrides = overrides.deny_overrides
+			}
+
+			updatedGroups.push(g)
+		}
+		groups.set(updatedGroups)
+
+		changesWereMade = false
+	}
 </script>
 
 <Container>
@@ -236,7 +257,7 @@
 		<Heading type="title">{errmsg}</Heading>
 	{:else}
 		<Heading type="subtitle">{server.name} Group Management</Heading>
-		<DualPane>
+		<DualPane id="groups-container">
 			<div slot="left-pane" class="groups-list">
 				<div class="groups">
 					{#each $groups as group}
@@ -313,7 +334,7 @@
 			</p>
 			<div class="buttons">
 				<Button color="danger" on:click={revertChanges}>Revert</Button>
-				<Button>Save</Button>
+				<Button on:click={saveChanges}>Save</Button>
 			</div>
 		</div>
 	</BottomBar>
@@ -321,6 +342,7 @@
 
 <style lang="scss">
 	@import "../../mixins/mixins";
+	@import "../../effects/effects";
 
 	.groups-list {
 		display: flex;
