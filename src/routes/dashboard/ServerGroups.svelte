@@ -147,6 +147,8 @@
 		}
 		previousAllowOverrides = getSetFlags(BigInt(currentGroup.allow_overrides))
 		previousDenyOverrides = getSetFlags(BigInt(currentGroup.deny_overrides))
+		currentAllowOverrides.set([...previousAllowOverrides])
+		currentDenyOverrides.set([...previousDenyOverrides])
 
 		changesWereMade = false
 	}
@@ -225,6 +227,8 @@
 			deny_overrides: computedDeny.toString(),
 		}
 	}
+
+	function saveChanges() {}
 </script>
 
 <Container>
@@ -254,7 +258,12 @@
 						server.
 					</p>
 				{:else}
-					<Heading>{currentGroup.name}</Heading>
+					<Heading type="subtitle">{currentGroup.name}</Heading>
+
+					<p class="description">
+						This page will allow you to override permissions of a group on
+						specific servers.
+					</p>
 
 					<div class="permissions-list">
 						<Heading>Permissions</Heading>
@@ -386,13 +395,13 @@
 					font-weight: 600;
 				}
 			}
-
-			.description {
-				font-size: 1.2rem;
-				color: var(--color-text-muted);
-				text-align: justify;
-			}
 		}
+	}
+
+	.description {
+		font-size: 1.2rem;
+		color: var(--color-text-muted);
+		text-align: justify;
 	}
 
 	.changes-bar {
