@@ -120,8 +120,10 @@
 	let previousDenyOverrides: string[] = []
 	let currentAllowOverrides = writable([] as string[])
 	let currentDenyOverrides = writable([] as string[])
-	const permissions = getAllPermissions()
-	permissions.filter((p) => p.scope === "any" || p.scope === "server")
+	let permissions = getAllPermissions()
+	permissions = permissions.filter(
+		(p) => p.scope === "any" || p.scope === "server",
+	)
 
 	function switchGroups(group: GroupWithOverrides) {
 		if (changesWereMade) {

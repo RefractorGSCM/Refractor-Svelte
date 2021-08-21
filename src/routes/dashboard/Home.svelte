@@ -31,13 +31,15 @@
 <Container>
 	<Heading type="title">Servers</Heading>
 
-	<div class="add-button">
-		<CreateServerModal>
-			<div slot="trigger" let:open>
-				<Button on:click={open}>Add Server</Button>
-			</div>
-		</CreateServerModal>
-	</div>
+	<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+		<div class="add-button">
+			<CreateServerModal>
+				<div slot="trigger" let:open>
+					<Button on:click={open}>Add Server</Button>
+				</div>
+			</CreateServerModal>
+		</div>
+	</RequirePerms>
 
 	<div>
 		<div class="servers">
