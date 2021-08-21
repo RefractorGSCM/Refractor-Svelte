@@ -1,8 +1,9 @@
 <script lang="ts">
 	export let id: string = ""
+	export let background: string = "2"
 </script>
 
-<div class="container" {id}>
+<div class={`container bg--${background}`} {id}>
 	<slot />
 </div>
 
@@ -20,6 +21,7 @@
 		background-color: var(--color-background2);
 		border-radius: var(--border-md);
 		width: 100%;
+		overflow-y: scroll;
 
 		@include respond-below(lg) {
 			font-size: 1.6rem;
@@ -27,6 +29,20 @@
 
 		@include respond-below(sm) {
 			flex-direction: column;
+		}
+	}
+
+	.bg {
+		&--1 {
+			background: var(--color-background1);
+		}
+
+		&--2 {
+			background: var(--color-background2);
+		}
+
+		&--3 {
+			background: var(--color-background3);
 		}
 	}
 </style>
