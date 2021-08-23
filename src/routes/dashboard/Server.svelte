@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { Route, Router } from "svelte-routing"
+	import { navigate, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import type { Server } from "../../domain/server/server.types"
@@ -62,6 +62,17 @@
 						<div class="status__item hm">
 							<span>Address:</span>127.0.0.1
 						</div>
+					</div>
+
+					<div class="buttons">
+						<Button>Open Chat</Button>
+						<Button
+							on:click={() =>
+								navigate(`/server/${server.id}/groups`, {
+									replace: false,
+									state: { serverId: server.id },
+								})}>Manage Permissions</Button
+						>
 					</div>
 				</div>
 			</SinglePane>
@@ -147,6 +158,7 @@
 
 	.wrapper {
 		margin-bottom: 6rem;
+		margin-top: 3rem;
 		overflow-y: scroll;
 	}
 
@@ -182,6 +194,15 @@
 			@include respond-below(xs) {
 				.hm {
 					display: none;
+				}
+			}
+		}
+
+		.buttons {
+			@include respond-below(xxs) {
+				:global(.btn) {
+					width: 100%;
+					margin-top: 0.5rem;
 				}
 			}
 		}
