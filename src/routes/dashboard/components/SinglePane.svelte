@@ -1,9 +1,10 @@
 <script lang="ts">
 	export let id: string = ""
 	export let background: string = "2"
+	export let style: string = ""
 </script>
 
-<div class={`container bg--${background}`} {id}>
+<div class={`container bg--${background}`} {id} {style}>
 	<slot />
 </div>
 
