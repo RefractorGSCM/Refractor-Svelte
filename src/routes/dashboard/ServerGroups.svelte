@@ -2,6 +2,7 @@
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
+	import Flair from "../../components/Flair.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { isSuperAdmin } from "../../domain/auth/store"
@@ -11,6 +12,7 @@
 	} from "../../domain/group/group.types"
 	import {
 		allGroups,
+		baseGroupId,
 		getAllGroups,
 		getServerOverrides,
 		setServerOverrides,
@@ -281,7 +283,13 @@
 						server.
 					</p>
 				{:else}
-					<Heading type="subtitle">{currentGroup.name}</Heading>
+					<div class="heading">
+						<Heading type="subtitle">{currentGroup.name}</Heading>
+
+						{#if currentGroup.id === baseGroupId}
+							<Flair color="disabled">Base Group</Flair>
+						{/if}
+					</div>
 
 					<p class="description">
 						This page will allow you to override permissions of a group on
@@ -394,6 +402,11 @@
 	}
 
 	.manager {
+		.heading {
+			display: inline-block;
+			margin-bottom: 1rem;
+		}
+
 		.permissions-list {
 			margin-top: 2rem;
 		}
