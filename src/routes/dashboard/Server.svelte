@@ -3,15 +3,13 @@
 	import { navigate, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import { serverPlayers } from "../../domain/player/store"
 	import type { Server } from "../../domain/server/server.types"
-	import {
-		allServers,
-		getAllServers,
-		getServerById,
-	} from "../../domain/server/store"
+	import { allServers, getAllServers } from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
+	import type { Player } from "../../domain/player/player.types"
 
 	export let id
 	let server: Server = null
@@ -29,6 +27,13 @@
 			await getAllServers()
 		}
 
+		if (!$serverPlayers[id]) {
+			serverPlayers.set({
+				...serverPlayers,
+				[id]: {},
+			})
+		}
+
 		let found = false
 		for (const s of $allServers) {
 			if (s.id === id) {
@@ -41,6 +46,9 @@
 			errmsg = "Server not found"
 		}
 	})
+
+	let players: Player[] = []
+	$: players = $serverPlayers[id] ? Object.values($serverPlayers[id]) : []
 </script>
 
 <Container>
@@ -54,13 +62,13 @@
 
 					<div class="status">
 						<div class="status__item hm">
-							<span>Players:</span>10
+							<span>Players:</span>{Object.keys($serverPlayers[id]).length}
 						</div>
 						<div class="status__item">
 							<span>Status:</span>Online
 						</div>
 						<div class="status__item hm">
-							<span>Address:</span>127.0.0.1
+							<span>Address:</span>{server.address}
 						</div>
 					</div>
 
@@ -79,73 +87,16 @@
 
 			<SinglePane>
 				<div class="players">
-					<Heading type="subtitle">Players</Heading>
+					{#if players.length > 0}
+						<Heading type="subtitle">Online Players</Heading>
+					{:else}
+						<Heading type="subtitle">No Players Online</Heading>
+					{/if}
 
 					<div class="list">
-						<div class="player">Player 1</div>
-						<div class="player">Player 2</div>
-						<div class="player">Player 3</div>
-						<div class="player">Player 4</div>
-						<div class="player">Player 5</div>
-						<div class="player">Player 6</div>
-						<div class="player">Player 7</div>
-						<div class="player">Player 8</div>
-						<div class="player">Player 9</div>
-						<div class="player">Player 10</div>
-						<div class="player">Player 11</div>
-						<div class="player">Player 12</div>
-						<div class="player">Player 13</div>
-						<div class="player">Player 14</div>
-						<div class="player">Player 15</div>
-						<div class="player">Player 16</div>
-						<div class="player">Player 17</div>
-						<div class="player">Player 18</div>
-						<div class="player">Player 19</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 1</div>
-						<div class="player">Player 2</div>
-						<div class="player">Player 3</div>
-						<div class="player">Player 4</div>
-						<div class="player">Player 5</div>
-						<div class="player">Player 6</div>
-						<div class="player">Player 7</div>
-						<div class="player">Player 8</div>
-						<div class="player">Player 9</div>
-						<div class="player">Player 10</div>
-						<div class="player">Player 11</div>
-						<div class="player">Player 12</div>
-						<div class="player">Player 13</div>
-						<div class="player">Player 14</div>
-						<div class="player">Player 15</div>
-						<div class="player">Player 16</div>
-						<div class="player">Player 17</div>
-						<div class="player">Player 18</div>
-						<div class="player">Player 19</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 1</div>
-						<div class="player">Player 2</div>
-						<div class="player">Player 3</div>
-						<div class="player">Player 4</div>
-						<div class="player">Player 5</div>
-						<div class="player">Player 6</div>
-						<div class="player">Player 7</div>
-						<div class="player">Player 8</div>
-						<div class="player">Player 9</div>
-						<div class="player">Player 10</div>
-						<div class="player">Player 11</div>
-						<div class="player">Player 12</div>
-						<div class="player">Player 13</div>
-						<div class="player">Player 14</div>
-						<div class="player">Player 15</div>
-						<div class="player">Player 16</div>
-						<div class="player">Player 17</div>
-						<div class="player">Player 18</div>
-						<div class="player">Player 19</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 20</div>
-						<div class="player">Player 20</div>
+						{#each players as player}
+							<div class="player">{player.name}</div>
+						{/each}
 					</div>
 				</div>
 			</SinglePane>

@@ -1,4 +1,5 @@
 import { writable } from "svelte/store"
+import { addPlayerToServer, removePlayerFromServer } from "../player/store"
 
 const messageStore = writable("")
 
@@ -19,8 +20,26 @@ export function openWebsocketConnection() {
 
 	socket.addEventListener("message", (wsmsg) => {
 		const msg = JSON.parse(wsmsg.data)
+		const { type, body } = msg
 
 		console.log("Received message:", msg)
+
+		switch (type) {
+			case "player-join": {
+				addPlayerToServer(body.serverId, {
+					id: body.id,
+					platform: body.platform,
+					name: body.name,
+					watched: body.watched,
+				})
+				break
+			}
+
+			case "player-quit": {
+				removePlayerFromServer(body.serverId, body.id)
+				break
+			}
+		}
 	})
 
 	// ping the server every 2 minutes to ensure the socket stays alive
