@@ -1,5 +1,6 @@
 import { writable } from "svelte/store"
 import { errorToast, successToast } from "../../utils/toast"
+import { addPlayerToServer } from "../player/store"
 import api from "./api"
 import type {
 	CreateServerParams,
@@ -12,9 +13,19 @@ export const allServers = writable([])
 export async function getAllServers() {
 	try {
 		const { data } = await api.getServers()
+		const { payload } = data
 
-		if (Array.isArray(data.payload)) {
-			allServers.set(data.payload)
+		if (Array.isArray(payload)) {
+			allServers.set(payload)
+
+			for (const server of payload) {
+				if (server.online_players && server.online_players.length > 0) {
+					// If there are online players, add them all in the player store
+					for (const player of server.online_players) {
+						addPlayerToServer(server.id, player)
+					}
+				}
+			}
 		} else {
 			allServers.set([])
 		}
