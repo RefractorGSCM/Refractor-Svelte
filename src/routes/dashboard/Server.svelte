@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { navigate, Route, Router } from "svelte-routing"
+	import { Link, navigate, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import { serverPlayers } from "../../domain/player/store"
@@ -8,7 +8,6 @@
 	import { allServers, getAllServers } from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import ServerGroups from "./ServerGroups.svelte"
 	import type { Player } from "../../domain/player/player.types"
 
 	export let id
@@ -87,17 +86,24 @@
 
 			<SinglePane>
 				<div class="players">
-					{#if players.length > 0}
-						<Heading type="subtitle">Online Players</Heading>
-					{:else}
+					{#if players.length < 1}
 						<Heading type="subtitle">No Players Online</Heading>
-					{/if}
+					{:else}
+						<Heading type="subtitle">Online Players</Heading>
 
-					<div class="list">
-						{#each players as player}
-							<div class="player">{player.name}</div>
-						{/each}
-					</div>
+						<div class="list">
+							{#each players as player}
+								<Link
+									to={`/player/${player.platform}/${player.id}`}
+									replace={false}
+								>
+									<div class="player">
+										{player.name}
+									</div>
+								</Link>
+							{/each}
+						</div>
+					{/if}
 				</div>
 			</SinglePane>
 		{/if}
@@ -184,6 +190,8 @@
 				padding: 0.7rem;
 				font-size: 1.5rem;
 				border-radius: var(--border-sm);
+				color: var(--color-text1);
+				text-decoration: none;
 
 				&:hover {
 					background: var(--color-accent-light);
