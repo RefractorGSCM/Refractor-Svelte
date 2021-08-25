@@ -15,7 +15,6 @@
 		margin-bottom: 3rem;
 		display: flex;
 		font-size: 1.8rem;
-		min-height: 10vh;
 		max-height: inherit;
 		height: 100%;
 		padding: 2rem;

@@ -16,6 +16,7 @@
 	} from "../../permissions/permissions"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
+	import Player from "./Player.svelte"
 	import Server from "./Server.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
 	import Users from "./Users.svelte"
@@ -148,6 +149,12 @@
 				</Route>
 				<Route path="/server/:id/groups" let:params>
 					<ServerGroups id={params.id} />
+				</Route>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_PLAYER_RECORDS]}>
+				<Route path="/player/:platform/:id" let:params>
+					<Player platform={params.platform} id={params.id} />
 				</Route>
 			</RequirePerms>
 
