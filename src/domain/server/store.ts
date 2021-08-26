@@ -22,6 +22,7 @@ export async function getAllServers() {
 				if (server.online_players && server.online_players.length > 0) {
 					// If there are online players, add them all in the player store
 					for (const player of server.online_players) {
+						console.log("pl", player)
 						addPlayerToServer(server.id, player)
 					}
 				}
