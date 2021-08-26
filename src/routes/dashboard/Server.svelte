@@ -48,6 +48,11 @@
 
 	let players: Player[] = []
 	$: players = $serverPlayers[id] ? Object.values($serverPlayers[id]) : []
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
 </script>
 
 <Container>
@@ -156,6 +161,8 @@
 		}
 
 		.buttons {
+			margin-top: 2rem;
+
 			@include respond-below(xxs) {
 				:global(.btn) {
 					width: 100%;

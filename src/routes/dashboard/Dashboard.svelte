@@ -6,6 +6,7 @@
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { self } from "../../domain/auth/store"
+	import { getAllServers } from "../../domain/server/store"
 	import { openWebsocketConnection } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
@@ -21,8 +22,10 @@
 	import ServerGroups from "./ServerGroups.svelte"
 	import Users from "./Users.svelte"
 
-	onMount(() => {
+	onMount(async () => {
 		openWebsocketConnection()
+
+		await getAllServers()
 	})
 
 	function logout() {
