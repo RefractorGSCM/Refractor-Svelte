@@ -9,6 +9,7 @@
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import type { Player } from "../../domain/player/player.types"
+	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
 
 	export let id
 	let server: Server = null
@@ -53,6 +54,72 @@
 		platform: "playfab",
 		name: "avoid",
 	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+	$: players.push({
+		id: "32B352D4448F3C1",
+		platform: "playfab",
+		name: "avoid",
+	})
+
+	let showPlayerMenu = false
+	let selectedPlayerId = ""
+
+	function openPlayerMenuClick(e, playerId) {
+		showPlayerMenu = !showPlayerMenu
+		const menu = document.getElementById("player-menu")
+		if (!showPlayerMenu) {
+			menu.style.display = "none"
+			selectedPlayerId = ""
+			return
+		}
+
+		console.log(playerId, selectedPlayerId, playerId === selectedPlayerId)
+
+		selectedPlayerId = playerId
+		const { target } = e
+		menu.style.display = "flex"
+
+		const rect = target.getBoundingClientRect()
+
+		menu.style.top = `${rect.top - target.offsetHeight / 2}px`
+		menu.style.left = `${rect.left - target.outerWidth / 2}px`
+		menu.style.marginLeft = "2rem"
+		menu.style.width = `${target.offsetWidth}px`
+	}
 </script>
 
 <Container>
@@ -98,19 +165,26 @@
 
 						<div class="list">
 							{#each players as player}
-								<Link
-									to={`/player/${player.platform}/${player.id}`}
-									replace={false}
+								<div
+									class={`player ${
+										selectedPlayerId === player.id ? "selected" : ""
+									}`}
+									on:click={(e) => openPlayerMenuClick(e, player.id)}
 								>
-									<div class="player">
-										{player.name}
-									</div>
-								</Link>
+									{player.name}
+								</div>
 							{/each}
 						</div>
 					{/if}
 				</div>
 			</SinglePane>
+
+			<div class="player-menu" id="player-menu">
+				<Button>Warn</Button>
+				<Button>Mute</Button>
+				<Button color="warning">Kick</Button>
+				<Button color="danger">Ban</Button>
+			</div>
 		{/if}
 	</div>
 </Container>
@@ -192,7 +266,7 @@
 			}
 
 			.player {
-				background: var(--color-accent);
+				background-color: var(--color-accent);
 				cursor: pointer;
 				padding: 0.7rem;
 				font-size: 1.5rem;
@@ -204,6 +278,34 @@
 					background: var(--color-accent-light);
 				}
 			}
+
+			.selected {
+				background-color: var(--color-primary);
+			}
+		}
+	}
+
+	.player-menu {
+		display: none;
+		position: absolute;
+		height: auto;
+		width: 60rem;
+		background: var(--color-background1);
+		margin-top: calc(-3rem - 3px);
+		border-radius: var(--border-sm);
+
+		:global(.btn) {
+			flex: 1;
+			border-radius: 0;
+			margin: 0;
+		}
+
+		:global(.btn:first-child) {
+			border-bottom-left-radius: var(--border-sm);
+		}
+
+		:global(.btn:last-child) {
+			border-bottom-right-radius: var(--border-sm);
 		}
 	}
 </style>
