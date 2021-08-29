@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { navigate } from "svelte-routing"
+
 	import type { Player } from "../../domain/player/player.types"
 
 	import Button from "../Button.svelte"
@@ -18,6 +20,17 @@
 	</div>
 	<div slot="content">
 		<div class="content">
+			<div class="profile">
+				<Button
+					on:click={(e) => {
+						e.stopPropagation()
+						navigate(`/player/${player.platform}/${player.id}`, {
+							replace: false,
+							state: { platform: player.platform, id: player.id },
+						})
+					}}>View Player</Button
+				>
+			</div>
 			<Button>Log Warning</Button>
 			<Button>Log Mute</Button>
 			<Button color="warning">Log Kick</Button>
@@ -58,6 +71,19 @@
 		@include respond-below(sm) {
 			min-width: 100%;
 			width: 100%;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			row-gap: 0.5rem;
+			column-gap: 0.5rem;
+
+			.profile {
+				grid-column: span 2;
+				margin-bottom: 1rem;
+			}
+
+			:global(.btn) {
+				width: 100%;
+			}
 		}
 	}
 </style>
