@@ -109,10 +109,8 @@
 		}
 
 		const menu = document.getElementById(`pm-${playerId}`)
-
 		if (!menu) return
 
-		console.log(menu.style.display)
 		if (!menu.style.display || menu.style.display === "none") {
 			menu.style.display = "flex"
 			playerSelected = true
@@ -168,12 +166,46 @@
 
 						<div class="list">
 							{#each players as player}
+								<!-- for small screens -->
+								<div class="mobile-player-wrapper">
+									<PlayerModal {player}>
+										<div slot="trigger" let:open>
+											<div
+												class="player"
+												on:click={() => {
+													console.log("opening modal")
+													open()
+												}}
+											>
+												{player.name}
+											</div>
+										</div>
+									</PlayerModal>
+								</div>
+
+								<!-- for larger screens -->
 								<div class="player-wrapper">
 									<div class="player-menu" id={`pm-${player.id}`}>
-										<Button>Warn</Button>
-										<Button>Mute</Button>
-										<Button color="warning">Kick</Button>
-										<Button color="danger">Ban</Button>
+										<div
+											class="profile"
+											on:click|self={() => togglePlayerMenu(player.id)}
+										>
+											<Button
+												on:click={(e) => {
+													e.stopPropagation()
+													navigate(`/player/${player.platform}/${player.id}`, {
+														replace: false,
+														state: { platform: player.platform, id: player.id },
+													})
+												}}>View</Button
+											>
+										</div>
+										<div class="buttons">
+											<Button>Warn</Button>
+											<Button>Mute</Button>
+											<Button color="warning">Kick</Button>
+											<Button color="danger">Ban</Button>
+										</div>
 									</div>
 									<div
 										class="player"
@@ -269,9 +301,33 @@
 				grid-template-columns: 1fr;
 			}
 
+			.mobile-player-wrapper {
+				width: 100%;
+				display: none;
+
+				&:hover {
+					background: var(--color-accent-light);
+				}
+
+				.player {
+					display: flex;
+				}
+
+				@include respond-below(xs) {
+					// show mobile player menu on devices which can't accomodate the normal player-wrapper menu.
+					display: block;
+				}
+			}
+
 			.player-wrapper {
 				width: 100%;
 				position: relative;
+
+				@include respond-below(xs) {
+					// hide desktop player-wrapper when on a small device which can't accomodate
+					// the player menu.
+					display: none;
+				}
 			}
 
 			.player {
@@ -286,6 +342,9 @@
 				display: flex;
 				align-items: center;
 				padding-left: 1rem;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				user-select: none;
 
 				&:hover {
 					background: var(--color-accent-light);
@@ -304,26 +363,50 @@
 	}
 
 	.player-menu {
-		z-index: 1000;
 		display: none;
 		position: absolute;
-		margin-top: -0.5rem;
-		height: 3.5rem;
-		transform: translateY(100%);
 		width: 100%;
 
-		:global(.btn) {
-			flex: 1;
-			border-radius: 0;
-			margin: 0;
+		.profile {
+			transform: translateY(0);
+			z-index: 1001;
+			width: 100%;
+			display: flex;
+			justify-content: right;
+			height: 3rem;
+			cursor: pointer;
+
+			:global(.btn) {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+				height: 3rem;
+				margin: 0;
+			}
 		}
 
-		:global(.btn:first-child) {
-			border-bottom-left-radius: var(--border-sm);
-		}
+		.buttons {
+			position: absolute;
+			margin-top: -0.5rem;
+			height: 3.5rem;
+			transform: translateY(100%);
+			width: 100%;
+			z-index: 1000;
+			display: flex;
 
-		:global(.btn:last-child) {
-			border-bottom-right-radius: var(--border-sm);
+			:global(.btn) {
+				flex: 1;
+				border-radius: 0;
+				margin: 0;
+			}
+
+			:global(.btn:first-child) {
+				border-bottom-left-radius: var(--border-sm);
+			}
+
+			:global(.btn:last-child) {
+				border-bottom-right-radius: var(--border-sm);
+			}
 		}
 	}
 </style>

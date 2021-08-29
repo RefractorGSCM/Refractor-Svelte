@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte"
 	import type { Player } from "../../domain/player/player.types"
 
 	import Button from "../Button.svelte"
