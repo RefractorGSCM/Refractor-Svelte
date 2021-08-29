@@ -55,70 +55,73 @@
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C2",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C3",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C4",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C5",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C6",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C7",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C8",
 		platform: "playfab",
 		name: "avoid",
 	})
 	$: players.push({
-		id: "32B352D4448F3C1",
+		id: "32B352D4448F3C9",
 		platform: "playfab",
 		name: "avoid",
 	})
 
-	let showPlayerMenu = false
+	let playerSelected = false
 	let selectedPlayerId = ""
-
-	function openPlayerMenuClick(e, playerId) {
-		showPlayerMenu = !showPlayerMenu
-		const menu = document.getElementById("player-menu")
-		if (!showPlayerMenu) {
+	function togglePlayerMenu(playerId: string) {
+		if (playerSelected && selectedPlayerId !== playerId) {
+			const menu = document.getElementById(`pm-${selectedPlayerId}`)
+			if (!menu) return
 			menu.style.display = "none"
+			playerSelected = false
 			selectedPlayerId = ""
+
 			return
 		}
 
-		console.log(playerId, selectedPlayerId, playerId === selectedPlayerId)
+		const menu = document.getElementById(`pm-${playerId}`)
 
-		selectedPlayerId = playerId
-		const { target } = e
-		menu.style.display = "flex"
+		if (!menu) return
 
-		const rect = target.getBoundingClientRect()
-
-		menu.style.top = `${rect.top - target.offsetHeight / 2}px`
-		menu.style.left = `${rect.left - target.outerWidth / 2}px`
-		menu.style.marginLeft = "2rem"
-		menu.style.width = `${target.offsetWidth}px`
+		console.log(menu.style.display)
+		if (!menu.style.display || menu.style.display === "none") {
+			menu.style.display = "flex"
+			playerSelected = true
+			selectedPlayerId = playerId
+		} else {
+			menu.style.display = "none"
+			playerSelected = false
+			selectedPlayerId = ""
+		}
 	}
 </script>
 
@@ -165,26 +168,27 @@
 
 						<div class="list">
 							{#each players as player}
-								<div
-									class={`player ${
-										selectedPlayerId === player.id ? "selected" : ""
-									}`}
-									on:click={(e) => openPlayerMenuClick(e, player.id)}
-								>
-									{player.name}
+								<div class="player-wrapper">
+									<div class="player-menu" id={`pm-${player.id}`}>
+										<Button>Warn</Button>
+										<Button>Mute</Button>
+										<Button color="warning">Kick</Button>
+										<Button color="danger">Ban</Button>
+									</div>
+									<div
+										class="player"
+										class:unfocused={playerSelected &&
+											selectedPlayerId !== player.id}
+										on:click={() => togglePlayerMenu(player.id)}
+									>
+										{player.name}
+									</div>
 								</div>
 							{/each}
 						</div>
 					{/if}
 				</div>
 			</SinglePane>
-
-			<div class="player-menu" id="player-menu">
-				<Button>Warn</Button>
-				<Button>Mute</Button>
-				<Button color="warning">Kick</Button>
-				<Button color="danger">Ban</Button>
-			</div>
 		{/if}
 	</div>
 </Container>
@@ -265,18 +269,32 @@
 				grid-template-columns: 1fr;
 			}
 
+			.player-wrapper {
+				width: 100%;
+				position: relative;
+			}
+
 			.player {
 				background-color: var(--color-accent);
 				cursor: pointer;
-				padding: 0.7rem;
+				height: 3rem;
 				font-size: 1.5rem;
 				border-radius: var(--border-sm);
 				color: var(--color-text1);
 				text-decoration: none;
+				position: relative;
+				display: flex;
+				align-items: center;
+				padding-left: 1rem;
 
 				&:hover {
 					background: var(--color-accent-light);
 				}
+			}
+
+			.player.unfocused {
+				background-color: var(--color-background2);
+				cursor: unset;
 			}
 
 			.selected {
@@ -286,13 +304,13 @@
 	}
 
 	.player-menu {
+		z-index: 1000;
 		display: none;
 		position: absolute;
-		height: auto;
-		width: 60rem;
-		background: var(--color-background1);
-		margin-top: calc(-3rem - 3px);
-		border-radius: var(--border-sm);
+		margin-top: -0.5rem;
+		height: 3.5rem;
+		transform: translateY(100%);
+		width: 100%;
 
 		:global(.btn) {
 			flex: 1;
