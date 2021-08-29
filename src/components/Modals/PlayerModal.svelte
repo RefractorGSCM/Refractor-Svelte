@@ -78,7 +78,7 @@
 
 			.profile {
 				grid-column: span 2;
-				margin-bottom: 1rem;
+				margin-bottom: 2rem;
 			}
 
 			:global(.btn) {

@@ -197,7 +197,7 @@
 														replace: false,
 														state: { platform: player.platform, id: player.id },
 													})
-												}}>View</Button
+												}}>Profile</Button
 											>
 										</div>
 										<div class="buttons">
@@ -211,6 +211,8 @@
 										class="player"
 										class:unfocused={playerSelected &&
 											selectedPlayerId !== player.id}
+										class:focused={playerSelected &&
+											selectedPlayerId === player.id}
 										on:click={() => togglePlayerMenu(player.id)}
 									>
 										{player.name}
@@ -286,7 +288,8 @@
 		width: 100%;
 
 		.list {
-			margin-top: 1rem;
+			margin-top: 2rem;
+			padding-bottom: 2rem;
 			display: grid;
 			width: 100%;
 			grid-template-columns: 1fr 1fr 1fr;
@@ -351,9 +354,12 @@
 				}
 			}
 
+			.player.focused {
+				background-color: var(--color-background1);
+			}
+
 			.player.unfocused {
 				background-color: var(--color-background2);
-				cursor: unset;
 			}
 
 			.selected {
@@ -382,20 +388,20 @@
 				border-bottom-right-radius: 0;
 				height: 3rem;
 				margin: 0;
+				width: 25%;
 			}
 		}
 
 		.buttons {
 			position: absolute;
-			margin-top: -0.5rem;
-			height: 3.5rem;
+			height: 3rem;
 			transform: translateY(100%);
 			width: 100%;
 			z-index: 1000;
 			display: flex;
 
 			:global(.btn) {
-				flex: 1;
+				width: 25%;
 				border-radius: 0;
 				margin: 0;
 			}
