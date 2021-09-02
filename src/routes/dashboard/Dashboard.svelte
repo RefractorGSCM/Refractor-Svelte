@@ -50,14 +50,16 @@
 
 	<div class="menu">
 		<ul>
-			<div class="link">
-				<Link to="/">
-					<li>
-						<span class="fas fa-server" />
-						<span>Servers</span>
-					</li>
-				</Link>
-			</div>
+			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
+				<div class="link">
+					<Link to="/">
+						<li>
+							<span class="fas fa-server" />
+							<span>Servers</span>
+						</li>
+					</Link>
+				</div>
+			</RequirePerms>
 
 			<RequirePerms allOf={[FLAG_VIEW_PLAYER_RECORDS]}>
 				<div class="link">
@@ -161,7 +163,9 @@
 				</Route>
 			</RequirePerms>
 
-			<Route path="/" component={Home} />
+			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
+				<Route path="/" component={Home} />
+			</RequirePerms>
 		</Router>
 	</main>
 </div>

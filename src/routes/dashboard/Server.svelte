@@ -10,6 +10,12 @@
 	import SinglePane from "./components/SinglePane.svelte"
 	import type { Player } from "../../domain/player/player.types"
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
+	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
+	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
+	import CreateWarningModal from "../../components/Modals/CreateWarningModal.svelte"
+	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
+	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
 
 	export let id
 	let server: Server = null
@@ -146,13 +152,15 @@
 
 					<div class="buttons">
 						<Button>Open Chat</Button>
-						<Button
-							on:click={() =>
-								navigate(`/server/${server.id}/groups`, {
-									replace: false,
-									state: { serverId: server.id },
-								})}>Manage Permissions</Button
-						>
+						<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+							<Button
+								on:click={() =>
+									navigate(`/server/${server.id}/groups`, {
+										replace: false,
+										state: { serverId: server.id },
+									})}>Manage Permissions</Button
+							>
+						</RequirePerms>
 					</div>
 				</div>
 			</SinglePane>
@@ -166,58 +174,95 @@
 
 						<div class="list">
 							{#each players as player}
-								<!-- for small screens -->
-								<div class="mobile-player-wrapper">
-									<PlayerModal {player}>
-										<div slot="trigger" let:open>
-											<div
-												class="player"
-												on:click={() => {
-													console.log("opening modal")
-													open()
-												}}
-											>
-												{player.name}
-											</div>
-										</div>
-									</PlayerModal>
-								</div>
+								<!-- begin infraction modal wrapping here to avoid messing with styling and modal positioning -->
+								<CreateWarningModal serverId={id} {player}>
+									<div slot="trigger" let:openWarning>
+										<CreateMuteModal serverId={id} {player}>
+											<div slot="trigger" let:openMute>
+												<CreateKickModal serverId={id} {player}>
+													<div slot="trigger" let:openKick>
+														<CreateBanModal serverId={id} {player}>
+															<div slot="trigger" let:openBan>
+																<!-- for small screens -->
+																<div class="mobile-player-wrapper">
+																	<PlayerModal {player}>
+																		<div slot="trigger" let:open>
+																			<div
+																				class="player"
+																				on:click={() => {
+																					console.log("opening modal")
+																					open()
+																				}}
+																			>
+																				{player.name}
+																			</div>
+																		</div>
+																	</PlayerModal>
+																</div>
 
-								<!-- for larger screens -->
-								<div class="player-wrapper">
-									<div class="player-menu" id={`pm-${player.id}`}>
-										<div
-											class="profile"
-											on:click|self={() => togglePlayerMenu(player.id)}
-										>
-											<Button
-												on:click={(e) => {
-													e.stopPropagation()
-													navigate(`/player/${player.platform}/${player.id}`, {
-														replace: false,
-														state: { platform: player.platform, id: player.id },
-													})
-												}}>Profile</Button
-											>
-										</div>
-										<div class="buttons">
-											<Button>Warn</Button>
-											<Button>Mute</Button>
-											<Button color="warning">Kick</Button>
-											<Button color="danger">Ban</Button>
-										</div>
+																<!-- for larger screens -->
+																<div class="player-wrapper">
+																	<div
+																		class="player-menu"
+																		id={`pm-${player.id}`}
+																	>
+																		<div
+																			class="profile"
+																			on:click|self={() =>
+																				togglePlayerMenu(player.id)}
+																		>
+																			<Button
+																				on:click={(e) => {
+																					e.stopPropagation()
+																					navigate(
+																						`/player/${player.platform}/${player.id}`,
+																						{
+																							replace: false,
+																							state: {
+																								platform: player.platform,
+																								id: player.id,
+																							},
+																						},
+																					)
+																				}}>Profile</Button
+																			>
+																		</div>
+																		<div class="buttons">
+																			<Button
+																				classes={["first"]}
+																				on:click={openWarning}>Warn</Button
+																			>
+																			<Button on:click={openMute}>Mute</Button>
+																			<Button
+																				color="warning"
+																				on:click={openKick}>Kick</Button
+																			>
+																			<Button
+																				color="danger"
+																				on:click={openBan}
+																				classes={["last"]}>Ban</Button
+																			>
+																		</div>
+																	</div>
+																	<div
+																		class="player"
+																		class:unfocused={playerSelected &&
+																			selectedPlayerId !== player.id}
+																		class:focused={playerSelected &&
+																			selectedPlayerId === player.id}
+																		on:click={() => togglePlayerMenu(player.id)}
+																	>
+																		{player.name}
+																	</div>
+																</div>
+															</div>
+														</CreateBanModal>
+													</div>
+												</CreateKickModal>
+											</div>
+										</CreateMuteModal>
 									</div>
-									<div
-										class="player"
-										class:unfocused={playerSelected &&
-											selectedPlayerId !== player.id}
-										class:focused={playerSelected &&
-											selectedPlayerId === player.id}
-										on:click={() => togglePlayerMenu(player.id)}
-									>
-										{player.name}
-									</div>
-								</div>
+								</CreateWarningModal>
 							{/each}
 						</div>
 					{/if}
@@ -400,17 +445,28 @@
 			z-index: 1000;
 			display: flex;
 
+			:global(div[slot="trigger"]) {
+				width: 100%;
+				height: 3rem;
+			}
+
+			:global(.btn-container) {
+				background-color: red;
+				width: 100%;
+				height: 3rem;
+			}
+
 			:global(.btn) {
-				width: 25%;
+				width: 100%;
 				border-radius: 0;
 				margin: 0;
 			}
 
-			:global(.btn:first-child) {
+			:global(.btn.first) {
 				border-bottom-left-radius: var(--border-sm);
 			}
 
-			:global(.btn:last-child) {
+			:global(.btn.last) {
 				border-bottom-right-radius: var(--border-sm);
 			}
 		}
