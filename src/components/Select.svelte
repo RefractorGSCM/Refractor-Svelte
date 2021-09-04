@@ -20,9 +20,11 @@
 	.select-wrapper {
 		height: 100%;
 		width: 100%;
+		font-size: inherit;
 	}
 
 	.select {
+		font-size: inherit;
 		height: 100%;
 		width: 100%;
 		border: none;
