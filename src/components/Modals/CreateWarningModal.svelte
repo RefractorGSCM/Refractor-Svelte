@@ -138,9 +138,7 @@
 			return
 		}
 
-		console.log("Submitting", values)
-
-		// Create user and report any errors back
+		// Create infraction and report any errors back
 		const { infraction, success, errors } = await createWarning(
 			Number(values.serverId),
 			{
