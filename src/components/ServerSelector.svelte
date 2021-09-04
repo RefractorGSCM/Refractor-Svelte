@@ -13,6 +13,12 @@
 
 	const dispatch = createEventDispatcher()
 
+	onMount(async () => {
+		const initialValue = $allServers[0].id
+		value = initialValue
+		update({ target: { value: initialValue } })
+	})
+
 	function update(e) {
 		dispatch("change", parseInt(e.target.value))
 	}
