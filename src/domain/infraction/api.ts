@@ -39,3 +39,11 @@ const updateInfraction = (
 		withCredentials: true,
 	})
 }
+
+export default {
+	createWarning,
+	createMute,
+	createKick,
+	createBan,
+	updateInfraction,
+}
