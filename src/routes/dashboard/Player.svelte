@@ -5,6 +5,11 @@
 	import Flair from "../../components/Flair.svelte"
 
 	import Heading from "../../components/Heading.svelte"
+	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
+	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
+	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
+	import CreateWarningModal from "../../components/Modals/CreateWarningModal.svelte"
+	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer, serverPlayers } from "../../domain/player/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
@@ -13,8 +18,9 @@
 	export let id: string = ""
 	let errmsg = ""
 
+	let player: Player
 	onMount(async () => {
-		const player = await getPlayer(id, platform)
+		player = await getPlayer(id, platform)
 
 		if (!player) {
 			errmsg = "Player not found"
@@ -68,10 +74,29 @@
 				</div>
 
 				<div class="buttons">
-					<Button>Log Warning</Button>
-					<Button>Log Mute</Button>
-					<Button color="warning">Log Kick</Button>
-					<Button color="danger">Log Ban</Button>
+					<CreateWarningModal {player}>
+						<div slot="trigger" let:openWarning>
+							<Button on:click={openWarning}>Log Warning</Button>
+						</div>
+					</CreateWarningModal>
+
+					<CreateMuteModal {player}>
+						<div slot="trigger" let:openMute>
+							<Button on:click={openMute}>Log Mute</Button>
+						</div>
+					</CreateMuteModal>
+
+					<CreateKickModal {player}>
+						<div slot="trigger" let:openKick>
+							<Button color="warning" on:click={openKick}>Log Kick</Button>
+						</div>
+					</CreateKickModal>
+
+					<CreateBanModal {player}>
+						<div slot="trigger" let:openBan>
+							<Button color="danger" on:click={openBan}>Log Ban</Button>
+						</div>
+					</CreateBanModal>
 				</div>
 			</div>
 		</SinglePane>
@@ -135,6 +160,11 @@
 
 		.buttons {
 			margin-top: 2rem;
+			display: flex;
+
+			:global(> *) {
+				margin-right: 0.5rem;
+			}
 
 			@include respond-below(xxs) {
 				:global(.btn) {
