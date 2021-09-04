@@ -18,7 +18,7 @@
 
 	export let initialValues: CreateWarningParams = {}
 	export let player: Player
-	export let serverId: number
+	export let serverId: number = null
 	let serverIdProvided = !!serverId
 
 	type fields = {
