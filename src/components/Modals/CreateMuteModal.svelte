@@ -29,8 +29,8 @@
 	type fields = {
 		values: {
 			reason?: string
-			duration?: string | number
-			serverId?: string | number
+			duration?: number | string
+			serverId?: number | string
 		}
 		errors: {
 			reason?: string
@@ -111,8 +111,10 @@
 			.required("Reason is required"),
 		duration: yup
 			.number()
+			.transform((val) => (isNaN(val) ? undefined : val))
 			.min(0, "Must not be less than 0")
-			.max(maxInt32, "Must not be higher than 2,147,483,647"),
+			.max(maxInt32, "Must not be higher than 2,147,483,647")
+			.required("Duration is required"),
 	})
 
 	async function submit(e, close) {
@@ -121,7 +123,8 @@
 		let values = {
 			...$store.values,
 		}
-		values.duration = Number(values.duration)
+
+		console.log("Values", values)
 
 		// Validate
 		let valid = false
@@ -208,7 +211,9 @@
 				<DurationPicker
 					name="duration"
 					label="Duration"
-					value={Number($store.values.duration)}
+					value={typeof $store.values.duration === "number"
+						? $store.values.duration
+						: null}
 					on:change={({ detail: val }) => setDuration(val)}
 					required
 					error={$store.errors.duration}
