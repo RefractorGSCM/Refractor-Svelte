@@ -6,6 +6,7 @@
 		CreateBanParams,
 		CreateWarningParams,
 	} from "../../domain/infraction/infraction.types"
+	import { createWarning } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
@@ -140,16 +141,26 @@
 		console.log("Submitting", values)
 
 		// Create user and report any errors back
-		// const errors = await createServer(values as CreateBanParams)
-		// store.set({
-		// 	...$store,
-		// 	errors,
-		// })
+		const { infraction, success, errors } = await createWarning(
+			Number(values.serverId),
+			{
+				...values,
+				player_id: player.id,
+				platform: player.platform,
+			},
+		)
 
-		// // If no errors were returned, the user creation succeeded. Close the form.
-		// if (!errors) {
-		// 	close()
-		// }
+		if (!success) {
+			store.set({
+				...$store,
+				...errors,
+			})
+		}
+
+		// Close the form on success
+		if (success) {
+			close()
+		}
 	}
 </script>
 

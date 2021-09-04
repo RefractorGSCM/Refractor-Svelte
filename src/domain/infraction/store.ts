@@ -16,7 +16,7 @@ type infractionCreator = (
 type creationRes = {
 	infraction: Infraction
 	success: boolean
-	err?: any
+	errors?: any
 }
 
 async function createInfraction(
@@ -38,14 +38,13 @@ async function createInfraction(
 			return {
 				infraction: null,
 				success: false,
-				err: data.errors,
+				errors: data.errors,
 			}
 		}
 
 		return {
 			infraction: null,
 			success: false,
-			err: data.message || "Could not create infraction",
 		}
 	}
 }
@@ -60,9 +59,7 @@ export async function createWarning(
 		successToast("Warning created")
 		return res
 	} else {
-		errorToast(
-			typeof res.err == "string" ? res.err : "Could not create warning",
-		)
+		errorToast("Could not create warning")
 		return res
 	}
 }
@@ -77,7 +74,7 @@ export async function createMute(
 		successToast("Mute created")
 		return res
 	} else {
-		errorToast(typeof res.err == "string" ? res.err : "Could not create mute")
+		errorToast("Could not create mute")
 		return res
 	}
 }
@@ -92,7 +89,7 @@ export async function createKick(
 		successToast("Kick created")
 		return res
 	} else {
-		errorToast(typeof res.err == "string" ? res.err : "Could not create kick")
+		errorToast("Could not create kick")
 		return res
 	}
 }
@@ -107,7 +104,7 @@ export async function createBan(
 		successToast("Ban created")
 		return res
 	} else {
-		errorToast(typeof res.err == "string" ? res.err : "Could not create ban")
+		errorToast("Could not create ban")
 		return res
 	}
 }
