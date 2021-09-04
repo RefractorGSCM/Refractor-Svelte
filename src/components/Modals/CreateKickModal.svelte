@@ -7,6 +7,7 @@
 		CreateKickParams,
 		CreateWarningParams,
 	} from "../../domain/infraction/infraction.types"
+	import { createKick } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { updateServer } from "../../domain/server/store"
 	import Server from "../../routes/dashboard/Server.svelte"
@@ -139,19 +140,27 @@
 			return
 		}
 
-		console.log("Submitting", values)
+		// Create infraction and report any errors back
+		const { infraction, success, errors } = await createKick(
+			Number(values.serverId),
+			{
+				...values,
+				player_id: player.id,
+				platform: player.platform,
+			},
+		)
 
-		// Create user and report any errors back
-		// const errors = await createServer(values as CreateBanParams)
-		// store.set({
-		// 	...$store,
-		// 	errors,
-		// })
+		if (!success) {
+			store.set({
+				...$store,
+				...errors,
+			})
+		}
 
-		// // If no errors were returned, the user creation succeeded. Close the form.
-		// if (!errors) {
-		// 	close()
-		// }
+		// Close the form on success
+		if (success) {
+			close()
+		}
 	}
 </script>
 
