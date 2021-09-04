@@ -14,6 +14,7 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import ServerSelector from "../ServerSelector.svelte"
 	import TextArea from "../TextArea.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
@@ -165,13 +166,12 @@
 		<div class="content">
 			<form class="form" on:submit|preventDefault={() => {}}>
 				{#if !serverIdProvided}
-					<TextInput
+					<ServerSelector
 						name="serverId"
 						label="Server"
-						value={$store.values.serverId.toString()}
-						error={$store.errors.serverId}
 						required
-						on:input={onChange}
+						on:change={(e) =>
+							onChange({ target: { name: "serverId", value: e.detail } })}
 					/>
 				{/if}
 
