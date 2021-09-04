@@ -283,52 +283,56 @@
 						server.
 					</p>
 				{:else}
-					<div class="heading">
-						<Heading type="subtitle">{currentGroup.name}</Heading>
+					<div class="manager-wrapper">
+						<div class="heading">
+							<Heading type="subtitle">{currentGroup.name}</Heading>
 
-						{#if currentGroup.id === baseGroupId}
-							<Flair color="disabled">Base Group</Flair>
-						{/if}
-					</div>
-
-					<p class="description">
-						This page will allow you to override permissions of a group on
-						specific servers.
-					</p>
-
-					<div class="permissions-list">
-						<Heading>Permissions</Heading>
-
-						{#each permissions as permission}
-							{#if permission.id !== 1}
-								<div class="permission">
-									<div class="main">
-										<div class="name">
-											{permission.display_name}
-										</div>
-										<TripleToggle
-											name={permission.name}
-											on:change={handlePermissionChange}
-											value={(function () {
-												if ($currentAllowOverrides.includes(permission.name)) {
-													return "true"
-												}
-
-												if ($currentDenyOverrides.includes(permission.name)) {
-													return "false"
-												}
-
-												return "unset"
-											})()}
-										/>
-									</div>
-
-									<div class="description">
-										{permission.description}
-									</div>
-								</div>
+							{#if currentGroup.id === baseGroupId}
+								<Flair color="disabled">Base Group</Flair>
 							{/if}
-						{/each}
+						</div>
+
+						<p class="description">
+							This page will allow you to override permissions of a group on
+							specific servers.
+						</p>
+
+						<div class="permissions-list">
+							<Heading>Permissions</Heading>
+
+							{#each permissions as permission}
+								{#if permission.id !== 1}
+									<div class="permission">
+										<div class="main">
+											<div class="name">
+												{permission.display_name}
+											</div>
+											<TripleToggle
+												name={permission.name}
+												on:change={handlePermissionChange}
+												value={(function () {
+													if (
+														$currentAllowOverrides.includes(permission.name)
+													) {
+														return "true"
+													}
+
+													if ($currentDenyOverrides.includes(permission.name)) {
+														return "false"
+													}
+
+													return "unset"
+												})()}
+											/>
+										</div>
+
+										<div class="description">
+											{permission.description}
+										</div>
+									</div>
+								{/if}
+							{/each}
+						</div>
 					</div>
 				{/if}
 			</div>
@@ -402,6 +406,15 @@
 	}
 
 	.manager {
+		height: 100%;
+		width: 100%;
+		max-height: 100%;
+
+		&-wrapper {
+			height: 100%;
+			overflow-y: scroll;
+		}
+
 		.heading {
 			display: inline-block;
 			margin-bottom: 1rem;
