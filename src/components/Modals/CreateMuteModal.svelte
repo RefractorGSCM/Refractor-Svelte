@@ -14,6 +14,7 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import DurationPicker from "../DurationPicker.svelte"
 	import TextArea from "../TextArea.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
@@ -83,11 +84,14 @@
 		})
 	}
 
-	function onDurationKeyDown(e) {
-		var regex = /[0-9]|\./
-		if (!regex.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
-			if (e.preventDefault) e.preventDefault()
-		}
+	function setDuration(duration: number) {
+		store.set({
+			...$store,
+			values: {
+				...$store.values,
+				duration,
+			},
+		})
 	}
 
 	const maxInt32 = 2147483647
@@ -190,14 +194,47 @@
 					on:input={onChange}
 				/>
 
-				<TextInput
+				<DurationPicker
 					name="duration"
 					label="Duration"
-					value={$store.values.duration.toString()}
-					error={$store.errors.duration}
-					on:input={onChange}
+					value={Number($store.values.duration)}
+					on:change={({ detail: val }) => setDuration(val)}
 					required
-					on:keydown={onDurationKeyDown}
+					error={$store.errors.duration}
+					quickselects={[
+						{
+							name: "permanent",
+							value: 0,
+						},
+						{
+							name: "1 min",
+							value: 1,
+						},
+						{
+							name: "30 mins",
+							value: 30,
+						},
+						{
+							name: "1 hour",
+							value: 60,
+						},
+						{
+							name: "12 hours",
+							value: 720,
+						},
+						{
+							name: "1 day",
+							value: 1440,
+						},
+						{
+							name: "1 week",
+							value: 10080,
+						},
+						{
+							name: "1 month",
+							value: 43800,
+						},
+					]}
 				/>
 			</form>
 		</div>

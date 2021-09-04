@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte"
+
 	import Select from "./Select.svelte"
 
 	export let name
@@ -13,6 +15,8 @@
 	export let max = 0x7fffffff
 	export let quickselects: { name: string; value: number }[] = null
 
+	const dispatch = createEventDispatcher()
+
 	function updateValue(e) {
 		let target = e.target
 
@@ -21,6 +25,8 @@
 		}
 
 		value = parseInt(target.value)
+
+		dispatch("change", value)
 	}
 </script>
 
@@ -29,7 +35,7 @@
 		<input
 			type="number"
 			bind:this={ref}
-			{value}
+			bind:value
 			{disabled}
 			{autocomplete}
 			{name}
@@ -39,13 +45,7 @@
 			{max}
 			data-invalid={error || undefined}
 			aria-invalid={error || undefined}
-			on:change
-			on:input
-			on:input={updateValue}
-			on:keydown
-			on:keyup
-			on:focus
-			on:blur
+			on:change={updateValue}
 		/>
 
 		<div class="quickselects">
