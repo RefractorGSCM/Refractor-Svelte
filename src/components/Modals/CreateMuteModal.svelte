@@ -6,6 +6,7 @@
 		CreateBanParams,
 		CreateMuteParams,
 	} from "../../domain/infraction/infraction.types"
+	import { createMute } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import type { UpdateServerParams } from "../../domain/server/server.types"
 	import { updateServer } from "../../domain/server/store"
@@ -120,6 +121,7 @@
 		let values = {
 			...$store.values,
 		}
+		values.duration = Number(values.duration)
 
 		// Validate
 		let valid = false
@@ -147,19 +149,28 @@
 			return
 		}
 
-		console.log("Submitting", values)
+		// Create infraction and report any errors back
+		const { infraction, success, errors } = await createMute(
+			Number(values.serverId),
+			{
+				reason: values.reason,
+				duration: Number(values.duration),
+				player_id: player.id,
+				platform: player.platform,
+			},
+		)
 
-		// Create user and report any errors back
-		// const errors = await createServer(values as CreateBanParams)
-		// store.set({
-		// 	...$store,
-		// 	errors,
-		// })
+		if (!success) {
+			store.set({
+				...$store,
+				...errors,
+			})
+		}
 
-		// // If no errors were returned, the user creation succeeded. Close the form.
-		// if (!errors) {
-		// 	close()
-		// }
+		// Close the form on success
+		if (success) {
+			close()
+		}
 	}
 </script>
 
