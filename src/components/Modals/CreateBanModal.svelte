@@ -11,6 +11,7 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import TextArea from "../TextArea.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
@@ -154,7 +155,7 @@
 	}
 </script>
 
-<Modal on:close={cleanup}>
+<Modal on:close={cleanup} fullWidth>
 	<div slot="trigger" let:open>
 		<slot name="trigger" openBan={open} />
 	</div>
@@ -175,12 +176,14 @@
 					/>
 				{/if}
 
-				<TextInput
+				<TextArea
 					name="reason"
 					label="Reason"
+					required
 					value={$store.values.reason}
 					error={$store.errors.reason}
-					required
+					minRows={2}
+					maxRows={6}
 					on:input={onChange}
 				/>
 
@@ -229,7 +232,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
-		width: 70rem;
+		width: 100%;
 
 		.form {
 			margin-top: 1rem;

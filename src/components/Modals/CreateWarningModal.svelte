@@ -179,7 +179,7 @@
 					required
 					value={$store.values.reason}
 					error={$store.errors.reason}
-					minRows={3}
+					minRows={2}
 					maxRows={6}
 					on:input={onChange}
 				/>
