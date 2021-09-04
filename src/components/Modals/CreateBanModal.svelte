@@ -3,6 +3,7 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import type { CreateBanParams } from "../../domain/infraction/infraction.types"
+	import { createBan } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import type { UpdateServerParams } from "../../domain/server/server.types"
 	import { updateServer } from "../../domain/server/store"
@@ -144,19 +145,28 @@
 			return
 		}
 
-		console.log("Submitting", values)
+		// Create infraction and report any errors back
+		const { infraction, success, errors } = await createBan(
+			Number(values.serverId),
+			{
+				reason: values.reason,
+				duration: Number(values.duration),
+				player_id: player.id,
+				platform: player.platform,
+			},
+		)
 
-		// Create user and report any errors back
-		// const errors = await createServer(values as CreateBanParams)
-		// store.set({
-		// 	...$store,
-		// 	errors,
-		// })
+		if (!success) {
+			store.set({
+				...$store,
+				...errors,
+			})
+		}
 
-		// // If no errors were returned, the user creation succeeded. Close the form.
-		// if (!errors) {
-		// 	close()
-		// }
+		// Close the form on success
+		if (success) {
+			close()
+		}
 	}
 </script>
 
@@ -205,7 +215,7 @@
 						},
 						{
 							name: "30 mins",
-							value: 1,
+							value: 30,
 						},
 						{
 							name: "1 hour",
