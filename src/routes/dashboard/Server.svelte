@@ -424,14 +424,12 @@
 			width: 100%;
 			display: flex;
 			justify-content: right;
-			height: 3rem;
 			cursor: pointer;
 
 			:global(.btn) {
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 				border-bottom-right-radius: 0;
-				height: 3rem;
 				margin: 0;
 				width: 25%;
 			}
@@ -439,22 +437,10 @@
 
 		.buttons {
 			position: absolute;
-			height: 3rem;
 			transform: translateY(100%);
 			width: 100%;
 			z-index: 1000;
 			display: flex;
-
-			:global(div[slot="trigger"]) {
-				width: 100%;
-				height: 3rem;
-			}
-
-			:global(.btn-container) {
-				background-color: red;
-				width: 100%;
-				height: 3rem;
-			}
 
 			:global(.btn) {
 				width: 100%;

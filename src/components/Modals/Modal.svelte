@@ -11,6 +11,8 @@
 	const store = modalStore(false)
 	const { isOpen, open, close } = store
 
+	export let fullWidth = false
+
 	const dispatch = createEventDispatcher()
 
 	function preClose() {
@@ -40,7 +42,7 @@
 	<div class="modal" use:modalAction tabindex="0">
 		<div class="backdrop" on:click|stopPropagation={preClose} />
 
-		<div class="content-wrapper">
+		<div class="content-wrapper" class:fullwidth={fullWidth}>
 			<slot name="header" {store}>
 				<!-- fallback header -->
 				<div>
@@ -117,5 +119,9 @@
 	.fallback-message {
 		font-size: 1.6rem;
 		color: red;
+	}
+
+	.fullwidth {
+		width: 100%;
 	}
 </style>
