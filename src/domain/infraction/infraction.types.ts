@@ -23,3 +23,8 @@ export type CreateBanParams = {
 	platform?: string
 	playerId?: string
 }
+
+export type UpdateInfractionParams = {
+	reason?: string
+	duration?: string
+}
