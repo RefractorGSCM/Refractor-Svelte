@@ -13,9 +13,11 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import Heading from "../Heading.svelte"
 	import ServerSelector from "../ServerSelector.svelte"
 	import TextArea from "../TextArea.svelte"
 	import TextInput from "../TextInput.svelte"
+	import AttachmentModal from "./AttachmentModal.svelte"
 	import Modal from "./Modal.svelte"
 
 	export let initialValues: CreateWarningParams = {}
@@ -160,6 +162,27 @@
 			close()
 		}
 	}
+
+	type Attachment = {
+		url: string
+		description: string
+	}
+
+	let attachments = writable([] as Attachment[])
+
+	function addAttachment(attachment: Attachment) {
+		attachments.update((current) => {
+			current.push(attachment)
+			return current
+		})
+	}
+
+	function removeAttachment(index: number) {
+		attachments.update((current) => {
+			current.splice(index, 1)
+			return current
+		})
+	}
 </script>
 
 <Modal on:close={cleanup} fullWidth>
@@ -193,6 +216,25 @@
 					on:input={onChange}
 				/>
 			</form>
+
+			<div class="attachments">
+				{#if $attachments.length > 0}
+					<p>Attachments</p>
+
+					{#each $attachments as attachment, idx}
+						<div class="attachment">
+							{attachment.url}
+							<span on:click={() => removeAttachment(idx)}>x</span>
+						</div>
+					{/each}
+				{/if}
+
+				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
+					<div slot="trigger" let:open>
+						<Button size="inline" on:click={open}>Attach URL</Button>
+					</div>
+				</AttachmentModal>
+			</div>
 		</div>
 	</div>
 
@@ -240,6 +282,27 @@
 		@include respond-below(sm) {
 			min-width: 100%;
 			width: 100%;
+		}
+	}
+
+	.attachments {
+		.attachment {
+			display: flex;
+
+			span {
+				background-color: var(--color-primary);
+				border-radius: var(--border-sm);
+				width: 2rem;
+				height: 2rem;
+				display: grid;
+				place-items: center;
+				margin-left: 1rem;
+
+				&:hover {
+					background-color: var(--color-primary-light);
+					cursor: pointer;
+				}
+			}
 		}
 	}
 </style>

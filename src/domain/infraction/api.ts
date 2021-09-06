@@ -40,10 +40,17 @@ const updateInfraction = (
 	})
 }
 
+const getPlayerInfractions = (platform: string, playerId: string) => {
+	return axios.get(`${API_ROOT}/infractions/player/${platform}/${playerId}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	createWarning,
 	createMute,
 	createKick,
 	createBan,
 	updateInfraction,
+	getPlayerInfractions,
 }

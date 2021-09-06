@@ -108,3 +108,20 @@ export async function createBan(
 		return res
 	}
 }
+
+export async function getPlayerInfractions(
+	platform: string,
+	playerId: string,
+): Promise<Infraction[]> {
+	try {
+		const { data } = await api.getPlayerInfractions(platform, playerId)
+
+		return data.payload as Infraction[]
+	} catch (err) {
+		const { data } = err.response
+
+		console.log("Err", err)
+
+		errorToast(data.message ? data.message : "Could not get player infractions")
+	}
+}

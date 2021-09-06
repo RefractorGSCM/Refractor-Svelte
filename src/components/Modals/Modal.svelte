@@ -94,7 +94,7 @@
 
 		div.content-wrapper {
 			z-index: 10;
-			max-width: 70vw;
+			max-width: 50vw;
 			border-radius: 0.3rem;
 			background-color: var(--color-background1);
 			overflow: hidden;
