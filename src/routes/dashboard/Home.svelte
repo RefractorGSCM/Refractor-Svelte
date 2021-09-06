@@ -51,19 +51,16 @@
 			</div>
 
 			{#each $allServers as server}
-				<div
-					class="server"
-					on:click={() =>
-						navigate(`/server/${server.id}`, {
-							replace: false,
-							state: { serverId: server.id },
-						})}
-				>
-					<div class="name">
-						<span class="icon fas fa-server" />{server.name}
-					</div>
-					<div class="players">?</div>
-					<div class="status">?</div>
+				<div class="server">
+					<Link to={`/server/${server.id}`}>
+						<div class="server-info">
+							<div class="name">
+								<span class="icon fas fa-server" />{server.name}
+							</div>
+							<div class="players">?</div>
+							<div class="status">?</div>
+						</div>
+					</Link>
 					<div class="actions">
 						<EditServerModal initialValues={server} serverId={server.id}>
 							<div slot="trigger" let:open>
@@ -121,10 +118,9 @@
 
 		.server {
 			display: grid;
-			grid-template-columns: 1.2fr 1fr 1fr 0.4fr;
+			grid-template-columns: 3.5fr 0.5fr;
 			grid-template-rows: auto;
 			background-color: var(--color-background2);
-			padding: 1rem 1.5rem;
 			align-items: center;
 			border-radius: var(--border-sm);
 			transition: background-color 0.1s;
@@ -132,6 +128,20 @@
 			&:hover {
 				background-color: var(--color-background1);
 				cursor: pointer;
+			}
+
+			.server-info {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				align-items: center;
+				padding: 1rem 1.5rem;
+				color: var(--color-text2);
+			}
+
+			.actions {
+				display: flex;
+				align-items: center;
+				padding-right: 1.5rem;
 			}
 
 			@include respond-below(sm) {
@@ -158,7 +168,7 @@
 
 		.heading {
 			display: grid;
-			grid-template-columns: 1.2fr 1fr 1fr 0.4fr;
+			grid-template-columns: 1fr 1fr 1fr 0.4fr;
 			grid-template-rows: auto;
 			background-color: var(--color-accent);
 			padding: 1rem;
