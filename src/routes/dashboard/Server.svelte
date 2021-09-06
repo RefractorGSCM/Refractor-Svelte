@@ -442,6 +442,10 @@
 			z-index: 1000;
 			display: flex;
 
+			@include respond-below(xl) {
+				transform: translateY(100%);
+			}
+
 			:global(.btn) {
 				width: 100%;
 				border-radius: 0;

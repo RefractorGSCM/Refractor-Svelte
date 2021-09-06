@@ -9,6 +9,9 @@
 	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
 	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
 	import CreateWarningModal from "../../components/Modals/CreateWarningModal.svelte"
+	import ServerSelector from "../../components/ServerSelector.svelte"
+	import type { Infraction } from "../../domain/infraction/infraction.types"
+	import { getPlayerInfractions } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer, serverPlayers } from "../../domain/player/store"
 	import Container from "./components/Container.svelte"
@@ -19,12 +22,37 @@
 	let errmsg = ""
 
 	let player: Player
+	let infractions: Infraction[]
+	let warnings: Infraction[]
+	let mutes: Infraction[]
+	let kicks: Infraction[]
+	let bans: Infraction[]
+
 	onMount(async () => {
 		player = await getPlayer(id, platform)
 
 		if (!player) {
 			errmsg = "Player not found"
 			return
+		}
+
+		infractions = await getPlayerInfractions(platform, id)
+
+		for (const infraction of infractions) {
+			switch (infraction.type) {
+				case "WARNING":
+					warnings.push(infraction)
+					break
+				case "MUTE":
+					mutes.push(infraction)
+					break
+				case "KICK":
+					kicks.push(infraction)
+					break
+				case "BAN":
+					bans.push(infraction)
+					break
+			}
 		}
 	})
 
@@ -101,27 +129,19 @@
 			</div>
 		</SinglePane>
 
-		<div class="infraction-section">
-			<SinglePane>
-				<Heading>Warnings</Heading>
-				<div class="infraction-list" />
-			</SinglePane>
+		<SinglePane>
+			<div class="infractions">
+				<div class="heading">
+					<Heading type="subtitle">Infractions</Heading>
 
-			<SinglePane>
-				<Heading>Mutes</Heading>
-				<div class="infraction-list" />
-			</SinglePane>
+					<ServerSelector name="serverId" />
+				</div>
 
-			<SinglePane>
-				<Heading>Kicks</Heading>
-				<div class="infraction-list" />
-			</SinglePane>
-
-			<SinglePane>
-				<Heading>Bans</Heading>
-				<div class="infraction-list" />
-			</SinglePane>
-		</div>
+				<div class="section">
+					<Heading>Warnings</Heading>
+				</div>
+			</div>
+		</SinglePane>
 	{/if}
 </Container>
 
@@ -175,22 +195,21 @@
 		}
 	}
 
-	.infraction-section {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		row-gap: 3rem;
-		column-gap: 3rem;
+	.infractions {
+		width: 100%;
 
-		@include respond-below(xl) {
-			grid-template-columns: 1fr;
+		.heading {
+			width: 100%;
+			min-height: 11rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
 		}
-	}
 
-	.infraction-list {
-	}
-
-	.infraction {
-		background-color: var(--color-background1);
-		border-radius: var(--border-sm);
+		.section {
+			padding-top: 1rem;
+			display: flex;
+			flex-direction: column;
+		}
 	}
 </style>
