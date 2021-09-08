@@ -425,6 +425,7 @@
 			display: flex;
 			justify-content: right;
 			cursor: pointer;
+			height: 3rem;
 
 			:global(.btn) {
 				border-top-left-radius: 0;
@@ -432,6 +433,8 @@
 				border-bottom-right-radius: 0;
 				margin: 0;
 				width: 25%;
+				height: 3rem;
+				padding: 0;
 			}
 		}
 
@@ -439,6 +442,7 @@
 			position: absolute;
 			transform: translateY(100%);
 			width: 100%;
+			height: 3rem;
 			z-index: 1000;
 			display: flex;
 
@@ -450,6 +454,8 @@
 				width: 100%;
 				border-radius: 0;
 				margin: 0;
+				height: 3rem;
+				padding: 0;
 			}
 
 			:global(.btn.first) {
