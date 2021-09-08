@@ -76,6 +76,14 @@
 		}
 		currentlyOnline = found
 	}
+
+	function truncate(value: string, limit: number): string {
+		if (value.length <= limit) {
+			return value
+		}
+
+		return value.substring(0, limit - 3) + "..."
+	}
 </script>
 
 <Container>
@@ -137,8 +145,81 @@
 					<ServerSelector name="serverId" />
 				</div>
 
-				<div class="section">
-					<Heading>Warnings</Heading>
+				<div class="infraction-lists">
+					<div class="section">
+						<div class="section-heading">
+							<Heading>Warnings</Heading>
+						</div>
+
+						<div class="list">
+							<div class="infraction">
+								<div class="field id">
+									<span class="label">ID</span>
+									<span class="value">1</span>
+								</div>
+								<div class="field issuer">
+									<span class="label">Issuer</span>
+									<span class="value">Void</span>
+								</div>
+								<div class="field date">
+									<span class="label">Date</span>
+									<span class="value">2020-09-05</span>
+								</div>
+								<div class="field duration">
+									<span class="label">Duration</span>
+									<span class="value">1440</span>
+								</div>
+								<div class="field reason">
+									<span class="label">Reason</span>
+									<span class="value"
+										>{truncate(
+											"Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae deserunt, sint aut omnis tempore ratione dignissimos soluta corrupti quam fugiat ut est neque dolore possimus minima voluptatibus facere temporibus hic",
+											100,
+										)}</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="section">
+						<div class="section-heading">
+							<Heading>Mutes</Heading>
+						</div>
+
+						<div class="list">
+							<div class="infraction">Test 1</div>
+							<div class="infraction">Test 2</div>
+							<div class="infraction">Test 3</div>
+							<div class="infraction">Test 1</div>
+						</div>
+					</div>
+
+					<div class="section">
+						<div class="section-heading">
+							<Heading>Kicks</Heading>
+						</div>
+
+						<div class="list">
+							<div class="infraction">Test 1</div>
+							<div class="infraction">Test 2</div>
+							<div class="infraction">Test 3</div>
+							<div class="infraction">Test 1</div>
+						</div>
+					</div>
+
+					<div class="section">
+						<div class="section-heading">
+							<Heading>Bans</Heading>
+						</div>
+
+						<div class="list">
+							<div class="infraction">Test 1</div>
+							<div class="infraction">Test 2</div>
+							<div class="infraction">Test 3</div>
+							<div class="infraction">Test 1</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</SinglePane>
@@ -206,10 +287,84 @@
 			justify-content: space-between;
 		}
 
+		.infraction-lists {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 3rem;
+			row-gap: 3rem;
+
+			@include respond-below(lg) {
+				grid-template-columns: 1fr;
+			}
+		}
+
 		.section {
-			padding-top: 1rem;
 			display: flex;
 			flex-direction: column;
+			border: 2px solid var(--color-accent);
+
+			.section-heading {
+				padding: 1rem;
+			}
+		}
+
+		.infraction {
+			padding: 1rem;
+			position: relative;
+
+			&:nth-child(odd) {
+				background-color: var(--color-background1);
+			}
+
+			&:nth-child(even) {
+				background-color: var(--color-background2);
+			}
+
+			display: grid;
+			grid-template-columns: 1fr 2fr 2fr 1fr;
+			grid-template-rows: auto auto;
+
+			.field {
+				position: relative;
+				min-height: 3.5rem;
+
+				@include respond-below(xl) {
+					min-height: 3rem;
+				}
+
+				.label {
+					font-size: 1rem;
+					color: var(--color-primary-light);
+					position: absolute;
+					top: 0;
+					height: 1rem;
+				}
+
+				.value {
+					position: absolute;
+					bottom: 0;
+				}
+			}
+
+			.field.reason {
+				margin-top: 1rem;
+				grid-column: span 4;
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+
+				.label {
+					height: 1.5rem;
+					position: unset;
+				}
+
+				.value {
+					position: unset;
+					min-height: 4rem;
+					overflow: hidden;
+					text-overflow: clip;
+				}
+			}
 		}
 	}
 </style>
