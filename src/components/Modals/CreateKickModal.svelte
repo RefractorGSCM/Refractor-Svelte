@@ -2,6 +2,7 @@
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
+	import type { Attachment } from "../../domain/attachment/attachment.types"
 	import type {
 		CreateBanParams,
 		CreateKickParams,
@@ -13,6 +14,7 @@
 	import Server from "../../routes/dashboard/Server.svelte"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
+	import AttachmentManager from "../AttachmentManager.svelte"
 
 	import Button from "../Button.svelte"
 	import ServerSelector from "../ServerSelector.svelte"
@@ -29,6 +31,7 @@
 		values: {
 			reason?: string
 			serverId?: string | number
+			attachments?: Attachment[]
 		}
 		errors: {
 			reason?: string
@@ -40,6 +43,7 @@
 		values: {
 			reason: "",
 			serverId: serverId || "",
+			attachments: [],
 		},
 		errors: {},
 	} as fields)
@@ -79,13 +83,6 @@
 				[target.name]: target.value,
 			},
 		})
-	}
-
-	function onDurationKeyDown(e) {
-		var regex = /[0-9]|\./
-		if (!regex.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
-			if (e.preventDefault) e.preventDefault()
-		}
 	}
 
 	const maxInt32 = 2147483647
@@ -195,6 +192,8 @@
 					on:input={onChange}
 				/>
 			</form>
+
+			<AttachmentManager bind:attachments={$store.values.attachments} />
 		</div>
 	</div>
 
