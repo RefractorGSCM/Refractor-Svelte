@@ -12,12 +12,12 @@
 
 	type values = {
 		url?: string
-		description?: string
+		note?: string
 	}
 
 	type errors = {
 		url?: string
-		description?: string
+		note?: string
 	}
 
 	type store = {
@@ -28,11 +28,11 @@
 	let store = writable({
 		values: {
 			url: "",
-			description: "",
+			note: "",
 		},
 		errors: {
 			url: "",
-			description: "",
+			note: "",
 		},
 	} as store)
 
@@ -44,10 +44,10 @@
 				return url.match(/\.(jpeg|jpg|gif|png)$/) != null
 			})
 			.required("URL is a required field"),
-		description: yup
+		note: yup
 			.string()
 			.min(0)
-			.max(256, "Description must be no more than 256 characters in length"),
+			.max(256, "Note must be no more than 256 characters in length"),
 	})
 
 	function onChange({ target }) {
@@ -114,10 +114,10 @@
 				on:input={onChange}
 			/>
 			<TextArea
-				name="description"
-				label="Description (optional)"
-				value={$store.values.description}
-				error={$store.errors.description}
+				name="note"
+				label="Note (optional)"
+				value={$store.values.note}
+				error={$store.errors.note}
 				minRows={1}
 				maxRows={3}
 				on:input={onChange}
