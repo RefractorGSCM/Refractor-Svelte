@@ -12,6 +12,7 @@
 	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
+	import AttachmentManager from "../AttachmentManager.svelte"
 
 	import Button from "../Button.svelte"
 	import Heading from "../Heading.svelte"
@@ -30,6 +31,7 @@
 		values: {
 			reason?: string
 			serverId?: string | number
+			attachments?: Attachment[]
 		}
 		errors: {
 			reason?: string
@@ -41,6 +43,7 @@
 		values: {
 			reason: "",
 			serverId: serverId || "",
+			attachments: [],
 		},
 		errors: {},
 	} as fields)
@@ -79,29 +82,6 @@
 				...$store.values,
 				[target.name]: target.value,
 			},
-		})
-	}
-
-	function onDurationKeyDown(e) {
-		var regex = /[0-9]|\./
-		if (!regex.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
-			if (e.preventDefault) e.preventDefault()
-		}
-	}
-
-	let attachments = writable([] as Attachment[])
-
-	function addAttachment(attachment: Attachment) {
-		attachments.update((current) => {
-			current.push(attachment)
-			return current
-		})
-	}
-
-	function removeAttachment(index: number) {
-		attachments.update((current) => {
-			current.splice(index, 1)
-			return current
 		})
 	}
 
@@ -164,7 +144,6 @@
 				...values,
 				player_id: player.id,
 				platform: player.platform,
-				attachments: $attachments,
 			},
 		)
 
@@ -214,24 +193,7 @@
 				/>
 			</form>
 
-			<div class="attachments">
-				{#if $attachments.length > 0}
-					<p>Attachments</p>
-
-					{#each $attachments as attachment, idx}
-						<div class="attachment">
-							{attachment.url}
-							<span on:click={() => removeAttachment(idx)}>x</span>
-						</div>
-					{/each}
-				{/if}
-
-				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
-					<div slot="trigger" let:open>
-						<Button size="inline" on:click={open}>Attach URL</Button>
-					</div>
-				</AttachmentModal>
-			</div>
+			<AttachmentManager bind:attachments={$store.values.attachments} />
 		</div>
 	</div>
 
@@ -279,27 +241,6 @@
 		@include respond-below(sm) {
 			min-width: 100%;
 			width: 100%;
-		}
-	}
-
-	.attachments {
-		.attachment {
-			display: flex;
-
-			span {
-				background-color: var(--color-primary);
-				border-radius: var(--border-sm);
-				width: 2rem;
-				height: 2rem;
-				display: grid;
-				place-items: center;
-				margin-left: 1rem;
-
-				&:hover {
-					background-color: var(--color-primary-light);
-					cursor: pointer;
-				}
-			}
 		}
 	}
 </style>

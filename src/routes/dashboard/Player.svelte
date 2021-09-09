@@ -14,6 +14,7 @@
 	import { getPlayerInfractions } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer, serverPlayers } from "../../domain/player/store"
+	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 
@@ -75,14 +76,6 @@
 			}
 		}
 		currentlyOnline = found
-	}
-
-	function truncate(value: string, limit: number): string {
-		if (value.length <= limit) {
-			return value
-		}
-
-		return value.substring(0, limit - 3) + "..."
 	}
 </script>
 
