@@ -2,8 +2,8 @@
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
+	import type { Attachment } from "../../domain/attachment/attachment.types"
 	import type {
-		Attachment,
 		CreateBanParams,
 		CreateWarningParams,
 	} from "../../domain/infraction/infraction.types"
