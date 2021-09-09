@@ -36,6 +36,19 @@
 		},
 	} as store)
 
+	function cleanup() {
+		store.set({
+			values: {
+				url: "",
+				note: "",
+			},
+			errors: {
+				url: "",
+				note: "",
+			},
+		})
+	}
+
 	const schema = yup.object().shape({
 		url: yup
 			.string()
@@ -96,7 +109,7 @@
 	}
 </script>
 
-<Modal>
+<Modal on:close={cleanup}>
 	<div slot="trigger" let:open>
 		<slot name="trigger" {open} />
 	</div>
