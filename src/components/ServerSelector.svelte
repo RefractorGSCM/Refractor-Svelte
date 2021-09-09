@@ -10,11 +10,12 @@
 	export let label = name
 	export let required = false
 	export let value: any = ""
+	export let defaultOption: { id: number; name: string } = null
 
 	const dispatch = createEventDispatcher()
 
 	onMount(async () => {
-		const initialValue = $allServers[0].id
+		const initialValue = defaultOption.id || $allServers[0].id
 		value = initialValue
 		update({ target: { value: initialValue } })
 	})
@@ -35,6 +36,10 @@
 			on:blur={update}
 			on:change={update}
 		>
+			{#if defaultOption}
+				<option value={defaultOption.id}>{defaultOption.name}</option>
+			{/if}
+
 			{#each $allServers as server}
 				<option value={server.id}>{server.name}</option>
 			{/each}
