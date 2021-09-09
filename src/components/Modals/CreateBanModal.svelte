@@ -2,6 +2,7 @@
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
+	import type { Attachment } from "../../domain/attachment/attachment.types"
 	import type { CreateBanParams } from "../../domain/infraction/infraction.types"
 	import { createBan } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
@@ -10,6 +11,7 @@
 	import Server from "../../routes/dashboard/Server.svelte"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
+	import AttachmentManager from "../AttachmentManager.svelte"
 
 	import Button from "../Button.svelte"
 	import DurationPicker from "../DurationPicker.svelte"
@@ -28,6 +30,7 @@
 			reason?: string
 			duration?: string | number
 			serverId?: string | number
+			attachments?: Attachment[]
 		}
 		errors: {
 			reason?: string
@@ -41,6 +44,7 @@
 			reason: "",
 			duration: "",
 			serverId: serverId || "",
+			attachments: [],
 		},
 		errors: {},
 	} as fields)
@@ -155,6 +159,7 @@
 				duration: Number(values.duration),
 				player_id: player.id,
 				platform: player.platform,
+				attachments: values.attachments,
 			},
 		)
 
@@ -244,6 +249,8 @@
 					]}
 				/>
 			</form>
+
+			<AttachmentManager bind:attachments={$store.values.attachments} />
 		</div>
 	</div>
 

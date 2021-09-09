@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte"
-
-	import { writable } from "svelte/store"
-
 	import type { Attachment } from "../domain/attachment/attachment.types"
 	import { truncate } from "../utils/strings"
 	import Button from "./Button.svelte"
