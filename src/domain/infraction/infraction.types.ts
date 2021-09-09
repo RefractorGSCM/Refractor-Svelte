@@ -1,3 +1,5 @@
+import type { Attachment } from "../attachment/attachment.types"
+
 export type CreateWarningParams = {
 	reason?: string
 	platform?: string
@@ -45,11 +47,4 @@ export type Infraction = {
 	system_action?: boolean
 	created_at?: Date
 	modified_at?: Date
-}
-
-export type Attachment = {
-	attachment_id?: number
-	infraction_id?: number
-	url: string
-	note: string
 }
