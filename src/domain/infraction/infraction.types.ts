@@ -45,6 +45,7 @@ export type Infraction = {
 	reason?: string
 	duration?: Date
 	system_action?: boolean
-	created_at?: Date
-	modified_at?: Date
+	created_at?: string
+	modified_at?: string
+	issuer_name?: string // not a DB field
 }

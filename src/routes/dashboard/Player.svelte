@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { Link } from "svelte-routing"
+	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 	import Flair from "../../components/Flair.svelte"
 
@@ -23,11 +24,28 @@
 	let errmsg = ""
 
 	let player: Player
-	let infractions: Infraction[]
-	let warnings: Infraction[]
-	let mutes: Infraction[]
-	let kicks: Infraction[]
-	let bans: Infraction[]
+	let infractions: Infraction[] = []
+
+	type infractionsMap = {
+		warnings: Infraction[]
+		mutes: Infraction[]
+		kicks: Infraction[]
+		bans: Infraction[]
+	}
+
+	let keys = {
+		WARNING: "warnings",
+		MUTE: "mutes",
+		KICK: "kicks",
+		BAN: "bans",
+	}
+
+	let store = writable({
+		warnings: [],
+		mutes: [],
+		kicks: [],
+		bans: [],
+	} as infractionsMap)
 
 	onMount(async () => {
 		player = await getPlayer(id, platform)
@@ -40,24 +58,17 @@
 		infractions = await getPlayerInfractions(platform, id)
 
 		for (const infraction of infractions) {
-			switch (infraction.type) {
-				case "WARNING":
-					warnings.push(infraction)
-					break
-				case "MUTE":
-					mutes.push(infraction)
-					break
-				case "KICK":
-					kicks.push(infraction)
-					break
-				case "BAN":
-					bans.push(infraction)
-					break
+			// make sure that type is valid
+			if (!$store[keys[infraction.type]]) {
+				continue
 			}
+
+			store.update((current) => {
+				current[keys[infraction.type]].push(infraction)
+				return current
+			})
 		}
 	})
-
-	console.log($serverPlayers)
 
 	let currentlyOnline = false
 	let serverId = 0
@@ -76,6 +87,52 @@
 			}
 		}
 		currentlyOnline = found
+	}
+
+	function dateString(date: Date): string {
+		return date.toLocaleString("en-GB", { hour12: true })
+	}
+
+	const anyServerId = -1
+	function changeServerFilter(id: number) {
+		// If the ID == anyServerId then we don't filter by server and just allow all infractions
+		if (id === anyServerId) {
+			for (const [type, key] of Object.entries(keys)) {
+				const newArr: Infraction[] = []
+
+				for (const infraction of infractions) {
+					if (infraction.type !== type) {
+						continue
+					}
+
+					newArr.push(infraction)
+				}
+
+				store.update((current) => {
+					current[key] = newArr
+					return current
+				})
+			}
+			return
+		}
+
+		// Otherwise, limit to server ID
+		for (const [type, key] of Object.entries(keys)) {
+			const newArr: Infraction[] = []
+
+			for (const infraction of infractions) {
+				if (infraction.server_id !== id || infraction.type !== type) {
+					continue
+				}
+
+				newArr.push(infraction)
+			}
+
+			store.update((current) => {
+				current[key] = newArr
+				return current
+			})
+		}
 	}
 </script>
 
@@ -135,7 +192,11 @@
 				<div class="heading">
 					<Heading type="subtitle">Infractions</Heading>
 
-					<ServerSelector name="serverId" />
+					<ServerSelector
+						name="serverId"
+						defaultOption={{ id: anyServerId, name: "Any" }}
+						on:change={({ detail }) => changeServerFilter(detail)}
+					/>
 				</div>
 
 				<div class="infraction-lists">
@@ -145,33 +206,33 @@
 						</div>
 
 						<div class="list">
-							<div class="infraction">
-								<div class="field id">
-									<span class="label">ID</span>
-									<span class="value">1</span>
+							{#each $store.warnings as infraction}
+								<div class="infraction noduration">
+									<div class="field id">
+										<span class="label">ID</span>
+										<span class="value">{infraction.id}</span>
+									</div>
+									<div class="field issuer">
+										<span class="label">Issuer</span>
+										<span class="value">{infraction.issuer_name}</span>
+									</div>
+									<div class="field date">
+										<span class="label">Date</span>
+										<span class="value">
+											{dateString(new Date(infraction.created_at))}
+										</span>
+									</div>
+									<div class="field duration">
+										<span class="label">Duration</span>
+										<span class="value">{infraction.duration}</span>
+									</div>
+									<div class="field reason">
+										<span class="label">Reason</span>
+										<span class="value">{truncate(infraction.reason, 100)}</span
+										>
+									</div>
 								</div>
-								<div class="field issuer">
-									<span class="label">Issuer</span>
-									<span class="value">Void</span>
-								</div>
-								<div class="field date">
-									<span class="label">Date</span>
-									<span class="value">2020-09-05</span>
-								</div>
-								<div class="field duration">
-									<span class="label">Duration</span>
-									<span class="value">1440</span>
-								</div>
-								<div class="field reason">
-									<span class="label">Reason</span>
-									<span class="value"
-										>{truncate(
-											"Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae deserunt, sint aut omnis tempore ratione dignissimos soluta corrupti quam fugiat ut est neque dolore possimus minima voluptatibus facere temporibus hic",
-											100,
-										)}</span
-									>
-								</div>
-							</div>
+							{/each}
 						</div>
 					</div>
 
@@ -283,8 +344,8 @@
 		.infraction-lists {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			column-gap: 3rem;
-			row-gap: 3rem;
+			column-gap: 1.5rem;
+			row-gap: 1.5rem;
 
 			@include respond-below(lg) {
 				grid-template-columns: 1fr;
@@ -319,7 +380,7 @@
 
 			.field {
 				position: relative;
-				min-height: 3.5rem;
+				min-height: 3rem;
 
 				@include respond-below(xl) {
 					min-height: 3rem;
@@ -334,20 +395,21 @@
 				}
 
 				.value {
+					font-size: 1.2rem;
 					position: absolute;
 					bottom: 0;
 				}
 			}
 
 			.field.reason {
-				margin-top: 1rem;
+				margin-top: 0.5rem;
 				grid-column: span 4;
 				display: flex;
 				flex-direction: column;
 				width: 100%;
 
 				.label {
-					height: 1.5rem;
+					height: 1.3rem;
 					position: unset;
 				}
 
@@ -356,7 +418,16 @@
 					min-height: 4rem;
 					overflow: hidden;
 					text-overflow: clip;
+					font-size: 1.6rem;
 				}
+			}
+		}
+
+		.infraction.noduration {
+			grid-template-columns: 1fr 2fr 3fr;
+
+			.field.duration {
+				display: none;
 			}
 		}
 	}
