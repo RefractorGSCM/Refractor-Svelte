@@ -2,6 +2,7 @@ export type CreateWarningParams = {
 	reason?: string
 	platform?: string
 	player_id?: string
+	attachments?: Attachment[]
 }
 
 export type CreateMuteParams = {
@@ -9,12 +10,14 @@ export type CreateMuteParams = {
 	duration?: number
 	platform?: string
 	player_id?: string
+	attachments?: Attachment[]
 }
 
 export type CreateKickParams = {
 	reason?: string
 	platform?: string
 	player_id?: string
+	attachments?: Attachment[]
 }
 
 export type CreateBanParams = {
@@ -22,6 +25,7 @@ export type CreateBanParams = {
 	duration?: number
 	platform?: string
 	player_id?: string
+	attachments?: Attachment[]
 }
 
 export type UpdateInfractionParams = {
@@ -41,4 +45,11 @@ export type Infraction = {
 	system_action?: boolean
 	created_at?: Date
 	modified_at?: Date
+}
+
+export type Attachment = {
+	attachment_id?: number
+	infraction_id?: number
+	url: string
+	note: string
 }

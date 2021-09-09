@@ -3,6 +3,7 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import type {
+		Attachment,
 		CreateBanParams,
 		CreateWarningParams,
 	} from "../../domain/infraction/infraction.types"
@@ -88,6 +89,22 @@
 		}
 	}
 
+	let attachments = writable([] as Attachment[])
+
+	function addAttachment(attachment: Attachment) {
+		attachments.update((current) => {
+			current.push(attachment)
+			return current
+		})
+	}
+
+	function removeAttachment(index: number) {
+		attachments.update((current) => {
+			current.splice(index, 1)
+			return current
+		})
+	}
+
 	const maxInt32 = 2147483647
 	const schema = yup.object().shape({
 		serverId: yup
@@ -147,6 +164,7 @@
 				...values,
 				player_id: player.id,
 				platform: player.platform,
+				attachments: $attachments,
 			},
 		)
 
@@ -161,27 +179,6 @@
 		if (success) {
 			close()
 		}
-	}
-
-	type Attachment = {
-		url: string
-		description: string
-	}
-
-	let attachments = writable([] as Attachment[])
-
-	function addAttachment(attachment: Attachment) {
-		attachments.update((current) => {
-			current.push(attachment)
-			return current
-		})
-	}
-
-	function removeAttachment(index: number) {
-		attachments.update((current) => {
-			current.splice(index, 1)
-			return current
-		})
 	}
 </script>
 
