@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { Link } from "svelte-routing"
+	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 	import Flair from "../../components/Flair.svelte"
@@ -207,7 +207,12 @@
 
 						<div class="list">
 							{#each $store.warnings as infraction}
-								<div class="infraction noduration">
+								<a
+									class="infraction noduration"
+									href={`/infraction/${infraction.id}`}
+									on:click|preventDefault={() =>
+										navigate(`/infraction/${infraction.id}`)}
+								>
 									<div class="field id">
 										<span class="label">ID</span>
 										<span class="value">{infraction.id}</span>
@@ -231,7 +236,7 @@
 										<span class="value">{truncate(infraction.reason, 100)}</span
 										>
 									</div>
-								</div>
+								</a>
 							{/each}
 						</div>
 					</div>
@@ -242,10 +247,38 @@
 						</div>
 
 						<div class="list">
-							<div class="infraction">Test 1</div>
-							<div class="infraction">Test 2</div>
-							<div class="infraction">Test 3</div>
-							<div class="infraction">Test 1</div>
+							{#each $store.mutes as infraction}
+								<a
+									class="infraction"
+									href={`/infraction/${infraction.id}`}
+									on:click|preventDefault={() =>
+										navigate(`/infraction/${infraction.id}`)}
+								>
+									<div class="field id">
+										<span class="label">ID</span>
+										<span class="value">{infraction.id}</span>
+									</div>
+									<div class="field issuer">
+										<span class="label">Issuer</span>
+										<span class="value">{infraction.issuer_name}</span>
+									</div>
+									<div class="field duration">
+										<span class="label">Duration</span>
+										<span class="value">{infraction.duration}</span>
+									</div>
+									<div class="field date">
+										<span class="label">Date</span>
+										<span class="value">
+											{dateString(new Date(infraction.created_at))}
+										</span>
+									</div>
+									<div class="field reason">
+										<span class="label">Reason</span>
+										<span class="value">{truncate(infraction.reason, 100)}</span
+										>
+									</div>
+								</a>
+							{/each}
 						</div>
 					</div>
 
@@ -255,10 +288,38 @@
 						</div>
 
 						<div class="list">
-							<div class="infraction">Test 1</div>
-							<div class="infraction">Test 2</div>
-							<div class="infraction">Test 3</div>
-							<div class="infraction">Test 1</div>
+							{#each $store.kicks as infraction}
+								<a
+									class="infraction noduration"
+									href={`/infraction/${infraction.id}`}
+									on:click|preventDefault={() =>
+										navigate(`/infraction/${infraction.id}`)}
+								>
+									<div class="field id">
+										<span class="label">ID</span>
+										<span class="value">{infraction.id}</span>
+									</div>
+									<div class="field issuer">
+										<span class="label">Issuer</span>
+										<span class="value">{infraction.issuer_name}</span>
+									</div>
+									<div class="field duration">
+										<span class="label">Duration</span>
+										<span class="value">{infraction.duration}</span>
+									</div>
+									<div class="field date">
+										<span class="label">Date</span>
+										<span class="value">
+											{dateString(new Date(infraction.created_at))}
+										</span>
+									</div>
+									<div class="field reason">
+										<span class="label">Reason</span>
+										<span class="value">{truncate(infraction.reason, 100)}</span
+										>
+									</div>
+								</a>
+							{/each}
 						</div>
 					</div>
 
@@ -268,10 +329,38 @@
 						</div>
 
 						<div class="list">
-							<div class="infraction">Test 1</div>
-							<div class="infraction">Test 2</div>
-							<div class="infraction">Test 3</div>
-							<div class="infraction">Test 1</div>
+							{#each $store.bans as infraction}
+								<a
+									class="infraction"
+									href={`/infraction/${infraction.id}`}
+									on:click|preventDefault={() =>
+										navigate(`/infraction/${infraction.id}`)}
+								>
+									<div class="field id">
+										<span class="label">ID</span>
+										<span class="value">{infraction.id}</span>
+									</div>
+									<div class="field issuer">
+										<span class="label">Issuer</span>
+										<span class="value">{infraction.issuer_name}</span>
+									</div>
+									<div class="field duration">
+										<span class="label">Duration</span>
+										<span class="value">{infraction.duration}</span>
+									</div>
+									<div class="field date">
+										<span class="label">Date</span>
+										<span class="value">
+											{dateString(new Date(infraction.created_at))}
+										</span>
+									</div>
+									<div class="field reason">
+										<span class="label">Reason</span>
+										<span class="value">{truncate(infraction.reason, 100)}</span
+										>
+									</div>
+								</a>
+							{/each}
 						</div>
 					</div>
 				</div>
@@ -356,6 +445,7 @@
 			display: flex;
 			flex-direction: column;
 			border: 2px solid var(--color-accent);
+			border-radius: var(--border-sm);
 
 			.section-heading {
 				padding: 1rem;
@@ -366,6 +456,7 @@
 			padding: 1rem;
 			position: relative;
 			width: 100%;
+			color: var(--color-text2);
 
 			&:nth-child(odd) {
 				background-color: var(--color-background1);
@@ -376,7 +467,7 @@
 			}
 
 			display: grid;
-			grid-template-columns: 1fr 2fr 2fr 1fr;
+			grid-template-columns: 1fr 1.5fr 1fr 2.5fr;
 			grid-template-rows: auto auto;
 
 			@include respond-below(sm) {
