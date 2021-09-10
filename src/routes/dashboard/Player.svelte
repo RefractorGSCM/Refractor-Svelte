@@ -216,15 +216,15 @@
 										<span class="label">Issuer</span>
 										<span class="value">{infraction.issuer_name}</span>
 									</div>
+									<div class="field duration">
+										<span class="label">Duration</span>
+										<span class="value">{infraction.duration}</span>
+									</div>
 									<div class="field date">
 										<span class="label">Date</span>
 										<span class="value">
 											{dateString(new Date(infraction.created_at))}
 										</span>
-									</div>
-									<div class="field duration">
-										<span class="label">Duration</span>
-										<span class="value">{infraction.duration}</span>
 									</div>
 									<div class="field reason">
 										<span class="label">Reason</span>
@@ -365,6 +365,7 @@
 		.infraction {
 			padding: 1rem;
 			position: relative;
+			width: 100%;
 
 			&:nth-child(odd) {
 				background-color: var(--color-background1);
@@ -378,26 +379,48 @@
 			grid-template-columns: 1fr 2fr 2fr 1fr;
 			grid-template-rows: auto auto;
 
+			@include respond-below(sm) {
+				grid-template-columns: 1fr 1fr 1fr;
+				grid-template-rows: auto auto auto;
+
+				.field.reason {
+					grid-column: span 2;
+				}
+
+				.field.date {
+					grid-column: span 2;
+				}
+			}
+
 			.field {
 				position: relative;
-				min-height: 3rem;
+				min-height: 3.5rem;
 
 				@include respond-below(xl) {
 					min-height: 3rem;
 				}
 
 				.label {
-					font-size: 1rem;
+					font-size: 1.2rem;
 					color: var(--color-primary-light);
 					position: absolute;
 					top: 0;
-					height: 1rem;
+					height: 1.2rem;
+
+					@include respond-below(xl) {
+						font-size: 1rem;
+						height: 1rem;
+					}
 				}
 
 				.value {
-					font-size: 1.2rem;
+					font-size: 1.4rem;
 					position: absolute;
 					bottom: 0;
+
+					@include respond-below(xl) {
+						min-height: 1.2rem;
+					}
 				}
 			}
 
@@ -408,6 +431,10 @@
 				flex-direction: column;
 				width: 100%;
 
+				@include respond-below(sm) {
+					grid-column: span 2;
+				}
+
 				.label {
 					height: 1.3rem;
 					position: unset;
@@ -415,7 +442,7 @@
 
 				.value {
 					position: unset;
-					min-height: 4rem;
+					min-height: 2rem;
 					overflow: hidden;
 					text-overflow: clip;
 					font-size: 1.6rem;
@@ -425,6 +452,10 @@
 
 		.infraction.noduration {
 			grid-template-columns: 1fr 2fr 3fr;
+
+			@include respond-below(sm) {
+				grid-template-columns: 1fr 1fr;
+			}
 
 			.field.duration {
 				display: none;

@@ -337,9 +337,13 @@
 			padding-bottom: 2rem;
 			display: grid;
 			width: 100%;
-			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
 			row-gap: 0.5rem;
 			column-gap: 0.5rem;
+
+			@include respond-below(xl) {
+				grid-template-columns: 1fr 1fr 1fr;
+			}
 
 			@include respond-below(lg) {
 				grid-template-columns: 1fr 1fr;
