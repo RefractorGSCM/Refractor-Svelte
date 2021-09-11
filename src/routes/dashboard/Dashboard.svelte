@@ -132,7 +132,7 @@
 
 <div class="content">
 	<header>
-		<div class="brand-name">{"selectedGame.name"}</div>
+		<div class="brand-name">{COMMUNITY_NAME}</div>
 
 		<div class="right">
 			<div>{$self.username}</div>

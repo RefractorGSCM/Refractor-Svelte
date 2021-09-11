@@ -87,6 +87,7 @@ export default {
 		// instead of npm run dev), minify
 		production && terser(),
 		replace({
+			COMMUNITY_NAME: JSON.stringify("Refractor"),
 			KRATOS_ROOT: JSON.stringify("http://127.0.0.1:4433"),
 			AUTH_ROOT: JSON.stringify("http://127.0.0.1:4455"),
 			API_ROOT: JSON.stringify("http://127.0.0.1:4000/api/v1"),
