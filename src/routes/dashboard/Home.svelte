@@ -43,16 +43,21 @@
 
 	<div>
 		<div class="servers">
-			<div class="heading">
-				<div class="name">Name</div>
-				<div class="players">Players</div>
-				<div class="status">Status</div>
+			<div class="heading server">
+				<div class="server-info">
+					<div class="name">Name</div>
+					<div class="players">Players</div>
+					<div class="status">Status</div>
+				</div>
 				<div class="actions" />
 			</div>
 
 			{#each $allServers as server}
 				<div class="server">
-					<Link to={`/server/${server.id}`}>
+					<a
+						href={`/server/${server.id}`}
+						on:click|preventDefault={() => navigate(`/server/${server.id}`)}
+					>
 						<div class="server-info">
 							<div class="name">
 								<span class="icon fas fa-server" />{server.name}
@@ -60,7 +65,7 @@
 							<div class="players">?</div>
 							<div class="status">?</div>
 						</div>
-					</Link>
+					</a>
 					<div class="actions">
 						<EditServerModal initialValues={server} serverId={server.id}>
 							<div slot="trigger" let:open>
@@ -116,6 +121,11 @@
 			font-size: 1.6rem;
 		}
 
+		.heading {
+			background-color: var(--color-accent) !important;
+			cursor: unset !important;
+		}
+
 		.server {
 			display: grid;
 			grid-template-columns: 3.5fr 0.5fr;
@@ -158,6 +168,10 @@
 				.actions {
 					display: none;
 				}
+
+				.server-info {
+					grid-template-columns: 1fr;
+				}
 			}
 		}
 
@@ -166,22 +180,13 @@
 			margin-right: 1rem;
 		}
 
-		.heading {
-			display: grid;
-			grid-template-columns: 1fr 1fr 1fr 0.4fr;
-			grid-template-rows: auto;
-			background-color: var(--color-accent);
-			padding: 1rem;
-			border-radius: var(--border-sm);
-
-			@include respond-below(sm) {
-				display: none;
-			}
-		}
-
 		.actions {
 			display: flex;
 			justify-content: right;
+
+			:global(.btn:first-child) {
+				margin-right: 0.5rem;
+			}
 		}
 
 		:global(.server-action-last) {
