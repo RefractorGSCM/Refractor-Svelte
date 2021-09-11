@@ -1,4 +1,8 @@
-<div class="container">
+<script lang="ts">
+	export let style = ""
+</script>
+
+<div class="container" {style}>
 	<slot />
 </div>
 

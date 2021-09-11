@@ -136,7 +136,7 @@
 	}
 </script>
 
-<Container>
+<Container style="max-height: unset;">
 	{#if errmsg.length > 0}
 		<Heading type="subtitle">{errmsg}</Heading>
 	{:else}
@@ -187,7 +187,7 @@
 			</div>
 		</SinglePane>
 
-		<SinglePane>
+		<SinglePane style="max-height: unset;">
 			<div class="infractions">
 				<div class="heading">
 					<Heading type="subtitle">Infractions</Heading>
@@ -376,6 +376,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		height: 14rem;
 
 		> * {
 			margin-top: 1rem;
@@ -457,6 +458,7 @@
 			position: relative;
 			width: 100%;
 			color: var(--color-text2);
+			transition: all 0.2s;
 
 			&:nth-child(odd) {
 				background-color: var(--color-background1);
@@ -464,6 +466,18 @@
 
 			&:nth-child(even) {
 				background-color: var(--color-background2);
+			}
+
+			&:hover::before {
+				content: "";
+				display: block;
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 3px;
+				height: 100%;
+				background-color: var(--color-primary-light);
+				margin-left: -3px;
 			}
 
 			display: grid;
