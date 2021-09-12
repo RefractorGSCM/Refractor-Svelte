@@ -48,4 +48,5 @@ export type Infraction = {
 	created_at?: string
 	modified_at?: string
 	issuer_name?: string // not a DB field
+	attachments?: Attachment[] // not a DB field
 }
