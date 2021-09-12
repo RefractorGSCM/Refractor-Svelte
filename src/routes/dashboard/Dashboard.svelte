@@ -17,6 +17,7 @@
 	} from "../../permissions/permissions"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
+	import Infraction from "./Infraction.svelte"
 	import Player from "./Player.svelte"
 	import Server from "./Server.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
@@ -165,6 +166,14 @@
 
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
 				<Route path="/" component={Home} />
+			</RequirePerms>
+
+			<RequirePerms
+				oneOf={[FLAG_VIEW_PLAYER_RECORDS, FLAG_VIEW_INFRACTION_RECORDS]}
+			>
+				<Route path="/infraction/:id" let:params>
+					<Infraction id={params.id} />
+				</Route>
 			</RequirePerms>
 		</Router>
 	</main>
