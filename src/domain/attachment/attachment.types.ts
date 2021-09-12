@@ -1,6 +1,11 @@
 export type Attachment = {
-	attachment_id?: number
+	id?: number
 	infraction_id?: number
+	url: string
+	note: string
+}
+
+export type CreateAttachmentParams = {
 	url: string
 	note: string
 }

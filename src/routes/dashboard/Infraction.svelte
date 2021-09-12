@@ -1,8 +1,20 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { Link } from "svelte-routing"
+	import { writable } from "svelte/store"
 	import AttachmentManager from "../../components/AttachmentManager.svelte"
+	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
+	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import type {
+		Attachment,
+		CreateAttachmentParams,
+	} from "../../domain/attachment/attachment.types"
+	import {
+		createAttachment,
+		deleteAttachment,
+	} from "../../domain/attachment/store"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import { getInfractionById } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
@@ -13,19 +25,42 @@
 	export let id
 
 	let infraction: Infraction = null
+	let attachments = writable([] as Attachment[])
 	let player: Player = null
 	onMount(async () => {
 		infraction = await getInfractionById(id)
 
 		if (infraction) {
+			if (infraction.attachments) attachments.set(infraction.attachments)
 			player = await getPlayer(infraction.player_id, infraction.platform)
-
-			console.log("PLAYER", player)
 		}
 	})
+
+	async function addAttachment(attachment: CreateAttachmentParams) {
+		const res = await createAttachment(infraction.id, attachment)
+
+		if (!res.success) {
+			return
+		}
+
+		console.log("NEW ATTACHMENT", res.attachment)
+
+		attachments.update((current) => {
+			current.push(res.attachment)
+			return current
+		})
+	}
+
+	async function removeAttachment(id: number) {
+		await deleteAttachment(id)
+
+		attachments.update((current) => {
+			return current.filter((att) => att.id !== id)
+		})
+	}
 </script>
 
-<Container>
+<Container style="max-height: unset;">
 	{#if !infraction}
 		<Heading>Infraction not found</Heading>
 	{:else}
@@ -78,24 +113,46 @@
 			</div>
 		</SinglePane>
 
-		{#if infraction.attachments && infraction.attachments.length > 0}
-			<SinglePane>
-				<div class="attachments">
-					<div class="attachments--heading">
-						<Heading>Attachments</Heading>
-					</div>
+		<SinglePane>
+			<div class="attachments">
+				<div class="attachments--heading">
+					<Heading>Attachments</Heading>
+				</div>
 
+				{#if $attachments && $attachments.length > 0}
 					<div class="attachments--list">
-						{#each infraction.attachments as attachment}
+						{#each $attachments as attachment}
 							<div class="attachments--attachment">
-								<img src={attachment.url} alt="attachment" />
+								<DeleteModal
+									heading="Deleting attachment"
+									message="Are you sure you want to delete this attachment?"
+									on:submit={() => removeAttachment(attachment.id)}
+								>
+									<div slot="trigger" let:open>
+										<div class="delete-btn">
+											<Button size="inline" color="danger" on:click={open}
+												>x</Button
+											>
+										</div>
+									</div>
+								</DeleteModal>
+								<a href={attachment.url}>
+									<img src={attachment.url} alt="attachment" />
+								</a>
 								<span>{attachment.note}</span>
 							</div>
 						{/each}
 					</div>
-				</div>
-			</SinglePane>
-		{/if}
+				{/if}
+
+				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
+					createAttachment(detail)}>
+					<div slot="trigger" let:open>
+						<Button on:click={open}>Add Attachment</Button>
+					</div>
+				</AttachmentModal>
+			</div>
+		</SinglePane>
 	{/if}
 </Container>
 
@@ -154,13 +211,43 @@
 
 		&--list {
 			display: grid;
-			grid-template-columns: 1fr 1fr 1fr 1fr;
-			column-gap: 2rem;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 1.5rem;
+
+			@include respond-below(md) {
+				grid-template-columns: 1fr;
+			}
 		}
 
 		&--attachment {
+			margin-top: 1rem;
+			margin-bottom: 2rem;
+
+			.delete-btn {
+				:global(.btn) {
+					width: 2rem;
+					height: 2rem;
+					padding: 0;
+					z-index: 20;
+				}
+			}
+
 			img {
 				max-width: 100%;
+				max-height: 40rem;
+				transition: all 0.3s;
+				cursor: pointer;
+				z-index: 1;
+
+				&:hover {
+					transform: scale(1.05);
+				}
+			}
+
+			span {
+				display: inline-block;
+				font-size: 1.3rem;
+				color: var(--color-text-muted);
 			}
 		}
 	}
