@@ -190,7 +190,12 @@
 		<SinglePane style="max-height: unset;">
 			<div class="infractions">
 				<div class="heading">
-					<Heading type="subtitle">Infractions</Heading>
+					<Heading type="subtitle"
+						>Infractions ({$store.warnings.length +
+							$store.mutes.length +
+							$store.kicks.length +
+							$store.bans.length} total)</Heading
+					>
 
 					<ServerSelector
 						name="serverId"
@@ -202,7 +207,11 @@
 				<div class="infraction-lists">
 					<div class="section">
 						<div class="section-heading">
-							<Heading>Warnings</Heading>
+							<Heading
+								>{$store.warnings.length > 0
+									? "Warnings"
+									: "No warnings on record"}</Heading
+							>
 						</div>
 
 						<div class="list">
@@ -243,7 +252,11 @@
 
 					<div class="section">
 						<div class="section-heading">
-							<Heading>Mutes</Heading>
+							<Heading
+								>{$store.mutes.length > 0
+									? "Mutes"
+									: "No mutes on record"}</Heading
+							>
 						</div>
 
 						<div class="list">
@@ -284,7 +297,11 @@
 
 					<div class="section">
 						<div class="section-heading">
-							<Heading>Kicks</Heading>
+							<Heading
+								>{$store.kicks.length > 0
+									? "Kicks"
+									: "No kicks on record"}</Heading
+							>
 						</div>
 
 						<div class="list">
@@ -325,7 +342,11 @@
 
 					<div class="section">
 						<div class="section-heading">
-							<Heading>Bans</Heading>
+							<Heading
+								>{$store.bans.length > 0
+									? "Bans"
+									: "No bans on record"}</Heading
+							>
 						</div>
 
 						<div class="list">
