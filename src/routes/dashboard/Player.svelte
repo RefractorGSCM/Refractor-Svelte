@@ -8,7 +8,7 @@
 	import Heading from "../../components/Heading.svelte"
 	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
 	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
-	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
+	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
@@ -166,11 +166,11 @@
 						</div>
 					</WarningModal>
 
-					<CreateMuteModal {player}>
+					<MuteModal {player}>
 						<div slot="trigger" let:openMute>
 							<Button on:click={openMute}>Log Mute</Button>
 						</div>
-					</CreateMuteModal>
+					</MuteModal>
 
 					<CreateKickModal {player}>
 						<div slot="trigger" let:openKick>

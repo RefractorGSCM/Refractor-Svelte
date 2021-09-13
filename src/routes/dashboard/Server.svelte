@@ -14,7 +14,7 @@
 	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
 	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
 	import CreateWarningModal from "../../components/Modals/WarningModal.svelte"
-	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
+	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
 
 	export let id
@@ -177,7 +177,7 @@
 								<!-- begin infraction modal wrapping here to avoid messing with styling and modal positioning -->
 								<CreateWarningModal serverId={id} {player}>
 									<div slot="trigger" let:openWarning>
-										<CreateMuteModal serverId={id} {player}>
+										<MuteModal serverId={id} {player}>
 											<div slot="trigger" let:openMute>
 												<CreateKickModal serverId={id} {player}>
 													<div slot="trigger" let:openKick>
@@ -260,7 +260,7 @@
 													</div>
 												</CreateKickModal>
 											</div>
-										</CreateMuteModal>
+										</MuteModal>
 									</div>
 								</CreateWarningModal>
 							{/each}

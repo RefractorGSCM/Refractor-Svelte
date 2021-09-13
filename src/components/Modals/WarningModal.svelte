@@ -188,7 +188,7 @@
 
 <Modal on:close={cleanup} fullWidth>
 	<div slot="trigger" let:open>
-		<slot name="trigger" openWarning={open} />
+		<slot name="trigger" openWarning={open} {open} />
 	</div>
 	<div slot="header">
 		<div class="header">
