@@ -7,6 +7,7 @@
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import type {
@@ -43,6 +44,9 @@
 					break
 				case "MUTE":
 					editComponent = MuteModal
+					break
+				case "KICK":
+					editComponent = KickModal
 					break
 			}
 		}

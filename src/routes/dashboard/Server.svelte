@@ -12,10 +12,10 @@
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
-	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
-	import CreateWarningModal from "../../components/Modals/WarningModal.svelte"
+	import BanModal from "../../components/Modals/CreateBanModal.svelte"
+	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
-	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
+	import KickModal from "../../components/Modals/KickModal.svelte"
 
 	export let id
 	let server: Server = null
@@ -175,13 +175,13 @@
 						<div class="list">
 							{#each players as player}
 								<!-- begin infraction modal wrapping here to avoid messing with styling and modal positioning -->
-								<CreateWarningModal serverId={id} {player}>
+								<WarningModal serverId={id} {player}>
 									<div slot="trigger" let:openWarning>
 										<MuteModal serverId={id} {player}>
 											<div slot="trigger" let:openMute>
-												<CreateKickModal serverId={id} {player}>
+												<KickModal serverId={id} {player}>
 													<div slot="trigger" let:openKick>
-														<CreateBanModal serverId={id} {player}>
+														<BanModal serverId={id} {player}>
 															<div slot="trigger" let:openBan>
 																<!-- for small screens -->
 																<div class="mobile-player-wrapper">
@@ -256,13 +256,13 @@
 																	</div>
 																</div>
 															</div>
-														</CreateBanModal>
+														</BanModal>
 													</div>
-												</CreateKickModal>
+												</KickModal>
 											</div>
 										</MuteModal>
 									</div>
-								</CreateWarningModal>
+								</WarningModal>
 							{/each}
 						</div>
 					{/if}
