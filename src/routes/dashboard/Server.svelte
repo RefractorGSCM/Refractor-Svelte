@@ -5,21 +5,35 @@
 	import Heading from "../../components/Heading.svelte"
 	import { serverPlayers } from "../../domain/player/store"
 	import type { Server } from "../../domain/server/server.types"
-	import { allServers, getAllServers } from "../../domain/server/store"
+	import {
+		allServers,
+		getAllServers,
+		getServerPermissions,
+	} from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import type { Player } from "../../domain/player/player.types"
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
-	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
+	import {
+		FLAG_ADMINISTRATOR,
+		FLAG_CREATE_BAN,
+		FLAG_CREATE_KICK,
+		FLAG_CREATE_MUTE,
+		FLAG_CREATE_WARNING,
+		FLAG_VIEW_PLAYER_RECORDS,
+	} from "../../permissions/permissions"
 	import BanModal from "../../components/Modals/BanModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import KickModal from "../../components/Modals/KickModal.svelte"
+	import PermissionCheck from "../../components/PermissionCheck.svelte"
+	import { writable } from "svelte/store"
 
 	export let id
 	let server: Server = null
 	let errmsg: string
+	let permissions = writable(null as BigInt)
 
 	onMount(async () => {
 		try {
@@ -45,8 +59,14 @@
 			if (s.id === id) {
 				found = true
 				server = s
+				break
 			}
 		}
+
+		// Get computed user permissions scoped to this server
+		const perms = await getServerPermissions(server.id)
+		console.log("fetched perms", perms)
+		permissions.set(perms)
 
 		if (!found) {
 			errmsg = "Server not found"
@@ -127,12 +147,16 @@
 			selectedPlayerId = ""
 		}
 	}
+
+	$: console.log("perms", $permissions)
 </script>
 
 <Container>
 	<div class="wrapper">
 		{#if server === null}
 			<Heading type="title">{errmsg}</Heading>
+		{:else if !$permissions}
+			<Heading type="title">Fetching permissions...</Heading>
 		{:else}
 			<SinglePane>
 				<div class="heading">
@@ -211,37 +235,63 @@
 																			on:click|self={() =>
 																				togglePlayerMenu(player.id)}
 																		>
-																			<Button
-																				on:click={(e) => {
-																					e.stopPropagation()
-																					navigate(
-																						`/player/${player.platform}/${player.id}`,
-																						{
-																							replace: false,
-																							state: {
-																								platform: player.platform,
-																								id: player.id,
-																							},
-																						},
-																					)
-																				}}>Profile</Button
+																			<PermissionCheck
+																				permissions={$permissions}
+																				allOf={[FLAG_VIEW_PLAYER_RECORDS]}
 																			>
+																				<Button
+																					on:click={(e) => {
+																						e.stopPropagation()
+																						navigate(
+																							`/player/${player.platform}/${player.id}`,
+																							{
+																								replace: false,
+																								state: {
+																									platform: player.platform,
+																									id: player.id,
+																								},
+																							},
+																						)
+																					}}>Profile</Button
+																				>
+																			</PermissionCheck>
 																		</div>
 																		<div class="buttons">
-																			<Button
-																				classes={["first"]}
-																				on:click={openWarning}>Warn</Button
+																			<PermissionCheck
+																				permissions={$permissions}
+																				allOf={[FLAG_CREATE_WARNING]}
 																			>
-																			<Button on:click={openMute}>Mute</Button>
-																			<Button
-																				color="warning"
-																				on:click={openKick}>Kick</Button
+																				<Button
+																					classes={["first"]}
+																					on:click={openWarning}>Warn</Button
+																				>
+																			</PermissionCheck>
+																			<PermissionCheck
+																				permissions={$permissions}
+																				allOf={[FLAG_CREATE_MUTE]}
 																			>
-																			<Button
-																				color="danger"
-																				on:click={openBan}
-																				classes={["last"]}>Ban</Button
+																				<Button on:click={openMute}>Mute</Button
+																				>
+																			</PermissionCheck>
+																			<PermissionCheck
+																				permissions={$permissions}
+																				allOf={[FLAG_CREATE_KICK]}
 																			>
+																				<Button
+																					color="warning"
+																					on:click={openKick}>Kick</Button
+																				>
+																			</PermissionCheck>
+																			<PermissionCheck
+																				permissions={$permissions}
+																				allOf={[FLAG_CREATE_BAN]}
+																			>
+																				<Button
+																					color="danger"
+																					on:click={openBan}
+																					classes={["last"]}>Ban</Button
+																				>
+																			</PermissionCheck>
 																		</div>
 																	</div>
 																	<div

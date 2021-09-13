@@ -84,7 +84,7 @@
 		const success = await deleteInfraction(infraction.id)
 
 		if (success) {
-			navigate(`/`)
+			navigate(`/player/${player.platform}/${player.id}`)
 		}
 	}
 </script>

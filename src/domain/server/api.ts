@@ -19,9 +19,16 @@ const getServerById = (id: number) => {
 	return axios.get(`${API_ROOT}/servers/${id}`, { withCredentials: true })
 }
 
+const getScopedServerPermissions = (id: number) => {
+	return axios.get(`${API_ROOT}/servers/${id}/permissions`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getServers,
 	createServer,
 	updateServer,
 	getServerById,
+	getScopedServerPermissions,
 }
