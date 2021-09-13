@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { Link, navigate } from "svelte-routing"
+	import { component_subscribe } from "svelte/internal"
 	import { writable } from "svelte/store"
+	import { boolean } from "yup/lib/locale"
 	import AttachmentManager from "../../components/AttachmentManager.svelte"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
@@ -11,6 +13,7 @@
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
+	import PermsCheck from "../../components/PermsCheck.svelte"
 	import type {
 		Attachment,
 		CreateAttachmentParams,
@@ -19,6 +22,7 @@
 		createAttachment,
 		deleteAttachment,
 	} from "../../domain/attachment/store"
+	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import {
 		deleteInfraction,
@@ -26,8 +30,23 @@
 	} from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
+	import {
+		allServers,
+		fragmentServers,
+		getServerPermissions,
+	} from "../../domain/server/store"
+	import type { User } from "../../domain/user/user.types"
+	import {
+		checkFlag,
+		FLAG_DELETE_ANY_INFRACTIONS,
+		FLAG_DELETE_OWN_INFRACTIONS,
+		FLAG_EDIT_ANY_INFRACTIONS,
+		FLAG_EDIT_OWN_INFRACTIONS,
+		getFlag,
+	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import Server from "./Server.svelte"
 
 	export let id
 
@@ -35,6 +54,8 @@
 	let attachments = writable([] as Attachment[])
 	let player: Player = null
 	let editComponent
+	let computedPermissions = null
+
 	onMount(async () => {
 		infraction = await getInfractionById(id)
 
@@ -56,8 +77,14 @@
 					editComponent = BanModal
 					break
 			}
+
+			// Get computed user permissions scoped to this server
+			const perms = await getServerPermissions(infraction.server_id)
+			computedPermissions = writable(perms as bigint)
 		}
 	})
+
+	$: console.log("perms", $computedPermissions)
 
 	async function addAttachment(attachment: CreateAttachmentParams) {
 		const res = await createAttachment(infraction.id, attachment)
@@ -87,11 +114,69 @@
 			navigate(`/player/${player.platform}/${player.id}`)
 		}
 	}
+
+	function getServerName(): string {
+		const serverId = infraction.server_id
+
+		let server = $allServers.find((s) => s.id === serverId)
+		if (server) return server.name
+
+		server = $fragmentServers.find((s) => s.id === serverId)
+		if (server) return server.name
+
+		return serverId.toString()
+	}
+
+	function allowEditing(): boolean {
+		// if the user created this infraction and they have permission to edit their own infractions then return true
+		if (
+			$self.id === infraction.user_id &&
+			checkFlag($computedPermissions, getFlag(FLAG_EDIT_OWN_INFRACTIONS))
+		) {
+			return true
+		}
+
+		// if the user has permission to edit any infraction then return true
+		if (checkFlag($computedPermissions, getFlag(FLAG_EDIT_ANY_INFRACTIONS))) {
+			return true
+		}
+
+		// if the user is admin or super admin return true
+		if ($isAdmin || $isSuperAdmin) {
+			return true
+		}
+
+		return false
+	}
+
+	function allowDeletion(): boolean {
+		// if the user created this infraction and they have permission to delete their own infractions then return true
+		if (
+			$self.id === infraction.user_id &&
+			checkFlag($computedPermissions, getFlag(FLAG_DELETE_OWN_INFRACTIONS))
+		) {
+			return true
+		}
+
+		// if the user has permission to delete any infraction then return true
+		if (checkFlag($computedPermissions, getFlag(FLAG_DELETE_ANY_INFRACTIONS))) {
+			return true
+		}
+
+		// if the user is admin or super admin return true
+		if ($isAdmin || $isSuperAdmin) {
+			return true
+		}
+
+		return false
+	}
 </script>
 
 <Container style="max-height: unset;">
 	{#if !infraction}
 		<Heading>Infraction not found</Heading>
+	{:else if !computedPermissions}
+		<Heading>Fetching permissions...</Heading>
 	{:else}
 		<div class="heading">
 			<Heading type="title">Infraction {id}</Heading>
@@ -121,37 +206,46 @@
 						<span>Issued by:</span>
 						{infraction.issuer_name}
 					</div>
+					<div class="meta--field">
+						<span>Server:</span>
+						<Link to={`/server/${infraction.server_id}`}>{getServerName()}</Link
+						>
+					</div>
 				</div>
 
 				<div class="buttons">
-					<svelte:component
-						this={editComponent}
-						mode="edit"
-						{player}
-						serverId={infraction.server_id}
-						initialValues={{ ...infraction }}
-						infractionId={infraction.id}
-						on:submit={({ detail }) =>
-							(infraction = {
-								...infraction,
-								reason: detail.reason,
-								duration: detail.duration,
-							})}
-					>
-						<div slot="trigger" let:open>
-							<Button on:click={open}>Edit</Button>
-						</div>
-					</svelte:component>
+					{#if allowEditing()}
+						<svelte:component
+							this={editComponent}
+							mode="edit"
+							{player}
+							serverId={infraction.server_id}
+							initialValues={{ ...infraction }}
+							infractionId={infraction.id}
+							on:submit={({ detail }) =>
+								(infraction = {
+									...infraction,
+									reason: detail.reason,
+									duration: detail.duration,
+								})}
+						>
+							<div slot="trigger" let:open>
+								<Button on:click={open}>Edit</Button>
+							</div>
+						</svelte:component>
+					{/if}
 
-					<DeleteModal
-						heading="Delete Infraction"
-						message={"Are you sure you wish to delete this infraction? This action can not be undone."}
-						on:submit={deleteCurrentInfraction}
-					>
-						<div slot="trigger" let:open>
-							<Button color="danger" on:click={open}>Delete</Button>
-						</div>
-					</DeleteModal>
+					{#if allowDeletion()}
+						<DeleteModal
+							heading="Delete Infraction"
+							message={"Are you sure you wish to delete this infraction? This action can not be undone."}
+							on:submit={deleteCurrentInfraction}
+						>
+							<div slot="trigger" let:open>
+								<Button color="danger" on:click={open}>Delete</Button>
+							</div>
+						</DeleteModal>
+					{/if}
 				</div>
 			</div>
 		</SinglePane>
@@ -193,9 +287,11 @@
 								>
 									<div slot="trigger" let:open>
 										<div class="delete-btn">
-											<Button size="inline" color="danger" on:click={open}
-												>x</Button
-											>
+											{#if allowEditing()}
+												<Button size="inline" color="danger" on:click={open}
+													>x</Button
+												>
+											{/if}
 										</div>
 									</div>
 								</DeleteModal>
@@ -211,7 +307,9 @@
 				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
 					createAttachment(detail)}>
 					<div slot="trigger" let:open>
-						<Button on:click={open}>Add Attachment</Button>
+						{#if allowEditing()}
+							<Button on:click={open}>Add Attachment</Button>
+						{/if}
 					</div>
 				</AttachmentModal>
 			</div>
@@ -229,7 +327,7 @@
 	.head-wrapper {
 		.meta {
 			display: grid;
-			grid-template-columns: auto auto auto auto;
+			grid-template-columns: auto auto auto auto auto;
 			column-gap: 1.5rem;
 			row-gap: 1.5rem;
 

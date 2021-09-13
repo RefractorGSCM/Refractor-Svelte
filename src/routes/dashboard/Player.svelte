@@ -10,11 +10,19 @@
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
+	import PermissionCheck from "../../components/PermissionCheck.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import { getPlayerInfractions } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer, serverPlayers } from "../../domain/player/store"
+	import {
+		FLAG_CREATE_BAN,
+		FLAG_CREATE_KICK,
+		FLAG_CREATE_MUTE,
+		FLAG_CREATE_WARNING,
+	} from "../../permissions/permissions"
 	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
@@ -160,29 +168,37 @@
 				</div>
 
 				<div class="buttons">
-					<WarningModal {player}>
-						<div slot="trigger" let:openWarning>
-							<Button on:click={openWarning}>Log Warning</Button>
-						</div>
-					</WarningModal>
+					<RequirePerms allOf={[FLAG_CREATE_WARNING]}>
+						<WarningModal {player}>
+							<div slot="trigger" let:openWarning>
+								<Button on:click={openWarning}>Log Warning</Button>
+							</div>
+						</WarningModal>
+					</RequirePerms>
 
-					<MuteModal {player}>
-						<div slot="trigger" let:openMute>
-							<Button on:click={openMute}>Log Mute</Button>
-						</div>
-					</MuteModal>
+					<RequirePerms allOf={[FLAG_CREATE_MUTE]}>
+						<MuteModal {player}>
+							<div slot="trigger" let:openMute>
+								<Button on:click={openMute}>Log Mute</Button>
+							</div>
+						</MuteModal>
+					</RequirePerms>
 
-					<KickModal {player}>
-						<div slot="trigger" let:openKick>
-							<Button color="warning" on:click={openKick}>Log Kick</Button>
-						</div>
-					</KickModal>
+					<RequirePerms allOf={[FLAG_CREATE_KICK]}>
+						<KickModal {player}>
+							<div slot="trigger" let:openKick>
+								<Button color="warning" on:click={openKick}>Log Kick</Button>
+							</div>
+						</KickModal>
+					</RequirePerms>
 
-					<BanModal {player}>
-						<div slot="trigger" let:openBan>
-							<Button color="danger" on:click={openBan}>Log Ban</Button>
-						</div>
-					</BanModal>
+					<RequirePerms allOf={[FLAG_CREATE_BAN]}>
+						<BanModal {player}>
+							<div slot="trigger" let:openBan>
+								<Button color="danger" on:click={openBan}>Log Ban</Button>
+							</div>
+						</BanModal>
+					</RequirePerms>
 				</div>
 			</div>
 		</SinglePane>
@@ -201,6 +217,8 @@
 						name="serverId"
 						defaultOption={{ id: anyServerId, name: "Any" }}
 						on:change={({ detail }) => changeServerFilter(detail)}
+						label="Server"
+						includeFragments={true}
 					/>
 				</div>
 
