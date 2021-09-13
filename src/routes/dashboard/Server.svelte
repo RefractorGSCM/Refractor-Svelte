@@ -13,7 +13,7 @@
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
 	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
-	import CreateWarningModal from "../../components/Modals/CreateWarningModal.svelte"
+	import CreateWarningModal from "../../components/Modals/WarningModal.svelte"
 	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
 	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
 

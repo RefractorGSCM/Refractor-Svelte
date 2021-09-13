@@ -139,3 +139,32 @@ export async function getInfractionById(id: number): Promise<Infraction> {
 		errorToast(data.message ? data.message : "Could not get infraction")
 	}
 }
+
+export async function updateInfraction(
+	id: number,
+	fields: Object,
+): Promise<creationRes> {
+	try {
+		const { data } = await api.updateInfraction(id, fields)
+
+		return {
+			infraction: data.payload as Infraction,
+			success: true,
+		}
+	} catch (err) {
+		const { data } = err.response
+
+		if (data.errors) {
+			return {
+				infraction: null,
+				success: false,
+				errors: data.errors,
+			}
+		}
+
+		return {
+			infraction: null,
+			success: false,
+		}
+	}
+}

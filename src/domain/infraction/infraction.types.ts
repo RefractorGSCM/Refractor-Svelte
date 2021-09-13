@@ -35,6 +35,12 @@ export type UpdateInfractionParams = {
 	duration?: string
 }
 
+export type InfractionModifyRes = {
+	infraction: Infraction
+	success: boolean
+	errors?: any
+}
+
 export type Infraction = {
 	id: number
 	player_id: string
