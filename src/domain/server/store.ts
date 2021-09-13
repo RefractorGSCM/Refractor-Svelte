@@ -101,3 +101,17 @@ export async function getServerById(id: number): Promise<Server> {
 		errorToast(data.message ? data.message : "Error: could not get server info")
 	}
 }
+
+export async function getServerPermissions(id: number): Promise<BigInt> {
+	try {
+		const { data } = await api.getScopedServerPermissions(id)
+
+		return BigInt(data.payload)
+	} catch (err) {
+		const { data } = err.response
+
+		errorToast(
+			data.message ? data.message : "Error: could not get server permissions",
+		)
+	}
+}
