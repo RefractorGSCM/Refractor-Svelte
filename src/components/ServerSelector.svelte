@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Select from "./Select.svelte"
 	import { createEventDispatcher, onMount } from "svelte"
-	import { allServers } from "../domain/server/store"
+	import { allServers, fragmentServers } from "../domain/server/store"
 	import Server from "../routes/dashboard/Server.svelte"
 	import { serverPlayers } from "../domain/player/store"
+	import { each } from "svelte/internal"
 
 	export let name
 	export let error = null
@@ -11,6 +12,7 @@
 	export let required = false
 	export let value: any = ""
 	export let defaultOption: { id: number; name: string } = null
+	export let includeFragments: boolean = false
 
 	const dispatch = createEventDispatcher()
 
@@ -43,6 +45,12 @@
 			{#each $allServers as server}
 				<option value={server.id}>{server.name}</option>
 			{/each}
+
+			{#if includeFragments}
+				{#each $fragmentServers as server}
+					<option value={server.id}>{server.name}</option>
+				{/each}
+			{/if}
 		</select>
 
 		<div class="underline" />
