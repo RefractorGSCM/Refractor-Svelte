@@ -7,6 +7,7 @@
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import type {
 		Attachment,
 		CreateAttachmentParams,
@@ -69,26 +70,50 @@
 		</div>
 
 		<SinglePane>
-			<div class="meta">
-				<div class="meta--field">
-					<span>Infraction ID:</span>
-					{infraction.id}
-				</div>
-				<div class="meta--field">
-					<span>Platform:</span>
-					{infraction.platform}
-				</div>
-				{#if player}
+			<div class="head-wrapper">
+				<div class="meta">
 					<div class="meta--field">
-						<span>Player:</span>
-						<Link to={`/player/${infraction.platform}/${infraction.player_id}`}
-							>{player.name}</Link
-						>
+						<span>Infraction ID:</span>
+						{infraction.id}
 					</div>
-				{/if}
-				<div class="meta--field">
-					<span>Issued by:</span>
-					{infraction.issuer_name}
+					<div class="meta--field">
+						<span>Platform:</span>
+						{infraction.platform}
+					</div>
+					{#if player}
+						<div class="meta--field">
+							<span>Player:</span>
+							<Link
+								to={`/player/${infraction.platform}/${infraction.player_id}`}
+								>{player.name}</Link
+							>
+						</div>
+					{/if}
+					<div class="meta--field">
+						<span>Issued by:</span>
+						{infraction.issuer_name}
+					</div>
+				</div>
+
+				<div class="buttons">
+					<WarningModal
+						mode="edit"
+						{player}
+						serverId={infraction.server_id}
+						initialValues={{ ...infraction }}
+						infractionId={infraction.id}
+						on:submit={({ detail }) =>
+							(infraction = {
+								...infraction,
+								reason: detail.reason,
+								duration: detail.duration,
+							})}
+					>
+						<div slot="trigger" let:openWarning>
+							<Button on:click={openWarning}>Edit</Button>
+						</div>
+					</WarningModal>
+					<Button color="danger">Delete</Button>
 				</div>
 			</div>
 		</SinglePane>
@@ -163,27 +188,34 @@
 		margin-bottom: 2rem;
 	}
 
-	.meta {
-		display: grid;
-		grid-template-columns: auto auto auto auto;
-		column-gap: 1.5rem;
-		row-gap: 1.5rem;
+	.head-wrapper {
+		.meta {
+			display: grid;
+			grid-template-columns: auto auto auto auto;
+			column-gap: 1.5rem;
+			row-gap: 1.5rem;
 
-		@include respond-below(md) {
-			grid-template-columns: 1fr 1fr;
+			@include respond-below(md) {
+				grid-template-columns: 1fr 1fr;
+			}
+
+			&--field {
+				color: var(--color-text2);
+
+				:global(a) {
+					color: var(--color-text2);
+					text-decoration: underline;
+				}
+
+				span {
+					color: var(--color-primary);
+				}
+			}
 		}
 
-		&--field {
-			color: var(--color-text2);
-
-			:global(a) {
-				color: var(--color-text2);
-				text-decoration: underline;
-			}
-
-			span {
-				color: var(--color-primary);
-			}
+		.buttons {
+			margin-top: 1rem;
+			width: 100%;
 		}
 	}
 

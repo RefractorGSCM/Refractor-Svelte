@@ -1,13 +1,18 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	import { createEventDispatcher, onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import type { Attachment } from "../../domain/attachment/attachment.types"
 	import type {
 		CreateBanParams,
 		CreateWarningParams,
+		Infraction,
+		InfractionModifyRes,
 	} from "../../domain/infraction/infraction.types"
-	import { createWarning } from "../../domain/infraction/store"
+	import {
+		createWarning,
+		updateInfraction,
+	} from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
@@ -22,10 +27,15 @@
 	import AttachmentModal from "./AttachmentModal.svelte"
 	import Modal from "./Modal.svelte"
 
+	export let mode = "create"
 	export let initialValues: CreateWarningParams = {}
 	export let player: Player
 	export let serverId: number = null
+	export let infractionId: number = null
+
 	let serverIdProvided = !!serverId
+
+	const dispatch = createEventDispatcher()
 
 	type fields = {
 		values: {
@@ -98,10 +108,6 @@
 			.min(1, "Must be at least 1 character in length")
 			.max(1024, "Must be no more than 1024 characters in length")
 			.required("Reason is required"),
-		duration: yup
-			.number()
-			.min(0, "Must not be less than 0")
-			.max(maxInt32, "Must not be higher than 2,147,483,647"),
 	})
 
 	async function submit(e, close) {
@@ -137,15 +143,17 @@
 			return
 		}
 
-		// Create infraction and report any errors back
-		const { infraction, success, errors } = await createWarning(
-			Number(values.serverId),
-			{
-				...values,
-				player_id: player.id,
-				platform: player.platform,
-			},
-		)
+		let res: InfractionModifyRes = null
+		switch (mode) {
+			case "create":
+				res = await create(values)
+				break
+			case "edit":
+				res = await update(values)
+				break
+		}
+
+		const { infraction, success, errors } = res
 
 		if (!success) {
 			store.set({
@@ -156,8 +164,25 @@
 
 		// Close the form on success
 		if (success) {
+			dispatch("submit", infraction)
 			close()
 		}
+	}
+
+	async function create(values): Promise<InfractionModifyRes> {
+		// Create infraction and report any errors back
+		return await createWarning(Number(values.serverId), {
+			...values,
+			player_id: player.id,
+			platform: player.platform,
+		})
+	}
+
+	async function update(values): Promise<InfractionModifyRes> {
+		// Update the infraction and report any errors back
+		return await updateInfraction(infractionId, {
+			reason: values.reason,
+		})
 	}
 </script>
 
@@ -166,7 +191,11 @@
 		<slot name="trigger" openWarning={open} />
 	</div>
 	<div slot="header">
-		<div class="header">New Warning for {player.name}</div>
+		<div class="header">
+			{mode === "create"
+				? `New Warning for ${player.name}`
+				: "Editing Infraction"}
+		</div>
 	</div>
 	<div slot="content">
 		<div class="content">
@@ -193,13 +222,17 @@
 				/>
 			</form>
 
-			<AttachmentManager bind:attachments={$store.values.attachments} />
+			{#if mode === "create"}
+				<AttachmentManager bind:attachments={$store.values.attachments} />
+			{/if}
 		</div>
 	</div>
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
-		<Button on:click={(e) => submit(e, close)}>Log Warning</Button>
+		<Button on:click={(e) => submit(e, close)}
+			>{mode === "create" ? "Log Warning" : "Update Warning"}</Button
+		>
 	</div>
 </Modal>
 

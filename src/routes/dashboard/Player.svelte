@@ -9,7 +9,7 @@
 	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
 	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
 	import CreateMuteModal from "../../components/Modals/CreateMuteModal.svelte"
-	import CreateWarningModal from "../../components/Modals/CreateWarningModal.svelte"
+	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import { getPlayerInfractions } from "../../domain/infraction/store"
@@ -160,11 +160,11 @@
 				</div>
 
 				<div class="buttons">
-					<CreateWarningModal {player}>
+					<WarningModal {player}>
 						<div slot="trigger" let:openWarning>
 							<Button on:click={openWarning}>Log Warning</Button>
 						</div>
-					</CreateWarningModal>
+					</WarningModal>
 
 					<CreateMuteModal {player}>
 						<div slot="trigger" let:openMute>
