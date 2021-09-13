@@ -8,7 +8,8 @@ import type {
 	UpdateServerParams,
 } from "./server.types"
 
-export const allServers = writable([])
+export const allServers = writable([] as Server[])
+export const fragmentServers = writable([] as Server[])
 
 export async function getAllServers() {
 	try {
@@ -16,9 +17,17 @@ export async function getAllServers() {
 		const { payload } = data
 
 		if (Array.isArray(payload)) {
-			allServers.set(payload)
+			allServers.set(payload.filter((s) => !s.is_fragment))
 
 			for (const server of payload) {
+				if (server.is_fragment) {
+					fragmentServers.update((current) => {
+						current.push(server)
+						return current
+					})
+					continue
+				}
+
 				if (server.online_players && server.online_players.length > 0) {
 					// If there are online players, add them all in the player store
 					for (const player of server.online_players) {

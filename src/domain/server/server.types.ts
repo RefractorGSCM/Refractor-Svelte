@@ -7,6 +7,7 @@ export type Server = {
 	address: string
 	created_at?: any
 	modified_at?: any
+	is_fragment?: boolean
 }
 
 export type CreateServerParams = {
