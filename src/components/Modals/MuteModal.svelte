@@ -294,7 +294,7 @@
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
 		<Button on:click={(e) => submit(e, close)}
-			>{mode === "create" ? "Log Warning" : "Update Warning"}</Button
+			>{mode === "create" ? "Log Mute" : "Update Mute"}</Button
 		>
 	</div>
 </Modal>

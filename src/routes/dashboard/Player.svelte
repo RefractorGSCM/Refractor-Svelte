@@ -6,7 +6,7 @@
 	import Flair from "../../components/Flair.svelte"
 
 	import Heading from "../../components/Heading.svelte"
-	import BanModal from "../../components/Modals/CreateBanModal.svelte"
+	import BanModal from "../../components/Modals/BanModal.svelte"
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
