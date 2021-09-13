@@ -6,8 +6,8 @@
 	import Flair from "../../components/Flair.svelte"
 
 	import Heading from "../../components/Heading.svelte"
-	import CreateBanModal from "../../components/Modals/CreateBanModal.svelte"
-	import CreateKickModal from "../../components/Modals/CreateKickModal.svelte"
+	import BanModal from "../../components/Modals/CreateBanModal.svelte"
+	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
@@ -172,17 +172,17 @@
 						</div>
 					</MuteModal>
 
-					<CreateKickModal {player}>
+					<KickModal {player}>
 						<div slot="trigger" let:openKick>
 							<Button color="warning" on:click={openKick}>Log Kick</Button>
 						</div>
-					</CreateKickModal>
+					</KickModal>
 
-					<CreateBanModal {player}>
+					<BanModal {player}>
 						<div slot="trigger" let:openBan>
 							<Button color="danger" on:click={openBan}>Log Ban</Button>
 						</div>
-					</CreateBanModal>
+					</BanModal>
 				</div>
 			</div>
 		</SinglePane>

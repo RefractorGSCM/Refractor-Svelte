@@ -192,9 +192,7 @@
 	</div>
 	<div slot="header">
 		<div class="header">
-			{mode === "create"
-				? `New Warning for ${player.name}`
-				: "Editing Infraction"}
+			{mode === "create" ? `New Warning for ${player.name}` : "Editing Warning"}
 		</div>
 	</div>
 	<div slot="content">

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	import { createEventDispatcher, onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import type { Attachment } from "../../domain/attachment/attachment.types"
@@ -7,8 +7,9 @@
 		CreateBanParams,
 		CreateKickParams,
 		CreateWarningParams,
+		InfractionModifyRes,
 	} from "../../domain/infraction/infraction.types"
-	import { createKick } from "../../domain/infraction/store"
+	import { createKick, updateInfraction } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { updateServer } from "../../domain/server/store"
 	import Server from "../../routes/dashboard/Server.svelte"
@@ -25,7 +26,12 @@
 	export let initialValues: CreateKickParams = {}
 	export let player: Player
 	export let serverId: number = null
+	export let mode = "create"
+	export let infractionId: number = null
+
 	let serverIdProvided = !!serverId
+
+	const dispatch = createEventDispatcher()
 
 	type fields = {
 		values: {
@@ -98,10 +104,6 @@
 			.min(1, "Must be at least 1 character in length")
 			.max(1024, "Must be no more than 1024 characters in length")
 			.required("Reason is required"),
-		duration: yup
-			.number()
-			.min(0, "Must not be less than 0")
-			.max(maxInt32, "Must not be higher than 2,147,483,647"),
 	})
 
 	async function submit(e, close) {
@@ -137,15 +139,17 @@
 			return
 		}
 
-		// Create infraction and report any errors back
-		const { infraction, success, errors } = await createKick(
-			Number(values.serverId),
-			{
-				...values,
-				player_id: player.id,
-				platform: player.platform,
-			},
-		)
+		let res: InfractionModifyRes = null
+		switch (mode) {
+			case "create":
+				res = await create(values)
+				break
+			case "edit":
+				res = await update(values)
+				break
+		}
+
+		const { infraction, success, errors } = res
 
 		if (!success) {
 			store.set({
@@ -156,17 +160,36 @@
 
 		// Close the form on success
 		if (success) {
+			dispatch("submit", infraction)
 			close()
 		}
+	}
+
+	async function create(values): Promise<InfractionModifyRes> {
+		// Create infraction and report any errors back
+		return await createKick(Number(values.serverId), {
+			...values,
+			player_id: player.id,
+			platform: player.platform,
+		})
+	}
+
+	async function update(values): Promise<InfractionModifyRes> {
+		// Update the infraction and report any errors back
+		return await updateInfraction(infractionId, {
+			reason: values.reason,
+		})
 	}
 </script>
 
 <Modal on:close={cleanup} fullWidth>
 	<div slot="trigger" let:open>
-		<slot name="trigger" openKick={open} />
+		<slot name="trigger" openKick={open} {open} />
 	</div>
 	<div slot="header">
-		<div class="header">New Kick for {player.name}</div>
+		<div class="header">
+			{mode === "create" ? `New Kick for ${player.name}` : "Editing Kick"}
+		</div>
 	</div>
 	<div slot="content">
 		<div class="content">
@@ -193,13 +216,17 @@
 				/>
 			</form>
 
-			<AttachmentManager bind:attachments={$store.values.attachments} />
+			{#if mode === "create"}
+				<AttachmentManager bind:attachments={$store.values.attachments} />
+			{/if}
 		</div>
 	</div>
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
-		<Button on:click={(e) => submit(e, close)}>Log Kick</Button>
+		<Button on:click={(e) => submit(e, close)}
+			>{mode === "create" ? "Log Warning" : "Update Kick"}</Button
+		>
 	</div>
 </Modal>
 

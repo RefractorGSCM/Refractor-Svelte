@@ -212,7 +212,7 @@
 	</div>
 	<div slot="header">
 		<div class="header">
-			{mode === "create" ? `New Mute for ${player.name}` : "Editing Infraction"}
+			{mode === "create" ? `New Mute for ${player.name}` : "Editing Mute"}
 		</div>
 	</div>
 	<div slot="content">
