@@ -7,6 +7,7 @@
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import type {
 		Attachment,
@@ -28,12 +29,22 @@
 	let infraction: Infraction = null
 	let attachments = writable([] as Attachment[])
 	let player: Player = null
+	let editComponent
 	onMount(async () => {
 		infraction = await getInfractionById(id)
 
 		if (infraction) {
 			if (infraction.attachments) attachments.set(infraction.attachments)
 			player = await getPlayer(infraction.player_id, infraction.platform)
+
+			switch (infraction.type) {
+				case "WARNING":
+					editComponent = WarningModal
+					break
+				case "MUTE":
+					editComponent = MuteModal
+					break
+			}
 		}
 	})
 
@@ -43,8 +54,6 @@
 		if (!res.success) {
 			return
 		}
-
-		console.log("NEW ATTACHMENT", res.attachment)
 
 		attachments.update((current) => {
 			current.push(res.attachment)
@@ -96,7 +105,8 @@
 				</div>
 
 				<div class="buttons">
-					<WarningModal
+					<svelte:component
+						this={editComponent}
 						mode="edit"
 						{player}
 						serverId={infraction.server_id}
@@ -109,10 +119,10 @@
 								duration: detail.duration,
 							})}
 					>
-						<div slot="trigger" let:openWarning>
-							<Button on:click={openWarning}>Edit</Button>
+						<div slot="trigger" let:open>
+							<Button on:click={open}>Edit</Button>
 						</div>
-					</WarningModal>
+					</svelte:component>
 					<Button color="danger">Delete</Button>
 				</div>
 			</div>
