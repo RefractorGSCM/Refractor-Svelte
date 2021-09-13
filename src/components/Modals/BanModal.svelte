@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	import { createEventDispatcher, onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import type { Attachment } from "../../domain/attachment/attachment.types"
-	import type { CreateBanParams } from "../../domain/infraction/infraction.types"
-	import { createBan } from "../../domain/infraction/store"
+	import type {
+		CreateBanParams,
+		InfractionModifyRes,
+	} from "../../domain/infraction/infraction.types"
+	import { createBan, updateInfraction } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import type { UpdateServerParams } from "../../domain/server/server.types"
 	import { updateServer } from "../../domain/server/store"
@@ -23,7 +26,12 @@
 	export let initialValues: CreateBanParams = {}
 	export let player: Player
 	export let serverId: number = null
+	export let mode = "create"
+	export let infractionId: number = null
+
 	let serverIdProvided = !!serverId
+
+	const dispatch = createEventDispatcher()
 
 	type fields = {
 		values: {
@@ -151,17 +159,17 @@
 			return
 		}
 
-		// Create infraction and report any errors back
-		const { infraction, success, errors } = await createBan(
-			Number(values.serverId),
-			{
-				reason: values.reason,
-				duration: Number(values.duration),
-				player_id: player.id,
-				platform: player.platform,
-				attachments: values.attachments,
-			},
-		)
+		let res: InfractionModifyRes = null
+		switch (mode) {
+			case "create":
+				res = await create(values)
+				break
+			case "edit":
+				res = await update(values)
+				break
+		}
+
+		const { infraction, success, errors } = res
 
 		if (!success) {
 			store.set({
@@ -172,17 +180,39 @@
 
 		// Close the form on success
 		if (success) {
+			dispatch("submit", infraction)
 			close()
 		}
+	}
+
+	async function create(values): Promise<InfractionModifyRes> {
+		// Create infraction and report any errors back
+		return await createBan(Number(values.serverId), {
+			reason: values.reason,
+			duration: Number(values.duration),
+			player_id: player.id,
+			platform: player.platform,
+			attachments: values.attachments,
+		})
+	}
+
+	async function update(values): Promise<InfractionModifyRes> {
+		// Update the infraction and report any errors back
+		return await updateInfraction(infractionId, {
+			reason: values.reason,
+			duration: values.duration,
+		})
 	}
 </script>
 
 <Modal on:close={cleanup} fullWidth>
 	<div slot="trigger" let:open>
-		<slot name="trigger" openBan={open} />
+		<slot name="trigger" openBan={open} {open} />
 	</div>
 	<div slot="header">
-		<div class="header">New Ban for {player.name}</div>
+		<div class="header">
+			{mode === "create" ? `New Ban for ${player.name}` : "Editing Mute"}
+		</div>
 	</div>
 	<div slot="content">
 		<div class="content">
@@ -250,13 +280,17 @@
 				/>
 			</form>
 
-			<AttachmentManager bind:attachments={$store.values.attachments} />
+			{#if mode === "create"}
+				<AttachmentManager bind:attachments={$store.values.attachments} />
+			{/if}
 		</div>
 	</div>
 
 	<div slot="footer" class="buttons" let:store={{ close }}>
 		<Button color="danger" on:click={close}>Cancel</Button>
-		<Button on:click={(e) => submit(e, close)}>Log Ban</Button>
+		<Button on:click={(e) => submit(e, close)}
+			>{mode === "create" ? "Log Ban" : "Update Ban"}</Button
+		>
 	</div>
 </Modal>
 
