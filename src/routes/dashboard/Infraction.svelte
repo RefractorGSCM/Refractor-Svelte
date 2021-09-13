@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { Link } from "svelte-routing"
+	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
 	import AttachmentManager from "../../components/AttachmentManager.svelte"
 	import Button from "../../components/Button.svelte"
@@ -20,7 +20,10 @@
 		deleteAttachment,
 	} from "../../domain/attachment/store"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
-	import { getInfractionById } from "../../domain/infraction/store"
+	import {
+		deleteInfraction,
+		getInfractionById,
+	} from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
 	import Container from "./components/Container.svelte"
@@ -75,6 +78,14 @@
 		attachments.update((current) => {
 			return current.filter((att) => att.id !== id)
 		})
+	}
+
+	async function deleteCurrentInfraction() {
+		const success = await deleteInfraction(infraction.id)
+
+		if (success) {
+			navigate(`/`)
+		}
 	}
 </script>
 
@@ -131,7 +142,16 @@
 							<Button on:click={open}>Edit</Button>
 						</div>
 					</svelte:component>
-					<Button color="danger">Delete</Button>
+
+					<DeleteModal
+						heading="Delete Infraction"
+						message={"Are you sure you wish to delete this infraction? This action can not be undone."}
+						on:submit={deleteCurrentInfraction}
+					>
+						<div slot="trigger" let:open>
+							<Button color="danger" on:click={open}>Delete</Button>
+						</div>
+					</DeleteModal>
 				</div>
 			</div>
 		</SinglePane>

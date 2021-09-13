@@ -168,3 +168,17 @@ export async function updateInfraction(
 		}
 	}
 }
+
+export async function deleteInfraction(id: number): Promise<boolean> {
+	try {
+		await api.deleteInfraction(id)
+
+		successToast("Infraction deleted")
+
+		return true
+	} catch (err) {
+		errorToast("Could not delete infraction")
+
+		return false
+	}
+}

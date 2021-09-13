@@ -52,6 +52,12 @@ const getInfractionById = (id: number) => {
 	})
 }
 
+const deleteInfraction = (id: number) => {
+	return axios.delete(`${API_ROOT}/infractions/${id}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	createWarning,
 	createMute,
@@ -60,4 +66,5 @@ export default {
 	updateInfraction,
 	getPlayerInfractions,
 	getInfractionById,
+	deleteInfraction,
 }
