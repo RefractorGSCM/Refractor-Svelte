@@ -17,8 +17,12 @@
 	const dispatch = createEventDispatcher()
 
 	onMount(async () => {
-		const initialValue = defaultOption.id || $allServers[0].id
-		value = initialValue
+		let initialValue
+		if (defaultOption) {
+			initialValue = value = defaultOption.id
+		} else {
+			initialValue = value = $allServers[0].id
+		}
 		update({ target: { value: initialValue } })
 	})
 
