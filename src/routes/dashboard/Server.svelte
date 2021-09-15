@@ -65,7 +65,6 @@
 
 		// Get computed user permissions scoped to this server
 		const perms = await getServerPermissions(server.id)
-		console.log("fetched perms", perms)
 		permissions.set(perms)
 
 		if (!found) {
