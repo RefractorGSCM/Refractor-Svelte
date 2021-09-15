@@ -124,3 +124,16 @@ export async function getServerPermissions(id: number): Promise<BigInt> {
 		)
 	}
 }
+
+export async function setServerStatus(id: number, status: string) {
+	allServers.update((current) => {
+		for (const server of current) {
+			if (server.id === id) {
+				server.status = status
+				break
+			}
+		}
+
+		return current
+	})
+}
