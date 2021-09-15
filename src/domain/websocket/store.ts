@@ -1,5 +1,6 @@
 import { writable } from "svelte/store"
 import { addPlayerToServer, removePlayerFromServer } from "../player/store"
+import { setServerStatus } from "../server/store"
 
 const messageStore = writable("")
 
@@ -37,6 +38,11 @@ export function openWebsocketConnection() {
 
 			case "player-quit": {
 				removePlayerFromServer(body.serverId, body.id)
+				break
+			}
+
+			case "server-status": {
+				setServerStatus(body.server_id, body.status)
 				break
 			}
 		}

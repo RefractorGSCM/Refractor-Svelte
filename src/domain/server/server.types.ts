@@ -1,4 +1,5 @@
 import type { StringSchema } from "yup"
+import type { Player } from "../player/player.types"
 
 export type Server = {
 	id: number
@@ -8,6 +9,8 @@ export type Server = {
 	created_at?: any
 	modified_at?: any
 	is_fragment?: boolean
+	status?: string
+	online_players?: Player[]
 }
 
 export type CreateServerParams = {

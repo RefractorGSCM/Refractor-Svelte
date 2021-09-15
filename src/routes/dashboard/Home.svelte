@@ -9,6 +9,7 @@
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
+	import { serverPlayers } from "../../domain/player/store"
 	import { getAllServers, allServers } from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,
@@ -62,8 +63,8 @@
 							<div class="name">
 								<span class="icon fas fa-server" />{server.name}
 							</div>
-							<div class="players">?</div>
-							<div class="status">?</div>
+							<div class="players">{server.online_players.length}</div>
+							<div class="status">{server.status}</div>
 						</div>
 					</a>
 					<div class="actions">

@@ -350,8 +350,13 @@
 		}
 
 		.buttons {
+			display: flex;
 			margin-top: 1rem;
 			width: 100%;
+
+			:global(.btn:first-child) {
+				margin-right: 0.5rem;
+			}
 		}
 	}
 
