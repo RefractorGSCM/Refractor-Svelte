@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
 	import Button from "../components/Button.svelte"
 	import Heading from "../components/Heading.svelte"
@@ -152,11 +153,16 @@
 					<div class="name">Platform</div>
 				</div>
 				{#each $searchStore.results as result}
-					<div class="result">
+					<a
+						class="result"
+						href={`/player/${result.platform}/${result.id}`}
+						on:click|preventDefault={() =>
+							navigate(`/player/${result.platform}/${result.id}`)}
+					>
 						<div class="name">{result.name}</div>
 						<div class="name">{dateString(new Date(result.last_seen))}</div>
 						<div class="name">{result.platform}</div>
-					</div>
+					</a>
 				{/each}
 			</div>
 		</div>
@@ -216,6 +222,7 @@
 				border-radius: var(--border-sm);
 				cursor: pointer;
 				transition: all 0.2s;
+				color: var(--color-text2);
 
 				&:hover {
 					background-color: var(--color-background1);
