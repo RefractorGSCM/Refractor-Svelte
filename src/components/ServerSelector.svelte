@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Select from "./Select.svelte"
+	import Select from "./SimpleSelect.svelte"
 	import { createEventDispatcher, onMount } from "svelte"
 	import { allServers, fragmentServers } from "../domain/server/store"
 	import Server from "../routes/dashboard/Server.svelte"

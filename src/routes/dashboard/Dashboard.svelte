@@ -15,6 +15,7 @@
 		FLAG_VIEW_PLAYER_RECORDS,
 		FLAG_VIEW_SERVERS,
 	} from "../../permissions/permissions"
+	import PlayerRecords from "../PlayerRecords.svelte"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Infraction from "./Infraction.svelte"
@@ -173,6 +174,12 @@
 			>
 				<Route path="/infraction/:id" let:params>
 					<Infraction id={params.id} />
+				</Route>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_PLAYER_RECORDS]}>
+				<Route path="/records/players">
+					<PlayerRecords />
 				</Route>
 			</RequirePerms>
 		</Router>
