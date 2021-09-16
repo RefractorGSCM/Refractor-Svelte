@@ -5,8 +5,15 @@
 	import Heading from "../components/Heading.svelte"
 	import Select from "../components/Select.svelte"
 	import TextInput from "../components/TextInput.svelte"
+	import type {
+		PlayerSearchBody,
+		PlayerSearchResult,
+	} from "../domain/search/search.types"
+	import { searchPlayers } from "../domain/search/store"
 	import Container from "./dashboard/components/Container.svelte"
 	import SinglePane from "./dashboard/components/SinglePane.svelte"
+
+	const pageLimit = 10
 
 	type formStore = {
 		values: {
@@ -21,25 +28,18 @@
 		}
 	}
 
-	type result = {
-		id: string
-		platform: string
-		name: string
-	}
-
 	type resultStore = {
 		meta: {
-			pageLimit: number
 			total: number
 			page: number
 		}
-		results: result[]
+		results: PlayerSearchResult[]
 	}
 
 	const store = writable({
 		values: {
 			term: "",
-			type: "",
+			type: "name",
 			platform: "",
 		},
 		errors: {
@@ -49,20 +49,43 @@
 		},
 	} as formStore)
 
-	const results = writable({
+	const previousSearch = writable({
+		term: "",
+		type: "",
+		platform: "",
+	})
+
+	const searchStore = writable({
 		meta: {
-			pageLimit: 10,
-			total: 43732,
+			total: 0,
 			page: 0,
 		},
-		results: [
-			{
-				id: "1",
-				platform: "playfab",
-				name: "Player 1",
-			},
-		] as result[],
+		results: [] as PlayerSearchResult[],
 	} as resultStore)
+
+	async function search() {
+		const offset = $searchStore.meta.page * pageLimit
+
+		const body = {
+			term: $store.values.term,
+			type: $store.values.type,
+			platform: $store.values.platform || undefined,
+			limit: pageLimit,
+			offset,
+		} as PlayerSearchBody
+
+		const { total, results } = await searchPlayers(body)
+
+		searchStore.update((current) => {
+			current.meta.total = total
+			current.results = results
+			return current
+		})
+	}
+
+	function dateString(date: Date): string {
+		return date.toLocaleString("en-GB", { hour12: true })
+	}
 </script>
 
 <Container>
@@ -78,7 +101,12 @@
 
 			<div class="form">
 				<div class="main">
-					<TextInput name="term" label="Search Term" required />
+					<TextInput
+						name="term"
+						label="Search Term"
+						bind:value={$store.values.term}
+						required
+					/>
 					<Select
 						name="type"
 						label="Type"
@@ -101,20 +129,37 @@
 				</div>
 
 				<div class="button">
-					<Button>Search</Button>
+					<Button on:click={search}>Search</Button>
 				</div>
 			</div>
 		</div>
 	</SinglePane>
 
-	{#if $results.results.length > 0}
-		<SinglePane>
-			<div class="results">
-				<div class="heading">
-					<Heading>Found {$results.meta.total} Results</Heading>
-				</div>
+	{#if $searchStore.results.length > 0}
+		<div class="results">
+			<div class="heading">
+				<Heading
+					>Showing {$searchStore.meta.total < pageLimit
+						? $searchStore.meta.total
+						: pageLimit} of {$searchStore.meta.total} Results</Heading
+				>
 			</div>
-		</SinglePane>
+
+			<div class="list">
+				<div class="result heading">
+					<div class="name">Name</div>
+					<div class="name">Last Seen</div>
+					<div class="name">Platform</div>
+				</div>
+				{#each $searchStore.results as result}
+					<div class="result">
+						<div class="name">{result.name}</div>
+						<div class="name">{dateString(new Date(result.last_seen))}</div>
+						<div class="name">{result.platform}</div>
+					</div>
+				{/each}
+			</div>
+		</div>
 	{/if}
 </Container>
 
@@ -139,6 +184,40 @@
 				display: grid;
 				grid-template-columns: 5fr 1fr 1fr;
 				column-gap: 1rem;
+			}
+		}
+	}
+
+	.results {
+		width: 100%;
+		font-size: 1.6rem;
+
+		.list {
+			margin-top: 1rem;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+
+			> * {
+				margin-bottom: 0.5rem;
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			.result {
+				width: 100%;
+				display: grid;
+				grid-template-columns: 2fr 1fr 1fr;
+				column-gap: 1rem;
+				background-color: var(--color-background2);
+				padding: 0.6rem 1rem;
+				border-radius: var(--border-sm);
+			}
+
+			.heading {
+				background-color: var(--color-background1);
 			}
 		}
 	}
