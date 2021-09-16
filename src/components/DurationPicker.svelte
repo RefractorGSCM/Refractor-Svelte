@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte"
 
-	import Select from "./Select.svelte"
+	import Select from "./SimpleSelect.svelte"
 
 	export let name
 	export let value: number = 0
