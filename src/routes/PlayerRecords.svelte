@@ -212,8 +212,14 @@
 				grid-template-columns: 2fr 1fr 1fr;
 				column-gap: 1rem;
 				background-color: var(--color-background2);
-				padding: 0.6rem 1rem;
+				padding: 0.75rem 1.25rem;
 				border-radius: var(--border-sm);
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&:hover {
+					background-color: var(--color-background1);
+				}
 			}
 
 			.heading {
