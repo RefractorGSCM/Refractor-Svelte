@@ -16,6 +16,7 @@
 	import * as yup from "yup"
 	import { reduceYupErrors } from "../utils/yup"
 	import BottomBar from "./dashboard/components/BottomBar.svelte"
+	import PlayerSelector from "../components/Modals/PlayerSelector.svelte"
 
 	const pageLimit = 10
 
@@ -298,6 +299,12 @@
 		</BottomBar>
 	{/if}
 </Container>
+
+<PlayerSelector>
+	<div slot="trigger" let:open>
+		<Button on:click={open}>Select Player</Button>
+	</div>
+</PlayerSelector>
 
 <style lang="scss">
 	.title {
