@@ -212,7 +212,7 @@
 				<Heading>Search Players</Heading>
 			</div>
 
-			<div class="form">
+			<form class="form" on:submit|preventDefault={search}>
 				<div class="main">
 					<TextInput
 						name="term"
@@ -246,7 +246,7 @@
 				<div class="button">
 					<Button on:click={search}>Search</Button>
 				</div>
-			</div>
+			</form>
 		</div>
 	</SinglePane>
 
@@ -286,7 +286,7 @@
 				>
 					Prev
 				</div>
-				<div class="page">{$searchStore.meta.page}</div>
+				<div class="page">{$searchStore.meta.page + 1}</div>
 				<div
 					class="next"
 					class:disabled={$searchStore.meta.page >= $amountOfPages - 1}
