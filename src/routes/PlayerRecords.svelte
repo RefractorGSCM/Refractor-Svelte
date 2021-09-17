@@ -13,6 +13,8 @@
 	import { searchPlayers } from "../domain/search/store"
 	import Container from "./dashboard/components/Container.svelte"
 	import SinglePane from "./dashboard/components/SinglePane.svelte"
+	import * as yup from "yup"
+	import { reduceYupErrors } from "../utils/yup"
 
 	const pageLimit = 10
 
@@ -64,8 +66,47 @@
 		results: [] as PlayerSearchResult[],
 	} as resultStore)
 
+	const schema = yup.object().shape({
+		term: yup
+			.string()
+			.required("Search term is required")
+			.min(1, "Must be no less than 1 character in length")
+			.max(128, "Must be no more than 128 characters in length"),
+		type: yup.string().required("Type is required"),
+	})
+
 	async function search() {
 		const offset = $searchStore.meta.page * pageLimit
+
+		let values = {
+			...$store.values,
+		}
+
+		// Validate
+		let valid = false
+		try {
+			values = await schema.validate(values, { abortEarly: false })
+
+			store.set({
+				...$store,
+				errors: {},
+			})
+
+			valid = true
+		} catch (err) {
+			const errors = reduceYupErrors(err)
+
+			console.log(errors)
+
+			store.set({
+				...$store,
+				errors,
+			})
+		}
+
+		if (!valid) {
+			return
+		}
 
 		const body = {
 			term: $store.values.term,
@@ -106,6 +147,7 @@
 						name="term"
 						label="Search Term"
 						bind:value={$store.values.term}
+						error={$store.errors.term}
 						required
 					/>
 					<Select
@@ -113,6 +155,7 @@
 						label="Type"
 						required
 						bind:value={$store.values.type}
+						error={$store.errors.type}
 					>
 						<option value="name">Name</option>
 						<option value="id">ID</option>
