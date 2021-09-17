@@ -3,6 +3,7 @@ import type { Player } from "../player/player.types"
 export type PlayerSearchBody = {
 	term: string
 	type: string
+	platform?: string
 	limit: number
 	offset: number
 }

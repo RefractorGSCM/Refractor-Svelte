@@ -15,6 +15,7 @@
 	import SinglePane from "./dashboard/components/SinglePane.svelte"
 	import * as yup from "yup"
 	import { reduceYupErrors } from "../utils/yup"
+	import BottomBar from "./dashboard/components/BottomBar.svelte"
 
 	const pageLimit = 10
 
@@ -52,7 +53,7 @@
 		},
 	} as formStore)
 
-	const previousSearch = writable({
+	const currentSearch = writable({
 		term: "",
 		type: "",
 		platform: "",
@@ -69,6 +70,7 @@
 	const schema = yup.object().shape({
 		term: yup
 			.string()
+			.trim()
 			.required("Search term is required")
 			.min(1, "Must be no less than 1 character in length")
 			.max(128, "Must be no more than 128 characters in length"),
@@ -108,6 +110,15 @@
 			return
 		}
 
+		// Clear current results
+		searchStore.set({
+			meta: {
+				total: 0,
+				page: 0,
+			},
+			results: [] as PlayerSearchResult[],
+		})
+
 		const body = {
 			term: $store.values.term,
 			type: $store.values.type,
@@ -123,11 +134,71 @@
 			current.results = results
 			return current
 		})
+
+		currentSearch.set({
+			term: body.term,
+			type: body.type,
+			platform: body.platform,
+		})
+	}
+
+	async function nextPage() {
+		if ($searchStore.meta.page >= $amountOfPages - 1) {
+			return
+		}
+
+		const nextPage = $searchStore.meta.page + 1
+
+		const body = {
+			term: $currentSearch.term,
+			type: $currentSearch.type,
+			platform: $currentSearch.platform,
+			limit: pageLimit,
+			offset: nextPage * pageLimit,
+		} as PlayerSearchBody
+
+		const { total, results } = await searchPlayers(body)
+
+		searchStore.update((current) => {
+			current.meta.total = total
+			current.meta.page = nextPage
+			current.results = results
+			return current
+		})
+	}
+
+	async function prevPage() {
+		if ($searchStore.meta.page <= 0) {
+			return
+		}
+
+		const prevPage = $searchStore.meta.page - 1
+
+		const body = {
+			term: $currentSearch.term,
+			type: $currentSearch.type,
+			platform: $currentSearch.platform,
+			limit: pageLimit,
+			offset: prevPage * pageLimit,
+		} as PlayerSearchBody
+
+		const { total, results } = await searchPlayers(body)
+
+		searchStore.update((current) => {
+			current.meta.total = total
+			current.meta.page = prevPage
+			current.results = results
+			return current
+		})
 	}
 
 	function dateString(date: Date): string {
 		return date.toLocaleString("en-GB", { hour12: true })
 	}
+
+	let amountOfPages = writable(0)
+	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
+	$: console.log("amountOfPages", $amountOfPages)
 </script>
 
 <Container>
@@ -182,11 +253,7 @@
 	{#if $searchStore.results.length > 0}
 		<div class="results">
 			<div class="heading">
-				<Heading
-					>Showing {$searchStore.meta.total < pageLimit
-						? $searchStore.meta.total
-						: pageLimit} of {$searchStore.meta.total} Results</Heading
-				>
+				<Heading>Showing {$searchStore.meta.total} Results</Heading>
 			</div>
 
 			<div class="list">
@@ -203,12 +270,32 @@
 							navigate(`/player/${result.platform}/${result.id}`)}
 					>
 						<div class="name">{result.name}</div>
-						<div class="name">{dateString(new Date(result.last_seen))}</div>
-						<div class="name">{result.platform}</div>
+						<div class="lastseen">{dateString(new Date(result.last_seen))}</div>
+						<div class="platform">{result.platform}</div>
 					</a>
 				{/each}
 			</div>
 		</div>
+
+		<BottomBar>
+			<div class="page-switcher">
+				<div
+					class="prev"
+					class:disabled={$searchStore.meta.page <= 0}
+					on:click={prevPage}
+				>
+					Prev
+				</div>
+				<div class="page">{$searchStore.meta.page}</div>
+				<div
+					class="next"
+					class:disabled={$searchStore.meta.page >= $amountOfPages - 1}
+					on:click={nextPage}
+				>
+					Next
+				</div>
+			</div>
+		</BottomBar>
 	{/if}
 </Container>
 
@@ -274,6 +361,33 @@
 
 			.heading {
 				background-color: var(--color-background1);
+			}
+		}
+	}
+
+	:global(.bottom-bar) {
+		background-color: unset !important;
+
+		.page-switcher {
+			width: 100%;
+			height: 3rem;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.6rem;
+			user-select: none;
+
+			.next,
+			.prev {
+				padding: 0 1rem;
+				color: var(--color-primary-light);
+				cursor: pointer;
+			}
+
+			.next.disabled,
+			.prev.disabled {
+				color: var(--color-text-muted);
+				cursor: unset;
 			}
 		}
 	}
