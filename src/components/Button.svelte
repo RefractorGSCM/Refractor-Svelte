@@ -4,6 +4,7 @@
 	export let effects: string[] = []
 	export let classes: string[] = []
 	export let outline = false
+	export let disabled = false
 
 	const extraClasses = classes.join(" ")
 
@@ -17,7 +18,7 @@
 	}`
 </script>
 
-<button class={classString} on:click>
+<button class={classString} on:click {disabled}>
 	<slot />
 </button>
 
@@ -121,6 +122,16 @@
 
 		&-scale:hover {
 			transform: scale(1.05);
+		}
+
+		// disabled
+		&:disabled {
+			background-color: var(--color-disabled);
+			cursor: unset;
+
+			&:hover {
+				cursor: unset;
+			}
 		}
 	}
 </style>

@@ -12,6 +12,7 @@
 	const { isOpen, open, close } = store
 
 	export let fullWidth = false
+	export let fullHeight = false
 
 	const dispatch = createEventDispatcher()
 
@@ -42,7 +43,11 @@
 	<div class="modal" use:modalAction tabindex="0">
 		<div class="backdrop" on:click|stopPropagation={preClose} />
 
-		<div class="content-wrapper" class:fullwidth={fullWidth}>
+		<div
+			class="content-wrapper"
+			class:fullwidth={fullWidth}
+			class:fullheight={fullHeight}
+		>
 			<slot name="header" {store}>
 				<!-- fallback header -->
 				<div>
@@ -122,6 +127,11 @@
 	}
 
 	.fullwidth {
-		width: 100%;
+		width: 100% !important;
+		max-width: 80% !important;
+	}
+
+	.fullheight {
+		max-height: 80%;
 	}
 </style>

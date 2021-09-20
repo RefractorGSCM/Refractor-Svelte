@@ -300,7 +300,7 @@
 	{/if}
 </Container>
 
-<PlayerSelector>
+<PlayerSelector on:submit={({ detail }) => console.log("Selected", detail)}>
 	<div slot="trigger" let:open>
 		<Button on:click={open}>Select Player</Button>
 	</div>
