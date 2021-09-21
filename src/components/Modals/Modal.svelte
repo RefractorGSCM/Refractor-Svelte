@@ -127,8 +127,8 @@
 	}
 
 	.fullwidth {
-		width: 100% !important;
-		max-width: 80% !important;
+		width: 100%;
+		max-width: 80%;
 	}
 
 	.fullheight {

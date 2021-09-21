@@ -19,6 +19,7 @@
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Infraction from "./Infraction.svelte"
+	import InfractionRecords from "./InfractionRecords.svelte"
 	import Player from "./Player.svelte"
 	import Server from "./Server.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
@@ -180,6 +181,12 @@
 			<RequirePerms allOf={[FLAG_VIEW_PLAYER_RECORDS]}>
 				<Route path="/records/players">
 					<PlayerRecords />
+				</Route>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_INFRACTION_RECORDS]}>
+				<Route path="/records/infractions">
+					<InfractionRecords />
 				</Route>
 			</RequirePerms>
 		</Router>

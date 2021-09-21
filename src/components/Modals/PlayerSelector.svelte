@@ -370,7 +370,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
-		width: 100%;
+		max-width: 100%;
 		height: 100%;
 
 		.form {
