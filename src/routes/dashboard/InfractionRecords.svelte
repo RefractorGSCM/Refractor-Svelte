@@ -23,8 +23,14 @@
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import * as yup from "yup"
-	import { filterEmptyStrings, filterUndefined } from "../../utils/filters"
+	import {
+		filterEmpty,
+		filterEmptyStrings,
+		filterUndefined,
+		filterZero,
+	} from "../../utils/filters"
 	import { errorToast } from "../../utils/toast"
+	import { searchInfractions } from "../../domain/search/store"
 
 	let users = writable([])
 	onMount(async () => {
@@ -72,7 +78,14 @@
 	}
 
 	let store = writable({
-		values: {},
+		values: {
+			type: undefined,
+			player: undefined,
+			platform: undefined,
+			user_id: undefined,
+			game: undefined,
+			server_id: undefined,
+		},
 		errors: {},
 	} as formStore)
 
@@ -188,9 +201,9 @@
 		})
 
 		// Filter out empty strings
-		const updateArgs = filterUndefined(values) as InfractionSearchBody
+		const updateArgs = filterZero(filterEmpty(values)) as InfractionSearchBody
+		console.log("UARGS", updateArgs)
 
-		console.log("uargs", updateArgs)
 		if (Object.keys(updateArgs).length < 1) {
 			errorToast("Please apply at least one filter to search")
 			return
@@ -202,7 +215,36 @@
 			offset,
 		} as InfractionSearchBody
 
-		console.log("Search body", body)
+		console.log("SEARCH BODY", body)
+
+		// Run search
+		const { results, success, errors } = await searchInfractions(body)
+
+		if (!success) {
+			if (errors) {
+				store.set({
+					...$store,
+					errors: {
+						...$store.errors,
+						...errors,
+					},
+				})
+				return
+			}
+
+			errorToast("Could not run search")
+			return
+		}
+
+		searchStore.update((current) => {
+			current.meta.total = results.total
+			current.results = results.results
+			return current
+		})
+
+		currentSearch.set({
+			...body,
+		})
 	}
 </script>
 
