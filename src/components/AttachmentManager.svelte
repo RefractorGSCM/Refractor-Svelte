@@ -29,7 +29,7 @@
 
 	<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
 		<div slot="trigger" let:open>
-			<Button size="inline" on:click={open}>Attach URL</Button>
+			<Button size="inline" on:click={open}>Attach Image</Button>
 		</div>
 	</AttachmentModal>
 </div>
