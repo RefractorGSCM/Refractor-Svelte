@@ -4,6 +4,7 @@
 
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import PlayerSelector from "../../components/PlayerSelector.svelte"
 	import Select from "../../components/Select.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import {
@@ -12,9 +13,18 @@
 		isSuperAdmin,
 		self,
 	} from "../../domain/auth/store"
+	import type {
+		InfractionSearchBody,
+		InfractionSearchResult,
+		PlayerSearchResult,
+	} from "../../domain/search/search.types"
 	import { allUsers, getAllUsers } from "../../domain/user/store"
+	import { reduceYupErrors } from "../../utils/yup"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import * as yup from "yup"
+	import { filterEmptyStrings, filterUndefined } from "../../utils/filters"
+	import { errorToast } from "../../utils/toast"
 
 	let users = writable([])
 	onMount(async () => {
@@ -23,9 +33,7 @@
 		}
 
 		if ($isAdmin || $isSuperAdmin) {
-			if (!$allUsers) {
-				await getAllUsers()
-			}
+			await getAllUsers()
 
 			users.set($allUsers)
 		} else {
@@ -33,7 +41,169 @@
 		}
 	})
 
-	$: console.log($users)
+	type formStore = {
+		values: {
+			type?: string
+			player?: PlayerSearchResult
+			platform?: string
+			user_id?: string
+			game?: string
+			server_id?: number
+		}
+		errors: {
+			general?: any
+			type?: any
+			player_id?: any
+			platform?: any
+			user_id?: any
+			game?: any
+			server_id?: any
+		}
+	}
+
+	const pageLimit = 10
+
+	type resultStore = {
+		meta: {
+			total: number
+			page: number
+		}
+		results: InfractionSearchResult[]
+	}
+
+	let store = writable({
+		values: {},
+		errors: {},
+	} as formStore)
+
+	const currentSearch = writable({})
+
+	const searchStore = writable({
+		meta: {
+			total: 0,
+			page: 0,
+		},
+		results: [] as InfractionSearchResult[],
+	} as resultStore)
+
+	function onPlayerChange(player) {
+		if (!player) {
+			store.set({
+				...$store,
+				values: {
+					...$store.values,
+					player: player,
+				},
+			})
+
+			return
+		}
+
+		store.set({
+			...$store,
+			values: {
+				...$store.values,
+				player: player,
+				platform: player.platform,
+			},
+		})
+	}
+
+	const shouldValidate = (field) => {
+		if (typeof field === "string" && field.length > 0) {
+			return true
+		}
+
+		return false
+	}
+
+	const schema = yup.object().shape({
+		type: yup.lazy((value) =>
+			shouldValidate(value)
+				? yup.string().trim().oneOf(["WARNING", "MUTE", "KICK", "BAN"])
+				: yup.string(),
+		),
+		player_id: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string().trim() : yup.string(),
+		),
+		platform: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string().trim() : yup.string(),
+		),
+		user_id: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string().trim() : yup.string(),
+		),
+		game: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string().trim() : yup.string(),
+		),
+		server_id: yup.lazy((value) =>
+			shouldValidate(value) ? yup.number() : yup.number(),
+		),
+	})
+
+	async function search() {
+		const offset = $searchStore.meta.page * pageLimit
+
+		let values = {
+			type: $store.values.type,
+			player_id: $store.values.player?.id,
+			platform: $store.values.platform,
+			user_id: $store.values.user_id,
+			game: $store.values.game,
+			server_id: $store.values.server_id,
+		}
+
+		// Validate
+		let valid = false
+		try {
+			values = await schema.validate(values, { abortEarly: false })
+
+			store.set({
+				...$store,
+				errors: {},
+			})
+
+			valid = true
+		} catch (err) {
+			const errors = reduceYupErrors(err)
+
+			console.log(errors)
+
+			store.set({
+				...$store,
+				errors,
+			})
+		}
+
+		if (!valid) {
+			return
+		}
+
+		// Clear current results
+		searchStore.set({
+			meta: {
+				total: 0,
+				page: 0,
+			},
+			results: [] as InfractionSearchResult[],
+		})
+
+		// Filter out empty strings
+		const updateArgs = filterUndefined(values) as InfractionSearchBody
+
+		console.log("uargs", updateArgs)
+		if (Object.keys(updateArgs).length < 1) {
+			errorToast("Please apply at least one filter to search")
+			return
+		}
+
+		const body = {
+			...updateArgs,
+			limit: pageLimit,
+			offset,
+		} as InfractionSearchBody
+
+		console.log("Search body", body)
+	}
 </script>
 
 <Container>
@@ -49,7 +219,12 @@
 
 			<form class="form" on:submit|preventDefault>
 				<div class="main">
-					<Select name="type" label="Infraction type">
+					<Select
+						name="type"
+						label="Infraction type"
+						bind:value={$store.values.type}
+						error={$store.errors.type}
+					>
 						<option value="">Any</option>
 						<option value="WARNING">Warning</option>
 						<option value="MUTE">Mute</option>
@@ -57,23 +232,44 @@
 						<option value="Ban">Ban</option>
 					</Select>
 
-					<Select name="player" label="Player">
-						<option value="player1">Player</option>
-					</Select>
+					<PlayerSelector
+						name="player"
+						label="Player"
+						selectText="Any"
+						on:change={({ detail }) => onPlayerChange(detail)}
+						bind:value={$store.values.player}
+						error={$store.errors.player_id}
+					/>
 
-					<Select name="platform" label="Platform">
+					<Select
+						name="platform"
+						label="Platform"
+						value={$store.values.platform}
+						error={$store.errors.platform}
+						disabled={!!$store.values.player}
+					>
 						<option value="">Any</option>
 						<option value="playfab">Playfab</option>
 					</Select>
 
-					<Select name="user" label="User">
+					<Select
+						name="user"
+						label="User"
+						bind:value={$store.values.user_id}
+						error={$store.errors.user_id}
+					>
 						<option value="">Any</option>
 						{#each $users as user}
 							<option value={user.id}>{user.username}</option>
 						{/each}
 					</Select>
 
-					<Select name="game" label="Game">
+					<Select
+						name="game"
+						label="Game"
+						bind:value={$store.values.game}
+						error={$store.errors.game}
+					>
 						<option value="">Any</option>
 						<option value="mordhau">Mordhau</option>
 					</Select>
@@ -82,11 +278,21 @@
 						name="server_id"
 						label="Server"
 						defaultOption={{ id: 0, name: "Any" }}
+						value={$store.values.server_id}
+						error={$store.errors.server_id}
+						on:change={({ detail }) =>
+							store.set({
+								...$store,
+								values: {
+									...$store.values,
+									server_id: detail,
+								},
+							})}
 					/>
 				</div>
 
 				<div class="button">
-					<Button>Search</Button>
+					<Button on:click={search}>Search</Button>
 				</div>
 			</form>
 		</div>

@@ -11,3 +11,13 @@ export function filterEmptyStrings(obj) {
 
 	return obj
 }
+
+export function filterUndefined(obj) {
+	for (const [key, val] of Object.entries(obj)) {
+		if (val === undefined) {
+			delete obj[key]
+		}
+	}
+
+	return obj
+}

@@ -16,7 +16,7 @@
 	import * as yup from "yup"
 	import { reduceYupErrors } from "../utils/yup"
 	import BottomBar from "./dashboard/components/BottomBar.svelte"
-	import PlayerSelector from "../components/Modals/PlayerSelector.svelte"
+	import PlayerSelector from "../components/Modals/PlayerSearchModal.svelte"
 
 	const pageLimit = 10
 
