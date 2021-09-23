@@ -17,6 +17,7 @@
 	import { reduceYupErrors } from "../utils/yup"
 	import BottomBar from "./dashboard/components/BottomBar.svelte"
 	import PlayerSelector from "../components/Modals/PlayerSearchModal.svelte"
+	import PageSwitcher from "../components/PageSwitcher.svelte"
 
 	const pageLimit = 10
 
@@ -279,23 +280,13 @@
 		</div>
 
 		<BottomBar>
-			<div class="page-switcher">
-				<div
-					class="prev"
-					class:disabled={$searchStore.meta.page <= 0}
-					on:click={prevPage}
-				>
-					Prev
-				</div>
-				<div class="page">{$searchStore.meta.page + 1}</div>
-				<div
-					class="next"
-					class:disabled={$searchStore.meta.page >= $amountOfPages - 1}
-					on:click={nextPage}
-				>
-					Next
-				</div>
-			</div>
+			<PageSwitcher
+				on:prev:click={prevPage}
+				on:next:click={nextPage}
+				prevDisabled={$searchStore.meta.page <= 0}
+				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+				page={$searchStore.meta.page + 1}
+			/>
 		</BottomBar>
 	{/if}
 </Container>
@@ -328,6 +319,7 @@
 	.results {
 		width: 100%;
 		font-size: 1.6rem;
+		margin-bottom: 3rem;
 
 		.list {
 			margin-top: 1rem;
@@ -368,28 +360,5 @@
 
 	:global(.bottom-bar) {
 		background-color: unset !important;
-
-		.page-switcher {
-			width: 100%;
-			height: 3rem;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			font-size: 1.6rem;
-			user-select: none;
-
-			.next,
-			.prev {
-				padding: 0 1rem;
-				color: var(--color-primary-light);
-				cursor: pointer;
-			}
-
-			.next.disabled,
-			.prev.disabled {
-				color: var(--color-text-muted);
-				cursor: unset;
-			}
-		}
 	}
 </style>
