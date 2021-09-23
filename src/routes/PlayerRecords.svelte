@@ -261,8 +261,8 @@
 			<div class="list">
 				<div class="result heading">
 					<div class="name">Name</div>
-					<div class="name">Last Seen</div>
-					<div class="name">Platform</div>
+					<div class="lastseen">Last Seen</div>
+					<div class="platform">Platform</div>
 				</div>
 				{#each $searchStore.results as result}
 					<a
@@ -277,17 +277,17 @@
 					</a>
 				{/each}
 			</div>
-		</div>
 
-		<BottomBar>
-			<PageSwitcher
-				on:prev:click={prevPage}
-				on:next:click={nextPage}
-				prevDisabled={$searchStore.meta.page <= 0}
-				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
-				page={$searchStore.meta.page + 1}
-			/>
-		</BottomBar>
+			<div class="switcher">
+				<PageSwitcher
+					on:prev:click={prevPage}
+					on:next:click={nextPage}
+					prevDisabled={$searchStore.meta.page <= 0}
+					nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+					page={$searchStore.meta.page + 1}
+				/>
+			</div>
+		</div>
 	{/if}
 </Container>
 
@@ -326,6 +326,7 @@
 			width: 100%;
 			display: flex;
 			flex-direction: column;
+			height: calc((3rem + 0.5rem) * 11);
 
 			> * {
 				margin-bottom: 0.5rem;
@@ -339,9 +340,11 @@
 				width: 100%;
 				display: grid;
 				grid-template-columns: 2fr 1fr 1fr;
+				grid-template-rows: 3rem;
+				align-items: center;
+				padding: 0 1rem;
 				column-gap: 1rem;
 				background-color: var(--color-background2);
-				padding: 0.75rem 1.25rem;
 				border-radius: var(--border-sm);
 				cursor: pointer;
 				transition: all 0.2s;
@@ -356,9 +359,5 @@
 				background-color: var(--color-background1);
 			}
 		}
-	}
-
-	:global(.bottom-bar) {
-		background-color: unset !important;
 	}
 </style>
