@@ -23,6 +23,7 @@
 		meta: {
 			total: number
 			page: number
+			wasRun: boolean
 		}
 		results: InfractionSearchResult[]
 	}
@@ -45,6 +46,7 @@
 		meta: {
 			total: 0,
 			page: 0,
+			wasRun: false,
 		},
 		results: [] as InfractionSearchResult[],
 	} as resultStore)
@@ -202,6 +204,7 @@
 			meta: {
 				total: 0,
 				page: 0,
+				wasRun: false,
 			},
 			results: [] as InfractionSearchResult[],
 		})
@@ -244,6 +247,7 @@
 
 		searchStore.update((current) => {
 			current.meta.total = results.total
+			current.meta.wasRun = true
 			current.results = results.results
 			return current
 		})
@@ -493,6 +497,8 @@
 				{/each}
 			</div>
 		</div>
+	{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
+		<Heading>No results found</Heading>
 	{/if}
 </Container>
 
