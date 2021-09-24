@@ -10,6 +10,7 @@
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
+	import NameDisplay from "../../components/NameDisplay.svelte"
 	import PermissionCheck from "../../components/PermissionCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
@@ -26,6 +27,7 @@
 	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import Infraction from "./Infraction.svelte"
 
 	export let platform: string = ""
 	export let id: string = ""
@@ -245,7 +247,11 @@
 									</div>
 									<div class="field issuer">
 										<span class="label">Issuer</span>
-										<span class="value">{infraction.issuer_name}</span>
+										<span class="value"
+											><NameDisplay userId={infraction.user_id}
+												>{infraction.issuer_name}</NameDisplay
+											></span
+										>
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
@@ -290,7 +296,11 @@
 									</div>
 									<div class="field issuer">
 										<span class="label">Issuer</span>
-										<span class="value">{infraction.issuer_name}</span>
+										<span class="value"
+											><NameDisplay userId={infraction.user_id}
+												>{infraction.issuer_name}</NameDisplay
+											></span
+										>
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
@@ -335,7 +345,11 @@
 									</div>
 									<div class="field issuer">
 										<span class="label">Issuer</span>
-										<span class="value">{infraction.issuer_name}</span>
+										<span class="value"
+											><NameDisplay userId={infraction.user_id}
+												>{infraction.issuer_name}</NameDisplay
+											></span
+										>
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
@@ -380,7 +394,11 @@
 									</div>
 									<div class="field issuer">
 										<span class="label">Issuer</span>
-										<span class="value">{infraction.issuer_name}</span>
+										<span class="value"
+											><NameDisplay userId={infraction.user_id}
+												>{infraction.issuer_name}</NameDisplay
+											></span
+										>
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>

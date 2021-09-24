@@ -549,6 +549,10 @@
 					{/if}
 				{:else}
 					<p>Select or create a group to manage it.</p>
+					<p>
+						You can re-order groups by dragging them around the list. Group
+						order only has cosmetic effects.
+					</p>
 				{/if}
 			</div>
 		</div>

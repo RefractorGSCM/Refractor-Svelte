@@ -24,6 +24,8 @@
 	import Server from "./Server.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
 	import Users from "./Users.svelte"
+	import { getAllGroups } from "../../domain/group/store"
+	import NameDisplay from "../../components/NameDisplay.svelte"
 
 	onMount(async () => {
 		openWebsocketConnection()
@@ -138,7 +140,7 @@
 		<div class="brand-name">{COMMUNITY_NAME}</div>
 
 		<div class="right">
-			<div>{$self.username}</div>
+			<div><NameDisplay userId={$self.id}>{$self.username}</NameDisplay></div>
 
 			<Button size="inline" on:click={() => logout()}>Log out</Button>
 		</div>

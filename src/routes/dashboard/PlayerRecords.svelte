@@ -255,7 +255,7 @@
 		</div>
 	</SinglePane>
 
-	{#if $searchStore.results.length > 0}
+	{#if $searchStore.results?.length > 0}
 		<div class="results">
 			<div class="heading">
 				<Heading>Showing {$searchStore.meta.total} Results</Heading>
