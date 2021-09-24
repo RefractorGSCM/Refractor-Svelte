@@ -13,6 +13,7 @@
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
+	import NameDisplay from "../../components/NameDisplay.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import type {
 		Attachment,
@@ -83,8 +84,6 @@
 			computedPermissions = writable(perms as bigint)
 		}
 	})
-
-	$: console.log("perms", $computedPermissions)
 
 	async function addAttachment(attachment: CreateAttachmentParams) {
 		const res = await createAttachment(infraction.id, attachment)
@@ -204,7 +203,9 @@
 					{/if}
 					<div class="meta--field">
 						<span>Issued by:</span>
-						{infraction.issuer_name}
+						<NameDisplay userId={infraction.user_id}
+							>{infraction.issuer_name}</NameDisplay
+						>
 					</div>
 					<div class="meta--field">
 						<span>Server:</span>
