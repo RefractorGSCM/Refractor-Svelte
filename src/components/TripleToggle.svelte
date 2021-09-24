@@ -135,7 +135,7 @@
 
 		input[value="unset"]:checked ~ span {
 			background: var(--color-accent);
-			left: calc(50% - #{$option-width / 2});
+			left: calc(50% - #{div($option-width, 2)});
 		}
 
 		input[value="unset"]:checked + label {

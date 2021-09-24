@@ -15,7 +15,7 @@
 		FLAG_VIEW_PLAYER_RECORDS,
 		FLAG_VIEW_SERVERS,
 	} from "../../permissions/permissions"
-	import PlayerRecords from "../PlayerRecords.svelte"
+	import PlayerRecords from "./PlayerRecords.svelte"
 	import Groups from "./Groups.svelte"
 	import Home from "./Home.svelte"
 	import Infraction from "./Infraction.svelte"

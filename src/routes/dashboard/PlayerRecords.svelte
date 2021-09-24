@@ -2,23 +2,23 @@
 	import { onMount } from "svelte"
 	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
-	import Button from "../components/Button.svelte"
-	import Heading from "../components/Heading.svelte"
-	import Select from "../components/Select.svelte"
-	import TextInput from "../components/TextInput.svelte"
+	import Button from "../../components/Button.svelte"
+	import Heading from "../../components/Heading.svelte"
+	import Select from "../../components/Select.svelte"
+	import TextInput from "../../components/TextInput.svelte"
 	import type {
 		PlayerSearchBody,
 		PlayerSearchResult,
-	} from "../domain/search/search.types"
-	import { searchPlayers } from "../domain/search/store"
-	import Container from "./dashboard/components/Container.svelte"
-	import SinglePane from "./dashboard/components/SinglePane.svelte"
+	} from "../../domain/search/search.types"
+	import { searchPlayers } from "../../domain/search/store"
+	import Container from "./components/Container.svelte"
+	import SinglePane from "./components/SinglePane.svelte"
 	import * as yup from "yup"
-	import { reduceYupErrors } from "../utils/yup"
-	import BottomBar from "./dashboard/components/BottomBar.svelte"
-	import PlayerSelector from "../components/Modals/PlayerSearchModal.svelte"
-	import PageSwitcher from "../components/PageSwitcher.svelte"
-	import { dateString } from "../utils/date"
+	import { reduceYupErrors } from "../../utils/yup"
+	import BottomBar from "./components/BottomBar.svelte"
+	import PlayerSelector from "../../components/Modals/PlayerSearchModal.svelte"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
+	import { dateString } from "../../utils/date"
 
 	const pageLimit = 10
 
@@ -255,6 +255,16 @@
 				<Heading>Showing {$searchStore.meta.total} Results</Heading>
 			</div>
 
+			<div class="top-switcher">
+				<PageSwitcher
+					on:prev:click={prevPage}
+					on:next:click={nextPage}
+					prevDisabled={$searchStore.meta.page <= 0}
+					nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+					page={$searchStore.meta.page + 1}
+				/>
+			</div>
+
 			<div class="list">
 				<div class="result heading">
 					<div class="name">Name</div>
@@ -268,14 +278,25 @@
 						on:click|preventDefault={() =>
 							navigate(`/player/${result.platform}/${result.id}`)}
 					>
-						<div class="name">{result.name}</div>
-						<div class="lastseen">{dateString(new Date(result.last_seen))}</div>
-						<div class="platform">{result.platform}</div>
+						<div class="name">
+							<span class="mobile-label">Name: </span>{result.name}
+						</div>
+						<div class="lastseen">
+							<span class="mobile-label">Date: </span><span class="date">
+								{dateString(new Date(result.last_seen)).split(",")[0]}
+							</span>
+							<span class="time">
+								{dateString(new Date(result.last_seen)).split(",")[1]}
+							</span>
+						</div>
+						<div class="platform">
+							<span class="mobile-label">Platform: </span>{result.platform}
+						</div>
 					</a>
 				{/each}
 			</div>
 
-			<div class="switcher">
+			<div class="bottom-switcher">
 				<PageSwitcher
 					on:prev:click={prevPage}
 					on:next:click={nextPage}
@@ -289,6 +310,8 @@
 </Container>
 
 <style lang="scss">
+	@import "../../mixins/mixins";
+
 	.title {
 		margin-bottom: 2rem;
 	}
@@ -309,7 +332,20 @@
 				display: grid;
 				grid-template-columns: 5fr 1fr 1fr;
 				column-gap: 1rem;
+
+				@include respond-below(sm) {
+					grid-template-columns: unset;
+					grid-template-rows: 1fr 1fr 1fr;
+					column-gap: 0;
+					row-gap: 1rem;
+				}
 			}
+		}
+	}
+
+	@include respond-below(sm) {
+		.hidemobile {
+			display: none !important;
 		}
 	}
 
@@ -350,10 +386,51 @@
 				&:hover {
 					background-color: var(--color-background1);
 				}
+
+				@include respond-below(sm) {
+					grid-template-columns: auto;
+					grid-template-rows: 1fr 1fr 1fr;
+					column-gap: 0;
+					padding: 1rem 1rem;
+
+					.lastseen .time {
+						display: none;
+					}
+				}
+			}
+
+			.result.heading {
+				@include respond-below(sm) {
+					display: none;
+				}
 			}
 
 			.heading {
 				background-color: var(--color-background1);
+			}
+		}
+
+		.mobile-label {
+			display: none;
+
+			@include respond-below(sm) {
+				display: inline-block;
+				color: var(--color-primary);
+				width: 7rem;
+			}
+		}
+
+		.top-switcher {
+			display: none;
+
+			@include respond-below(sm) {
+				display: block;
+			}
+		}
+
+		.bottom-switcher {
+			@include respond-below(sm) {
+				display: none;
 			}
 		}
 	}
