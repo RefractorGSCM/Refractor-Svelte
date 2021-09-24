@@ -1,52 +1,4 @@
-<script lang="ts">
-	import { onMount } from "svelte"
-	import { writable } from "svelte/store"
-
-	import Button from "../../components/Button.svelte"
-	import Heading from "../../components/Heading.svelte"
-	import PlayerSelector from "../../components/PlayerSelector.svelte"
-	import Select from "../../components/Select.svelte"
-	import ServerSelector from "../../components/ServerSelector.svelte"
-	import {
-		getSelfInfo,
-		isAdmin,
-		isSuperAdmin,
-		self,
-	} from "../../domain/auth/store"
-	import type {
-		InfractionSearchBody,
-		InfractionSearchResult,
-		PlayerSearchResult,
-	} from "../../domain/search/search.types"
-	import { allUsers, getAllUsers } from "../../domain/user/store"
-	import { reduceYupErrors } from "../../utils/yup"
-	import Container from "./components/Container.svelte"
-	import SinglePane from "./components/SinglePane.svelte"
-	import * as yup from "yup"
-	import {
-		filterEmpty,
-		filterEmptyStrings,
-		filterUndefined,
-		filterZero,
-	} from "../../utils/filters"
-	import { errorToast } from "../../utils/toast"
-	import { searchInfractions } from "../../domain/search/store"
-
-	let users = writable([])
-	onMount(async () => {
-		if (!$self) {
-			await getSelfInfo()
-		}
-
-		if ($isAdmin || $isSuperAdmin) {
-			await getAllUsers()
-
-			users.set($allUsers)
-		} else {
-			users.set([$self])
-		}
-	})
-
+<script lang="ts" context="module">
 	type formStore = {
 		values: {
 			type?: string
@@ -98,6 +50,58 @@
 		},
 		results: [] as InfractionSearchResult[],
 	} as resultStore)
+</script>
+
+<script lang="ts">
+	import { onMount } from "svelte"
+	import { writable } from "svelte/store"
+
+	import Button from "../../components/Button.svelte"
+	import Heading from "../../components/Heading.svelte"
+	import PlayerSelector from "../../components/PlayerSelector.svelte"
+	import Select from "../../components/Select.svelte"
+	import ServerSelector from "../../components/ServerSelector.svelte"
+	import {
+		getSelfInfo,
+		isAdmin,
+		isSuperAdmin,
+		self,
+	} from "../../domain/auth/store"
+	import type {
+		InfractionSearchBody,
+		InfractionSearchResult,
+		PlayerSearchResult,
+	} from "../../domain/search/search.types"
+	import { allUsers, getAllUsers } from "../../domain/user/store"
+	import { reduceYupErrors } from "../../utils/yup"
+	import Container from "./components/Container.svelte"
+	import SinglePane from "./components/SinglePane.svelte"
+	import * as yup from "yup"
+	import {
+		filterEmpty,
+		filterEmptyStrings,
+		filterUndefined,
+		filterZero,
+	} from "../../utils/filters"
+	import { errorToast } from "../../utils/toast"
+	import { searchInfractions } from "../../domain/search/store"
+	import { navigate } from "svelte-routing"
+	import { dateString } from "../../utils/date"
+
+	let users = writable([])
+	onMount(async () => {
+		if (!$self) {
+			await getSelfInfo()
+		}
+
+		if ($isAdmin || $isSuperAdmin) {
+			await getAllUsers()
+
+			users.set($allUsers)
+		} else {
+			users.set([$self])
+		}
+	})
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -271,7 +275,7 @@
 						<option value="WARNING">Warning</option>
 						<option value="MUTE">Mute</option>
 						<option value="KICK">Kick</option>
-						<option value="Ban">Ban</option>
+						<option value="BAN">Ban</option>
 					</Select>
 
 					<PlayerSelector
@@ -286,7 +290,7 @@
 					<Select
 						name="platform"
 						label="Platform"
-						value={$store.values.platform}
+						bind:value={$store.values.platform}
 						error={$store.errors.platform}
 						disabled={!!$store.values.player}
 					>
@@ -339,6 +343,35 @@
 			</form>
 		</div>
 	</SinglePane>
+
+	{#if $searchStore.results.length > 0}
+		<div class="results">
+			<div class="heading">
+				<Heading>Showing {$searchStore.meta.total} Results</Heading>
+			</div>
+
+			<div class="list">
+				<div class="result heading">
+					<div class="type">Type</div>
+					<div class="player">Player</div>
+					<div class="issuer">Issuer</div>
+					<div class="date">Date</div>
+				</div>
+				{#each $searchStore.results as result}
+					<a
+						class="result"
+						href={`/infraction/${result.id}`}
+						on:click|preventDefault={() => navigate(`/infraction/${result.id}`)}
+					>
+						<div class="type">{result.type}</div>
+						<div class="player">{result.platform}/{result.player_name}</div>
+						<div class="issuer">{result.issuer_name}</div>
+						<div class="date">{dateString(new Date(result.created_at))}</div>
+					</a>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </Container>
 
 <style lang="scss">
@@ -362,6 +395,51 @@
 				display: grid;
 				grid-template-columns: 1fr 1fr 1fr;
 				column-gap: 1rem;
+			}
+		}
+	}
+
+	.results {
+		width: 100%;
+		font-size: 1.6rem;
+		margin-bottom: 3rem;
+
+		.list {
+			margin-top: 1rem;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			height: calc((3rem + 0.5rem) * 11);
+
+			> * {
+				margin-bottom: 0.5rem;
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			.result {
+				width: 100%;
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr 2fr;
+				grid-template-rows: 3rem;
+				align-items: center;
+				padding: 0 1rem;
+				column-gap: 1rem;
+				background-color: var(--color-background2);
+				border-radius: var(--border-sm);
+				cursor: pointer;
+				transition: all 0.2s;
+				color: var(--color-text2);
+
+				&:hover {
+					background-color: var(--color-background1);
+				}
+			}
+
+			.heading {
+				background-color: var(--color-background1);
 			}
 		}
 	}

@@ -18,6 +18,7 @@
 	import BottomBar from "./dashboard/components/BottomBar.svelte"
 	import PlayerSelector from "../components/Modals/PlayerSearchModal.svelte"
 	import PageSwitcher from "../components/PageSwitcher.svelte"
+	import { dateString } from "../utils/date"
 
 	const pageLimit = 10
 
@@ -192,10 +193,6 @@
 			current.results = results
 			return current
 		})
-	}
-
-	function dateString(date: Date): string {
-		return date.toLocaleString("en-GB", { hour12: true })
 	}
 
 	let amountOfPages = writable(0)
