@@ -19,8 +19,6 @@
 		}
 	}
 
-	const pageLimit = 10
-
 	type resultStore = {
 		meta: {
 			total: number
@@ -88,6 +86,9 @@
 	import { navigate } from "svelte-routing"
 	import { dateString } from "../../utils/date"
 	import { truncate } from "../../utils/strings"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
+
+	const pageLimit = 10
 
 	let users = writable([])
 	onMount(async () => {
@@ -251,6 +252,90 @@
 			...body,
 		})
 	}
+
+	async function nextPage() {
+		if ($searchStore.meta.page >= $amountOfPages - 1) {
+			return
+		}
+
+		const nextPage = $searchStore.meta.page + 1
+
+		const body = {
+			...$currentSearch,
+			limit: pageLimit,
+			offset: nextPage * pageLimit,
+		} as InfractionSearchBody
+
+		// Run search
+		const { results, success, errors } = await searchInfractions(body)
+
+		if (!success) {
+			if (errors) {
+				store.set({
+					...$store,
+					errors: {
+						...$store.errors,
+						...errors,
+					},
+				})
+				return
+			}
+
+			errorToast("Could not run search")
+			return
+		}
+
+		searchStore.update((current) => {
+			current.meta.total = results.total
+			current.meta.page = nextPage
+			current.results = results.results
+			return current
+		})
+	}
+
+	async function prevPage() {
+		if ($searchStore.meta.page <= 0) {
+			return
+		}
+
+		const prevPage = $searchStore.meta.page - 1
+
+		const body = {
+			...$currentSearch,
+			limit: pageLimit,
+			offset: prevPage * pageLimit,
+		} as InfractionSearchBody
+
+		// Run search
+		const { results, success, errors } = await searchInfractions(body)
+
+		if (!success) {
+			if (errors) {
+				store.set({
+					...$store,
+					errors: {
+						...$store.errors,
+						...errors,
+					},
+				})
+				return
+			}
+
+			errorToast("Could not run search")
+			return
+		}
+
+		searchStore.update((current) => {
+			current.meta.total = results.total
+			current.meta.page = prevPage
+			current.results = results.results
+			return current
+		})
+	}
+
+	let amountOfPages = writable(0)
+	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
+	$: console.log("amountOfPages", $amountOfPages)
 </script>
 
 <Container>
@@ -318,7 +403,7 @@
 						error={$store.errors.game}
 					>
 						<option value="">Any</option>
-						<option value="mordhau">Mordhau</option>
+						<option value="Mordhau">Mordhau</option>
 					</Select>
 
 					<ServerSelector
@@ -350,6 +435,14 @@
 			<div class="heading">
 				<Heading>Showing {$searchStore.meta.total} Results</Heading>
 			</div>
+
+			<PageSwitcher
+				on:prev:click={prevPage}
+				on:next:click={nextPage}
+				prevDisabled={$searchStore.meta.page <= 0}
+				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+				page={$searchStore.meta.page + 1}
+			/>
 
 			<div class="list">
 				<div class="result heading hidemobile">
@@ -473,8 +566,9 @@
 			.result {
 				width: 100%;
 				display: grid;
+				height: 5rem;
 				grid-template-columns: 1fr 1fr 1fr 2fr 0.5fr;
-				grid-template-rows: 3rem 3rem;
+				grid-template-rows: 2.5rem 2.5rem;
 				align-items: center;
 				padding: 0 1rem;
 				column-gap: 1rem;
