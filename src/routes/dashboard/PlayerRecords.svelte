@@ -19,6 +19,7 @@
 	import PlayerSelector from "../../components/Modals/PlayerSearchModal.svelte"
 	import PageSwitcher from "../../components/PageSwitcher.svelte"
 	import { dateString } from "../../utils/date"
+	import { boolean } from "yup/lib/locale"
 
 	const pageLimit = 10
 
@@ -39,6 +40,7 @@
 		meta: {
 			total: number
 			page: number
+			wasRun: boolean
 		}
 		results: PlayerSearchResult[]
 	}
@@ -66,6 +68,7 @@
 		meta: {
 			total: 0,
 			page: 0,
+			wasRun: false,
 		},
 		results: [] as PlayerSearchResult[],
 	} as resultStore)
@@ -118,6 +121,7 @@
 			meta: {
 				total: 0,
 				page: 0,
+				wasRun: false,
 			},
 			results: [] as PlayerSearchResult[],
 		})
@@ -134,6 +138,7 @@
 
 		searchStore.update((current) => {
 			current.meta.total = total
+			current.meta.wasRun = true
 			current.results = results
 			return current
 		})
@@ -197,7 +202,8 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
-	$: console.log("amountOfPages", $amountOfPages)
+
+	$: console.log("searchStore", $searchStore)
 </script>
 
 <Container>
@@ -306,6 +312,8 @@
 				/>
 			</div>
 		</div>
+	{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
+		<Heading>No results found</Heading>
 	{/if}
 </Container>
 
