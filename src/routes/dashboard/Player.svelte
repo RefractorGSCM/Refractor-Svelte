@@ -31,7 +31,7 @@
 	export let id: string = ""
 	let errmsg = ""
 
-	let player: Player
+	let player = writable(null as Player)
 	let infractions: Infraction[] = []
 
 	type infractionsMap = {
@@ -56,7 +56,7 @@
 	} as infractionsMap)
 
 	onMount(async () => {
-		player = await getPlayer(id, platform)
+		player.set(await getPlayer(id, platform))
 
 		if (!player) {
 			errmsg = "Player not found"
@@ -84,9 +84,8 @@
 	$: {
 		found = false
 		for (const [id, server] of Object.entries($serverPlayers)) {
-			for (const player of Object.values(server)) {
-				console.log("Online Player", player)
-				if (player.id === id && player.platform === platform) {
+			for (const p of Object.values(server)) {
+				if (p.id === id && p.platform === platform) {
 					found = true
 					serverId = parseInt(id)
 					console.log("online", currentlyOnline)
@@ -149,7 +148,7 @@
 		<Heading type="subtitle">{errmsg}</Heading>
 	{:else}
 		<SinglePane>
-			<div class="heading">
+			<div class="main-heading">
 				<Heading type="title">Player</Heading>
 				<div class="status">
 					<div class="status__item">
@@ -169,7 +168,7 @@
 
 				<div class="buttons">
 					<RequirePerms allOf={[FLAG_CREATE_WARNING]}>
-						<WarningModal {player}>
+						<WarningModal player={$player}>
 							<div slot="trigger" let:openWarning>
 								<Button on:click={openWarning}>Log Warning</Button>
 							</div>
@@ -177,7 +176,7 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_MUTE]}>
-						<MuteModal {player}>
+						<MuteModal player={$player}>
 							<div slot="trigger" let:openMute>
 								<Button on:click={openMute}>Log Mute</Button>
 							</div>
@@ -185,7 +184,7 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_KICK]}>
-						<KickModal {player}>
+						<KickModal player={$player}>
 							<div slot="trigger" let:openKick>
 								<Button color="warning" on:click={openKick}>Log Kick</Button>
 							</div>
@@ -193,7 +192,7 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_BAN]}>
-						<BanModal {player}>
+						<BanModal player={$player}>
 							<div slot="trigger" let:openBan>
 								<Button color="danger" on:click={openBan}>Log Ban</Button>
 							</div>
@@ -405,13 +404,29 @@
 				</div>
 			</div>
 		</SinglePane>
+
+		{#if $player?.previous_names?.length > 0}
+			<SinglePane>
+				<div class="previous-names">
+					<div class="heading">
+						<Heading>Previous Names</Heading>
+					</div>
+
+					<div class="list">
+						{#each $player.previous_names as name}
+							<div class="name">{name}</div>
+						{/each}
+					</div>
+				</div>
+			</SinglePane>
+		{/if}
 	{/if}
 </Container>
 
 <style lang="scss">
 	@import "../../mixins/mixins";
 
-	.heading {
+	.main-heading {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -603,6 +618,21 @@
 
 			.field.duration {
 				display: none;
+			}
+		}
+	}
+
+	.previous-names {
+		.heading {
+			margin-bottom: 1rem;
+		}
+
+		.list {
+			.name {
+				display: inline-block;
+				border-bottom: 2px solid var(--color-accent);
+				padding: 0 0.5rem;
+				border-radius: var(--border-sm);
 			}
 		}
 	}
