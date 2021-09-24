@@ -87,6 +87,7 @@
 	import { searchInfractions } from "../../domain/search/store"
 	import { navigate } from "svelte-routing"
 	import { dateString } from "../../utils/date"
+	import { truncate } from "../../utils/strings"
 
 	let users = writable([])
 	onMount(async () => {
@@ -351,7 +352,7 @@
 			</div>
 
 			<div class="list">
-				<div class="result heading">
+				<div class="result heading hidemobile">
 					<div class="type">Type</div>
 					<div class="player">Player</div>
 					<div class="issuer">Issuer</div>
@@ -363,10 +364,28 @@
 						href={`/infraction/${result.id}`}
 						on:click|preventDefault={() => navigate(`/infraction/${result.id}`)}
 					>
-						<div class="type">{result.type}</div>
-						<div class="player">{result.platform}/{result.player_name}</div>
-						<div class="issuer">{result.issuer_name}</div>
-						<div class="date">{dateString(new Date(result.created_at))}</div>
+						<div class="type">
+							<span class="mobile-label">Type: </span>{result.type}
+						</div>
+						<div class="player">
+							<span class="mobile-label"
+								>Player:
+							</span>{result.platform}/{result.player_name}
+						</div>
+						<div class="issuer">
+							<span class="mobile-label">Issuer: </span>{result.issuer_name}
+						</div>
+						<div class="date">
+							<span class="mobile-label">Date: </span>{dateString(
+								new Date(result.created_at),
+							).split(",")[0]}
+						</div>
+						<div class="reason">
+							<span class="mobile-label">Reason: </span>{truncate(
+								result.reason,
+								100,
+							)}
+						</div>
 					</a>
 				{/each}
 			</div>
@@ -375,6 +394,8 @@
 </Container>
 
 <style lang="scss">
+	@import "../../mixins/mixins";
+
 	.title {
 		margin-bottom: 2rem;
 	}
@@ -397,6 +418,22 @@
 				column-gap: 1rem;
 			}
 		}
+
+		@include respond-below(sm) {
+			.form {
+				.main {
+					grid-template-columns: 1fr;
+					column-gap: 0;
+					row-gap: 1rem;
+				}
+			}
+		}
+	}
+
+	@include respond-below(sm) {
+		.hidemobile {
+			display: none !important;
+		}
 	}
 
 	.results {
@@ -413,6 +450,10 @@
 
 			> * {
 				margin-bottom: 0.5rem;
+
+				@include respond-below(sm) {
+					margin-bottom: 1rem;
+				}
 			}
 
 			&:last-child {
@@ -423,7 +464,7 @@
 				width: 100%;
 				display: grid;
 				grid-template-columns: 1fr 1fr 1fr 2fr;
-				grid-template-rows: 3rem;
+				grid-template-rows: 3rem 3rem;
 				align-items: center;
 				padding: 0 1rem;
 				column-gap: 1rem;
@@ -436,10 +477,35 @@
 				&:hover {
 					background-color: var(--color-background1);
 				}
+
+				.reason {
+					grid-column: span 4;
+				}
+
+				@include respond-below(sm) {
+					padding: 1rem 1rem;
+					grid-template-columns: 1fr;
+					grid-template-rows: 1fr 1fr 1fr 1fr auto;
+
+					.reason {
+						grid-column: auto;
+					}
+				}
 			}
 
 			.heading {
 				background-color: var(--color-background1);
+				grid-template-rows: 3rem;
+			}
+
+			.mobile-label {
+				display: none;
+
+				@include respond-below(sm) {
+					display: inline-block;
+					color: var(--color-primary);
+					width: 6.5rem;
+				}
 			}
 		}
 	}
