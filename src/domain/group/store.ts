@@ -16,6 +16,7 @@ export const allGroups: Writable<Group[]> = writable([])
 const permissions: Writable<Permission[]> = writable([])
 export let baseGroup: Group = null
 export const baseGroupId = -1
+const userPrimaryGroups = {} as { [key: string]: Group }
 
 export async function getAllGroups() {
 	try {
@@ -150,5 +151,28 @@ export async function setServerOverrides(
 			data.message ? data.message : "Error: could not get server overrides",
 		)
 		return null
+	}
+}
+
+export async function getUserPrimaryGroup(userId: string): Promise<Group> {
+	// Check if we already have this user's primary group cached
+	let group = userPrimaryGroups[userId]
+
+	if (group) {
+		return group
+	}
+
+	// If not cached, fetch it from the API
+	try {
+		const { data } = await api.getUserPrimaryGroup(userId)
+		group = data.payload as Group
+
+		// Cache group for future operations
+		userPrimaryGroups[userId] = group
+
+		return group
+	} catch (err) {
+		errorToast(`Could not get primary group for user ${userId}`)
+		return baseGroup
 	}
 }
