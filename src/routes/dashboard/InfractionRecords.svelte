@@ -357,10 +357,12 @@
 					<div class="player">Player</div>
 					<div class="issuer">Issuer</div>
 					<div class="date">Date</div>
+					<div class="duration">Duration</div>
 				</div>
 				{#each $searchStore.results as result}
 					<a
 						class="result"
+						class:has-duration={["MUTE", "BAN"].includes(result.type)}
 						href={`/infraction/${result.id}`}
 						on:click|preventDefault={() => navigate(`/infraction/${result.id}`)}
 					>
@@ -376,9 +378,17 @@
 							<span class="mobile-label">Issuer: </span>{result.issuer_name}
 						</div>
 						<div class="date">
-							<span class="mobile-label">Date: </span>{dateString(
-								new Date(result.created_at),
-							).split(",")[0]}
+							<span class="mobile-label">Date: </span><span class="date">
+								{dateString(new Date(result.created_at)).split(",")[0]}
+							</span>
+							<span class="time">
+								{dateString(new Date(result.created_at)).split(",")[1]}
+							</span>
+						</div>
+						<div class="duration">
+							<span class="mobile-label">Length: </span>{result.duration
+								? `${result.duration} mins`
+								: ""}
 						</div>
 						<div class="reason">
 							<span class="mobile-label">Reason: </span>{truncate(
@@ -463,7 +473,7 @@
 			.result {
 				width: 100%;
 				display: grid;
-				grid-template-columns: 1fr 1fr 1fr 2fr;
+				grid-template-columns: 1fr 1fr 1fr 2fr 0.5fr;
 				grid-template-rows: 3rem 3rem;
 				align-items: center;
 				padding: 0 1rem;
@@ -489,6 +499,26 @@
 
 					.reason {
 						grid-column: auto;
+					}
+
+					.duration .mobile-label {
+						display: none;
+					}
+
+					.date {
+						.time {
+							display: none;
+						}
+					}
+				}
+			}
+
+			.result.has-duration {
+				@include respond-below(sm) {
+					grid-template-rows: 1fr 1fr 1fr 1fr 1fr auto;
+
+					.duration .mobile-label {
+						display: inline;
 					}
 				}
 			}
