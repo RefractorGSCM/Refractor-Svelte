@@ -38,6 +38,7 @@ export type InfractionSearchResult = {
 	created_at: Date
 	modified_at: Date
 	issuer_name?: string
+	player_name?: string
 }
 
 export type InfractionSearchBody = {
