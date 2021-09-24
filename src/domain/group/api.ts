@@ -58,6 +58,12 @@ const setServerOverrides = (id: number, body: ServerOverrides) => {
 	})
 }
 
+const getUserPrimaryGroup = (userId: string) => {
+	return axios.get(`${API_ROOT}/groups/users/primary/${userId}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllGroups,
 	getAllPermissions,
@@ -68,4 +74,5 @@ export default {
 	reorderGroups,
 	getServerOverrides,
 	setServerOverrides,
+	getUserPrimaryGroup,
 }
