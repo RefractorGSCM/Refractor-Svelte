@@ -26,7 +26,7 @@
 		value="false"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for={`${name}-tt-no`}>
+	<label class="toggle toggle-no" for={`${name}-tt-no`}>
 		<i class="fas fa-times" />
 	</label>
 
@@ -39,7 +39,7 @@
 		value="unset"
 		on:change={change}
 	/>
-	<label class="toggle toggle-yes" for={`${name}-tt-unset`}>
+	<label class="toggle toggle-unset" for={`${name}-tt-unset`}>
 		<i class="fas fa-asterisk" />
 	</label>
 
@@ -59,6 +59,8 @@
 </div>
 
 <style lang="scss" global>
+	@use "sass:math";
+
 	$option-width: 3rem;
 	$option-height: 3rem;
 
@@ -135,7 +137,7 @@
 
 		input[value="unset"]:checked ~ span {
 			background: var(--color-accent);
-			left: calc(50% - #{div($option-width, 2)});
+			left: calc(50% - #{math.div($option-width, 2)});
 		}
 
 		input[value="unset"]:checked + label {

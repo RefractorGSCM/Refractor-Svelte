@@ -274,8 +274,7 @@
 			<div slot="right-pane" class="manager">
 				{#if currentGroup === null}
 					<p>
-						Please select a group to manage it's permission overrides for this
-						server.
+						Select a group to manage it's permission overrides for this server.
 					</p>
 				{:else}
 					<div class="manager-wrapper">
