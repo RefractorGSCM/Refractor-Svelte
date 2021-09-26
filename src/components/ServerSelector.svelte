@@ -5,6 +5,7 @@
 	import Server from "../routes/dashboard/Server.svelte"
 	import { serverPlayers } from "../domain/player/store"
 	import { each } from "svelte/internal"
+	import { allGames } from "../domain/game/store"
 
 	export let name
 	export let error = null
@@ -13,6 +14,7 @@
 	export let value: any = ""
 	export let defaultOption: { id: number; name: string } = null
 	export let includeFragments: boolean = false
+	export let platform: string = null
 
 	const dispatch = createEventDispatcher()
 
@@ -28,6 +30,16 @@
 
 	function update(e) {
 		dispatch("change", parseInt(e.target.value))
+	}
+
+	function getGamePlatform(gameName: string): string {
+		for (const game of $allGames) {
+			if (game.name === gameName) {
+				return game.platform
+			}
+		}
+
+		return null
 	}
 </script>
 
@@ -47,12 +59,16 @@
 			{/if}
 
 			{#each $allServers as server}
-				<option value={server.id}>{server.name}</option>
+				{#if !!!platform || getGamePlatform(server.game) === platform}
+					<option value={server.id}>{server.name}</option>
+				{/if}
 			{/each}
 
 			{#if includeFragments}
 				{#each $fragmentServers as server}
-					<option value={server.id}>{server.name}</option>
+					{#if !!!platform || getGamePlatform(server.game) === platform}
+						<option value={server.id}>{server.name}</option>
+					{/if}
 				{/each}
 			{/if}
 		</select>

@@ -217,6 +217,7 @@
 						name="serverId"
 						defaultOption={{ id: anyServerId, name: "Any" }}
 						on:change={({ detail }) => changeServerFilter(detail)}
+						{platform}
 						label="Server"
 						includeFragments={true}
 					/>
