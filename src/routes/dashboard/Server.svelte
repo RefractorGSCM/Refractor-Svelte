@@ -29,6 +29,8 @@
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import PermissionCheck from "../../components/PermissionCheck.svelte"
 	import { writable } from "svelte/store"
+	import { loading, setLoading } from "../../domain/loading/store"
+	import Spinner from "../../components/Spinner.svelte"
 
 	export let id
 	let server: Server = null
@@ -36,10 +38,13 @@
 	let permissions = writable(null as BigInt)
 
 	onMount(async () => {
+		setLoading("server", true)
+
 		try {
 			id = parseInt(id)
 		} catch (e) {
 			errmsg = "Server not found"
+			setLoading("server", false)
 			return
 		}
 
@@ -70,55 +75,12 @@
 		if (!found) {
 			errmsg = "Server not found"
 		}
+
+		setLoading("server", false)
 	})
 
 	let players: Player[] = []
 	$: players = $serverPlayers[id] ? Object.values($serverPlayers[id]) : []
-	$: players.push({
-		id: "32B352D4448F3C1",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C2",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C3",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C4",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C5",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C6",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C7",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C8",
-		platform: "playfab",
-		name: "avoid",
-	})
-	$: players.push({
-		id: "32B352D4448F3C9",
-		platform: "playfab",
-		name: "avoid",
-	})
 
 	let playerSelected = false
 	let selectedPlayerId = ""
@@ -151,6 +113,10 @@
 </script>
 
 <Container>
+	{#if $loading["server"]}
+		<Spinner blocking />
+	{/if}
+
 	<div class="wrapper">
 		{#if server === null}
 			<Heading type="title">{errmsg}</Heading>
@@ -191,9 +157,9 @@
 			<SinglePane>
 				<div class="players">
 					{#if players.length < 1}
-						<Heading type="subtitle">No Players Online</Heading>
+						<Heading>No Players Online</Heading>
 					{:else}
-						<Heading type="subtitle">Online Players</Heading>
+						<Heading>Online Players</Heading>
 
 						<div class="list">
 							{#each players as player}
