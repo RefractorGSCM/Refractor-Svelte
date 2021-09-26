@@ -203,7 +203,7 @@
 					</div>
 					{#if currentlyOnline}
 						<div class="status__item">
-							<Link to={`/server/${serverId}`}>
+							<Link to={`/server/${serverId}?highlight=${id}`}>
 								<Flair color="success">Online</Flair>
 							</Link>
 						</div>
