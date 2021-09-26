@@ -137,3 +137,13 @@ export async function setServerStatus(id: number, status: string) {
 		return current
 	})
 }
+
+export async function deactivateServer(id: number) {
+	try {
+		await api.deactivateServer(id)
+
+		successToast("Server deleted")
+	} catch (err) {
+		errorToast("Could not delete server")
+	}
+}
