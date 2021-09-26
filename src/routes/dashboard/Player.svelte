@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	import { beforeUpdate, onMount } from "svelte"
 	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
@@ -28,6 +28,7 @@
 	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import queryString from "query-string"
 
 	export let platform: string = ""
 	export let id: string = ""
@@ -57,6 +58,9 @@
 		bans: [],
 	} as infractionsMap)
 
+	let infractionRefs = []
+
+	let highlightInfractionId = writable(null as number)
 	onMount(async () => {
 		player.set(await getPlayer(id, platform))
 
@@ -78,7 +82,34 @@
 				return current
 			})
 		}
+
+		const parsed = queryString.parse(window.location.search)
+		if (!!parsed.highlight) {
+			const highlightId = parseInt(parsed.highlight as string)
+			if (highlightId) {
+				highlightInfractionId.set(highlightId as number)
+			}
+		}
 	})
+
+	$: {
+		const ref = infractionRefs[$highlightInfractionId]
+
+		console.log($highlightInfractionId, ref)
+
+		if (ref) {
+			ref.classList.add("highlight")
+
+			ref.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			})
+
+			setTimeout(() => {
+				ref.classList.remove("highlight")
+			}, 3000)
+		}
+	}
 
 	function dateString(date: Date): string {
 		return date.toLocaleString("en-GB", { hour12: true })
@@ -262,6 +293,7 @@
 								<a
 									class="infraction noduration"
 									href={`/infraction/${infraction.id}`}
+									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
 										navigate(`/infraction/${infraction.id}`)}
 								>
@@ -311,6 +343,7 @@
 								<a
 									class="infraction"
 									href={`/infraction/${infraction.id}`}
+									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
 										navigate(`/infraction/${infraction.id}`)}
 								>
@@ -360,6 +393,7 @@
 								<a
 									class="infraction noduration"
 									href={`/infraction/${infraction.id}`}
+									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
 										navigate(`/infraction/${infraction.id}`)}
 								>
@@ -409,6 +443,7 @@
 								<a
 									class="infraction"
 									href={`/infraction/${infraction.id}`}
+									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
 										navigate(`/infraction/${infraction.id}`)}
 								>
@@ -467,6 +502,7 @@
 
 <style lang="scss">
 	@import "../../mixins/mixins";
+	@import "../../keyframes/keyframes";
 
 	.main-heading {
 		display: flex;
@@ -570,7 +606,7 @@
 			position: relative;
 			width: 100%;
 			color: var(--color-text2);
-			transition: all 0.2s;
+			transition: all 0.2s ease-in-out;
 
 			&:nth-child(odd) {
 				background-color: var(--color-background1);
@@ -693,5 +729,9 @@
 				border-radius: var(--border-sm);
 			}
 		}
+	}
+
+	:global(.highlight) {
+		animation: border-flash 2s ease-in-out;
 	}
 </style>
