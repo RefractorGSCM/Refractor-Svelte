@@ -478,6 +478,10 @@
 			margin-top: 1rem;
 		}
 
+		@include respond-below(sm) {
+			height: auto;
+		}
+
 		.status {
 			display: flex;
 
@@ -497,6 +501,14 @@
 					margin-right: 0.4rem;
 				}
 			}
+
+			@include respond-below(sm) {
+				flex-direction: column;
+				> * {
+					margin: 0;
+					margin-top: 0.5rem;
+				}
+			}
 		}
 
 		.buttons {
@@ -507,10 +519,14 @@
 				margin-right: 0.5rem;
 			}
 
+			@include respond-below(xs) {
+				flex-direction: column;
+			}
+
 			@include respond-below(xxs) {
 				:global(.btn) {
 					width: 100%;
-					margin-top: 2rem;
+					margin-top: 0.5rem;
 				}
 			}
 		}
