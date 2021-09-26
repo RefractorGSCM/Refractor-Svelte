@@ -222,6 +222,7 @@
 						name="serverId"
 						label="Server"
 						required
+						platform={player.platform}
 						on:change={(e) =>
 							onChange({ target: { name: "serverId", value: e.detail } })}
 					/>
