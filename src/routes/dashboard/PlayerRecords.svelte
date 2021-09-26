@@ -202,8 +202,6 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
-
-	$: console.log("searchStore", $searchStore)
 </script>
 
 <Container>

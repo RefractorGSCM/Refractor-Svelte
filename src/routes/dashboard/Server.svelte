@@ -108,8 +108,6 @@
 			selectedPlayerId = ""
 		}
 	}
-
-	$: console.log("perms", $permissions)
 </script>
 
 <Container>
@@ -176,13 +174,7 @@
 																<div class="mobile-player-wrapper">
 																	<PlayerModal {player}>
 																		<div slot="trigger" let:open>
-																			<div
-																				class="player"
-																				on:click={() => {
-																					console.log("opening modal")
-																					open()
-																				}}
-																			>
+																			<div class="player" on:click={open}>
 																				{player.name}
 																			</div>
 																		</div>

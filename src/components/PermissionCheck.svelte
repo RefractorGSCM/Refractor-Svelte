@@ -25,8 +25,6 @@
 		allOfSatisfied = true
 	}
 
-	console.log("PermissionCheck permissions", permissions)
-
 	if (permissions) {
 		// Check if the user is an admin or super admin. If they are, satisfy permission requirements without check
 		if (

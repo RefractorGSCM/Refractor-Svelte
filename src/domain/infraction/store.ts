@@ -120,8 +120,6 @@ export async function getPlayerInfractions(
 	} catch (err) {
 		const { data } = err.response
 
-		console.log("err", err)
-
 		errorToast(data.message ? data.message : "Could not get player infractions")
 	}
 }
@@ -133,8 +131,6 @@ export async function getInfractionById(id: number): Promise<Infraction> {
 		return data.payload as Infraction
 	} catch (err) {
 		const { data } = err.response
-
-		console.log("err", err)
 
 		errorToast(data.message ? data.message : "Could not get infraction")
 	}

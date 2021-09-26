@@ -211,7 +211,6 @@
 
 		// Filter out empty strings
 		const updateArgs = filterZero(filterEmpty(values)) as InfractionSearchBody
-		console.log("UARGS", updateArgs)
 
 		if (Object.keys(updateArgs).length < 1) {
 			errorToast("Please apply at least one filter to search")
@@ -223,8 +222,6 @@
 			limit: pageLimit,
 			offset,
 		} as InfractionSearchBody
-
-		console.log("SEARCH BODY", body)
 
 		// Run search
 		const { results, success, errors } = await searchInfractions(body)
@@ -339,7 +336,6 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
-	$: console.log("amountOfPages", $amountOfPages)
 </script>
 
 <Container>
