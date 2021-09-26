@@ -118,8 +118,6 @@
 
 		users.set([...$allUsers])
 	}
-
-	$: console.log($users)
 </script>
 
 {#if $loading["users"]}

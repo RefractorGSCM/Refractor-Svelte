@@ -23,7 +23,6 @@ export async function checkAuth(): Promise<boolean> {
 
 		let accountActivated = false
 		for (const address of data.identity.verifiable_addresses) {
-			console.log(address)
 			if (address.verified === true) {
 				accountActivated = true
 				break
@@ -59,7 +58,6 @@ export async function getSelfInfo() {
 		self.set(payload)
 
 		if (payload.meta.deactivated) {
-			console.log(payload.meta)
 			isDeactivated.set(true)
 		}
 
@@ -71,7 +69,6 @@ export async function getSelfInfo() {
 			isAdmin.set(true)
 		}
 	} catch (err) {
-		console.log(err)
 		errorToast("Could not get user info")
 	}
 }

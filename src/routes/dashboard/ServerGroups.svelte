@@ -141,9 +141,6 @@
 		currentDenyOverrides = writable([...previousDenyOverrides])
 
 		changesWereMade = false
-
-		console.log(group.name, "deny", group.deny_overrides)
-		console.log(group.name, "allow", group.allow_overrides)
 	}
 
 	function revertChanges() {
@@ -238,8 +235,6 @@
 		body.group_id = currentGroup.id
 
 		const overrides = await setServerOverrides(id, body)
-
-		console.log("Saved overrides", overrides)
 
 		const updatedGroups = []
 		for (const g of $groups) {
