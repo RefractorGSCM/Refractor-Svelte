@@ -28,7 +28,6 @@
 	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import Infraction from "./Infraction.svelte"
 
 	export let platform: string = ""
 	export let id: string = ""
