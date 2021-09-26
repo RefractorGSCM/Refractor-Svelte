@@ -31,11 +31,15 @@
 	import { writable } from "svelte/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Spinner from "../../components/Spinner.svelte"
+	import queryString from "query-string"
 
 	export let id
 	let server: Server = null
 	let errmsg: string
 	let permissions = writable(null as BigInt)
+
+	let highlightedPlayer = writable(null as string)
+	let playerRefs = []
 
 	onMount(async () => {
 		setLoading("server", true)
@@ -77,7 +81,30 @@
 		}
 
 		setLoading("server", false)
+
+		const parsed = queryString.parse(window.location.search)
+		if (!!parsed.highlight) {
+			highlightedPlayer.set(parsed.highlight as string)
+		}
 	})
+
+	$: {
+		const ref = playerRefs[$highlightedPlayer]
+
+		console.log($highlightedPlayer, ref)
+
+		if (ref) {
+			ref.classList.add("highlight")
+			ref.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			})
+			setTimeout(() => {
+				ref.classList.remove("highlight")
+				highlightedPlayer.set(null)
+			}, 3000)
+		}
+	}
 
 	let players: Player[] = []
 	$: players = $serverPlayers[id] ? Object.values($serverPlayers[id]) : []
@@ -253,6 +280,7 @@
 																	</div>
 																	<div
 																		class="player"
+																		bind:this={playerRefs[player.id]}
 																		class:unfocused={playerSelected &&
 																			selectedPlayerId !== player.id}
 																		class:focused={playerSelected &&
