@@ -41,6 +41,10 @@
 			background-color: var(--color-danger);
 		}
 
+		&-success {
+			background-color: var(--color-success);
+		}
+
 		&-disabled {
 			background-color: var(--color-disabled);
 		}
