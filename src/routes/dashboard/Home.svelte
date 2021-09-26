@@ -10,7 +10,11 @@
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { serverPlayers } from "../../domain/player/store"
-	import { allServers, getAllServers } from "../../domain/server/store"
+	import {
+		allServers,
+		deactivateServer,
+		getAllServers,
+	} from "../../domain/server/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
@@ -20,7 +24,7 @@
 	import Container from "./components/Container.svelte"
 
 	async function deleteServer(id: number) {
-		console.log("Deleting server", id)
+		await deactivateServer(id)
 	}
 </script>
 

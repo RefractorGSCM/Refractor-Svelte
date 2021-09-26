@@ -2,13 +2,16 @@
 	import { createEventDispatcher } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
+	import { string } from "yup/lib/locale"
 	import type { CreateServerParams } from "../../domain/server/server.types"
 	import { createServer } from "../../domain/server/store"
 	import { createUser } from "../../domain/user/store"
 	import type { UserTraits } from "../../domain/user/user.types"
+	import { errorToast } from "../../utils/toast"
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import Select from "../Select.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
@@ -60,7 +63,11 @@
 	}
 
 	const schema = yup.object().shape({
-		game: yup.string().trim().required("Game is required"),
+		game: yup
+			.string()
+			.trim()
+			.oneOf(["Mordhau", "Minecraft"])
+			.required("Game is required"),
 		name: yup
 			.string()
 			.trim()
@@ -158,15 +165,16 @@
 	<div slot="content">
 		<div class="content">
 			<form class="form" on:submit|preventDefault={() => {}}>
-				<TextInput
+				<Select
 					name="game"
-					autocomplete="off"
 					label="Game"
-					value={$store.values.game}
+					bind:value={$store.values.game}
 					error={$store.errors.game}
-					required
-					on:input={onChange}
-				/>
+				>
+					<option value="">Select...</option>
+					<option value="Mordhau">Mordhau</option>
+					<option value="Minecraft">Minecraft</option>
+				</Select>
 
 				<TextInput
 					name="name"

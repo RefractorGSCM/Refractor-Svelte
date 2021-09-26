@@ -25,10 +25,17 @@ const getScopedServerPermissions = (id: number) => {
 	})
 }
 
+const deactivateServer = (id: number) => {
+	return axios.patch(`${API_ROOT}/servers/deactivate/${id}`, null, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getServers,
 	createServer,
 	updateServer,
 	getServerById,
 	getScopedServerPermissions,
+	deactivateServer,
 }
