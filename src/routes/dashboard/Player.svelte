@@ -14,6 +14,7 @@
 	import PermissionCheck from "../../components/PermissionCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
+	import { self } from "../../domain/auth/store"
 	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import { getPlayerInfractions } from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
@@ -27,6 +28,7 @@
 	import { truncate } from "../../utils/strings"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import Infraction from "./Infraction.svelte"
 
 	export let platform: string = ""
 	export let id: string = ""
@@ -142,6 +144,18 @@
 			})
 		}
 	}
+
+	function addInfraction(type: string, infraction: Infraction) {
+		const key = keys[type]
+
+		store.update((current) => {
+			current[key].push({
+				...infraction,
+				issuer_name: $self.username,
+			})
+			return current
+		})
+	}
 </script>
 
 <Container style="max-height: unset;">
@@ -169,7 +183,10 @@
 
 				<div class="buttons">
 					<RequirePerms allOf={[FLAG_CREATE_WARNING]}>
-						<WarningModal player={$player}>
+						<WarningModal
+							player={$player}
+							on:submit={({ detail }) => addInfraction("WARNING", detail)}
+						>
 							<div slot="trigger" let:openWarning>
 								<Button on:click={openWarning}>Log Warning</Button>
 							</div>
@@ -177,7 +194,10 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_MUTE]}>
-						<MuteModal player={$player}>
+						<MuteModal
+							player={$player}
+							on:submit={({ detail }) => addInfraction("MUTE", detail)}
+						>
 							<div slot="trigger" let:openMute>
 								<Button on:click={openMute}>Log Mute</Button>
 							</div>
@@ -185,7 +205,10 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_KICK]}>
-						<KickModal player={$player}>
+						<KickModal
+							player={$player}
+							on:submit={({ detail }) => addInfraction("KICK", detail)}
+						>
 							<div slot="trigger" let:openKick>
 								<Button color="warning" on:click={openKick}>Log Kick</Button>
 							</div>
@@ -193,7 +216,10 @@
 					</RequirePerms>
 
 					<RequirePerms allOf={[FLAG_CREATE_BAN]}>
-						<BanModal player={$player}>
+						<BanModal
+							player={$player}
+							on:submit={({ detail }) => addInfraction("BAN", detail)}
+						>
 							<div slot="trigger" let:openBan>
 								<Button color="danger" on:click={openBan}>Log Ban</Button>
 							</div>
