@@ -26,10 +26,12 @@
 	import Users from "./Users.svelte"
 	import { getAllGroups } from "../../domain/group/store"
 	import NameDisplay from "../../components/NameDisplay.svelte"
+	import { getAllGames } from "../../domain/game/store"
 
 	onMount(async () => {
 		openWebsocketConnection()
 
+		await getAllGames()
 		await getAllServers()
 	})
 
