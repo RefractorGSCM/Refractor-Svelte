@@ -80,24 +80,6 @@
 		}
 	})
 
-	let currentlyOnline = false
-	let serverId = 0
-	let found = false
-	$: {
-		found = false
-		for (const [id, server] of Object.entries($serverPlayers)) {
-			for (const p of Object.values(server)) {
-				if (p.id === id && p.platform === platform) {
-					found = true
-					serverId = parseInt(id)
-					console.log("online", currentlyOnline)
-					break
-				}
-			}
-		}
-		currentlyOnline = found
-	}
-
 	function dateString(date: Date): string {
 		return date.toLocaleString("en-GB", { hour12: true })
 	}
@@ -154,6 +136,23 @@
 			})
 			return current
 		})
+	}
+
+	let currentlyOnline = false
+	let serverId = 0
+	let found = false
+	$: {
+		found = false
+		for (const [sId, server] of Object.entries($serverPlayers)) {
+			for (const p of Object.values(server)) {
+				if (p.id === id && p.platform === platform) {
+					found = true
+					serverId = parseInt(sId)
+					break
+				}
+			}
+		}
+		currentlyOnline = found
 	}
 </script>
 
