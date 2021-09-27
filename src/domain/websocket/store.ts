@@ -1,4 +1,5 @@
 import { writable } from "svelte/store"
+import { addChatMessage } from "../chat/store"
 import { addPlayerToServer, removePlayerFromServer } from "../player/store"
 import { setServerStatus } from "../server/store"
 
@@ -43,6 +44,11 @@ export function openWebsocketConnection() {
 
 			case "server-status": {
 				setServerStatus(body.server_id, body.status)
+				break
+			}
+
+			case "chat": {
+				addChatMessage(body.server_id, body)
 				break
 			}
 		}
