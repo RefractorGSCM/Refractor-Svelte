@@ -91,8 +91,6 @@
 	$: {
 		const ref = playerRefs[$highlightedPlayer]
 
-		console.log($highlightedPlayer, ref)
-
 		if (ref) {
 			ref.classList.add("highlight")
 			ref.scrollIntoView({
@@ -165,7 +163,9 @@
 					</div>
 
 					<div class="buttons">
-						<Button>Open Chat</Button>
+						<Button on:click={() => navigate(`/server/${id}/chat`)}
+							>Open Chat</Button
+						>
 						<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
 							<Button
 								on:click={() =>
