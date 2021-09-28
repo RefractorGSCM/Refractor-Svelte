@@ -9,7 +9,8 @@
 	import { writable } from "svelte/store"
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
-	import { chatMessages } from "../../domain/chat/store"
+	import { self } from "../../domain/auth/store"
+	import { addChatMessage, chatMessages } from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import type { Server } from "../../domain/server/server.types"
 	import {
@@ -164,6 +165,16 @@
 			}),
 		)
 
+		addChatMessage(server.id, {
+			id: 0,
+			player_id: "",
+			platform: "",
+			name: "You",
+			message,
+			sent_by_user: true,
+			own_message: true,
+		})
+
 		message = ""
 	}
 </script>
@@ -184,10 +195,17 @@
 			<div class="wrapper" bind:this={messageBoxRef} on:scroll={onScroll}>
 				<div class="content">
 					{#each $chatMessages[server.id] as msg}
-						<div class="message">
-							<span class="name">{msg.name}</span>
-							{msg.message}
-						</div>
+						{#if !(msg.sent_by_user && msg.name === $self.username)}
+							<div class="message">
+								<span
+									class="name"
+									class:own-message={msg.own_message}
+									class:user-message={msg.sent_by_user && !msg.own_message}
+									>{msg.name}</span
+								>
+								{msg.message}
+							</div>
+						{/if}
 					{/each}
 				</div>
 				{#if !$isAnchored}
@@ -258,15 +276,26 @@
 					width: 100%;
 					display: flex;
 					flex-direction: row;
-					padding: 0.4rem 1rem;
+					padding: 0 1rem;
+					height: 2.6rem;
+					line-height: 2.6rem;
 
 					span.name {
+						position: relative;
 						color: var(--color-text2);
 						width: 100%;
 						font-weight: 500;
 						margin-right: 1rem;
 						width: 15%;
 						max-width: 10vw;
+					}
+
+					.own-message {
+						border-right: 0.8rem solid var(--color-primary-light);
+					}
+
+					.user-message {
+						border-right: 0.8rem solid var(--color-warning);
 					}
 				}
 			}
@@ -300,7 +329,7 @@
 			}
 
 			> :nth-child(2) {
-				border-left: 1.6rem solid var(--color-danger);
+				border-left: 1.6rem solid var(--color-warning);
 			}
 		}
 
