@@ -17,6 +17,7 @@
 		getAllServers,
 		getServerPermissions,
 	} from "../../domain/server/store"
+	import { getCurrentWebsocket } from "../../domain/websocket/store"
 	import {
 		checkFlag,
 		FLAG_READ_LIVE_CHAT,
@@ -144,6 +145,27 @@
 
 		return anchored
 	}
+
+	let message = ""
+	function sendMessage() {
+		const wsClient = getCurrentWebsocket()
+
+		if (message.trim().length < 1) {
+			return
+		}
+
+		wsClient.send(
+			JSON.stringify({
+				type: "chat",
+				body: {
+					server_id: server.id,
+					message,
+				},
+			}),
+		)
+
+		message = ""
+	}
 </script>
 
 <Container>
@@ -158,7 +180,7 @@
 			</div>
 		</SinglePane>
 
-		<div class="chat-window">
+		<form class="chat-window" on:submit|preventDefault={sendMessage}>
 			<div class="wrapper" bind:this={messageBoxRef} on:scroll={onScroll}>
 				<div class="content">
 					{#each $chatMessages[server.id] as msg}
@@ -178,12 +200,13 @@
 				type="text"
 				class="chatbox"
 				placeholder="Enter a message and hit enter"
+				bind:value={message}
 			/>
 			<div class="legend">
 				<div>= you</div>
 				<div>= other users</div>
 			</div>
-		</div>
+		</form>
 	{/if}
 </Container>
 

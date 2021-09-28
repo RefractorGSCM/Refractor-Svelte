@@ -65,3 +65,7 @@ export function openWebsocketConnection() {
 		}
 	}, 120000)
 }
+
+export function getCurrentWebsocket() {
+	return socket
+}
