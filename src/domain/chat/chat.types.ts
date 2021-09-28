@@ -4,5 +4,6 @@ export type ChatMessage = {
 	platform: string
 	name: string
 	message: string
-	sent_by_user: boolean
+	sent_by_user?: boolean
+	own_message?: boolean // not a db field
 }
