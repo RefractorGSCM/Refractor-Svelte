@@ -32,6 +32,7 @@
 	let permissions = writable(null as BigInt)
 
 	let messageBoxRef = null
+	let isAnchored = writable(false)
 
 	onMount(async () => {
 		setLoading("chat", true)
@@ -93,11 +94,55 @@
 		}
 	})
 
+	chatMessages.subscribe(async () => {
+		// If we received a new message and are anchored to the bottom of the chat window, scroll down automatically.
+		if (isAnchoredToBottom()) {
+			await tick() // wait for the UI to update before scrolling
+			scrollToBottom()
+		}
+	})
+
 	function scrollToBottom() {
+		if (!messageBoxRef) {
+			return
+		}
+
 		messageBoxRef.scrollTo({
 			top: messageBoxRef.scrollHeight - messageBoxRef.clientHeight,
 			behavior: "smooth",
 		})
+	}
+
+	let lastScrollPos: number
+	let scrollDirection: string
+	function onScroll() {
+		if (!messageBoxRef) {
+			return
+		}
+
+		if (lastScrollPos > messageBoxRef.scrollTop) {
+			scrollDirection = "up"
+		} else if (lastScrollPos < messageBoxRef.scrollTop) {
+			scrollDirection = "down"
+		}
+
+		lastScrollPos = messageBoxRef.scrollTop
+
+		isAnchored.set(isAnchoredToBottom())
+	}
+
+	function isAnchoredToBottom(): boolean {
+		let anchored = true
+
+		if (messageBoxRef) {
+			const scrollHeight = messageBoxRef.scrollHeight
+			const offsetHeight = messageBoxRef.offsetHeight
+			const tolerance = 50
+
+			anchored = lastScrollPos > scrollHeight - offsetHeight - tolerance
+		}
+
+		return anchored
 	}
 </script>
 
@@ -114,7 +159,7 @@
 		</SinglePane>
 
 		<div class="chat-window">
-			<div class="wrapper" bind:this={messageBoxRef}>
+			<div class="wrapper" bind:this={messageBoxRef} on:scroll={onScroll}>
 				<div class="content">
 					{#each $chatMessages[server.id] as msg}
 						<div class="message">
@@ -123,6 +168,11 @@
 						</div>
 					{/each}
 				</div>
+				{#if !$isAnchored}
+					<div class="scroll-down-btn" on:click={scrollToBottom}>
+						Jump to bottom
+					</div>
+				{/if}
 			</div>
 			<input
 				type="text"
@@ -237,13 +287,15 @@
 			width: 80%;
 			margin-left: 10%;
 			margin-right: 10%;
-			height: 2rem;
+			height: 2.4rem;
 			text-align: center;
 			border-top-left-radius: 1rem;
 			border-top-right-radius: 1rem;
-			background-color: var(--color-accent);
+			background-color: var(--color-topbar);
 			font-size: 1.2rem;
+			line-height: 2.4rem;
 			user-select: none;
+			cursor: pointer;
 
 			width: 30%;
 			margin-left: 35%;
