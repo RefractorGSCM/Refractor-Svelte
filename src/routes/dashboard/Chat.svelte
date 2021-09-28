@@ -10,7 +10,11 @@
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { self } from "../../domain/auth/store"
-	import { addChatMessage, chatMessages } from "../../domain/chat/store"
+	import {
+		addChatMessage,
+		chatMessages,
+		loadRecentChatMessages,
+	} from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import type { Server } from "../../domain/server/server.types"
 	import {
@@ -82,6 +86,8 @@
 				[server.id]: [],
 			})
 		}
+
+		await loadRecentChatMessages(server.id)
 
 		setLoading("chat", false)
 
