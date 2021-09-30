@@ -249,6 +249,7 @@
 			border-radius: var(--border-md);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
+			height: 100%;
 
 			// Chrome, Safari, Opera
 			::-webkit-scrollbar {
@@ -263,6 +264,7 @@
 				overflow-y: scroll;
 				font-size: 1.6rem;
 				position: relative;
+				min-height: 100%;
 
 				// Chrome, Safari, Opera
 				::-webkit-scrollbar {
