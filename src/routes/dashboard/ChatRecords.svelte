@@ -75,6 +75,7 @@
 	import TextInput from "../../components/TextInput.svelte"
 	import { string } from "yup/lib/locale"
 	import Button from "../../components/Button.svelte"
+	import ServerSelector from "../../components/ServerSelector.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -317,11 +318,68 @@
 
 			<form class="form" on:submit|preventDefault>
 				<div class="main">
+					<div class="span-2">
+						<TextInput
+							name="query"
+							label="Search query"
+							bind:value={$store.values.query}
+							error={$store.errors.query}
+							required
+						/>
+					</div>
+
 					<TextInput
-						name="query"
-						label="Search query"
-						bind:value={$store.values.query}
-						error={$store.errors.query}
+						name="start_date"
+						label="Start date"
+						bind:value={$store.values.start_date}
+						error={$store.errors.start_date}
+						required
+					/>
+
+					<TextInput
+						name="end_date"
+						label="End date"
+						bind:value={$store.values.end_date}
+						error={$store.errors.end_date}
+						required
+					/>
+
+					<div class="span-2">
+						<PlayerSelector
+							name="player"
+							label="Player"
+							selectText="Any"
+							on:change={({ detail }) => onPlayerChange(detail)}
+							bind:value={$store.values.player}
+							error={$store.errors.player_id}
+						/>
+					</div>
+
+					<Select
+						name="platform"
+						label="Platform"
+						bind:value={$store.values.platform}
+						error={$store.errors.platform}
+						disabled={!!$store.values.player}
+					>
+						<option value="">Any</option>
+						<option value="playfab">Playfab</option>
+					</Select>
+
+					<ServerSelector
+						name="server_id"
+						label="Server"
+						defaultOption={{ id: 0, name: "Any" }}
+						value={$store.values.server_id}
+						error={$store.errors.server_id}
+						on:change={({ detail }) =>
+							store.set({
+								...$store,
+								values: {
+									...$store.values,
+									server_id: detail,
+								},
+							})}
 					/>
 
 					<!-- <Select
@@ -403,3 +461,51 @@
 		</div>
 	</SinglePane>
 </Container>
+
+<style lang="scss">
+	@import "../../mixins/mixins";
+
+	.title {
+		margin-bottom: 2rem;
+	}
+
+	.search-form {
+		width: 100%;
+
+		.heading {
+			margin-bottom: 1rem;
+		}
+
+		.form {
+			width: 100%;
+			display: grid;
+
+			.main {
+				width: 100%;
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr 1fr;
+				column-gap: 1rem;
+
+				.span-2 {
+					grid-column: span 2;
+				}
+			}
+		}
+
+		@include respond-below(sm) {
+			.form {
+				.main {
+					grid-template-columns: 1fr;
+					column-gap: 0;
+					row-gap: 1rem;
+				}
+			}
+		}
+	}
+
+	@include respond-below(sm) {
+		.hidemobile {
+			display: none !important;
+		}
+	}
+</style>
