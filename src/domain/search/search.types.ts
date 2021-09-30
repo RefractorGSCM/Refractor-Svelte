@@ -1,3 +1,4 @@
+import type { ChatMessage } from "../chat/chat.types"
 import type { Player } from "../player/player.types"
 
 export type PlayerSearchBody = {
@@ -25,6 +26,11 @@ export type InfractionSearchResults = {
 	results: InfractionSearchResult[]
 }
 
+export type ChatSearchResults = {
+	total: number
+	results: ChatMessage[]
+}
+
 export type InfractionSearchResult = {
 	id: number
 	player_id: string
@@ -48,6 +54,17 @@ export type InfractionSearchBody = {
 	user_id?: string
 	game?: string
 	server_id?: number
+	limit: number
+	offset: number
+}
+
+export type ChatSearchBody = {
+	player_id?: string
+	platform?: string
+	server_id?: number
+	start_date?: number
+	end_date?: number
+	query?: string
 	limit: number
 	offset: number
 }

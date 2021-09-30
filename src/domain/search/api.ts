@@ -1,5 +1,9 @@
 import axios from "axios"
-import type { InfractionSearchBody, PlayerSearchBody } from "./search.types"
+import type {
+	ChatSearchBody,
+	InfractionSearchBody,
+	PlayerSearchBody,
+} from "./search.types"
 
 const searchPlayers = (body: PlayerSearchBody) => {
 	return axios.post(`${API_ROOT}/search/players`, body, {
@@ -13,7 +17,14 @@ const searchInfractions = (body: InfractionSearchBody) => {
 	})
 }
 
+const searchChatMessages = (body: ChatSearchBody) => {
+	return axios.post(`${API_ROOT}/search/chatmessages`, body, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	searchPlayers,
 	searchInfractions,
+	searchChatMessages,
 }
