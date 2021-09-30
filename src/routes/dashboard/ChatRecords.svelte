@@ -1,21 +1,25 @@
 <script lang="ts" context="module">
+	import { writable } from "svelte/store"
+
+	const pageLimit = 20
+
 	type formStore = {
 		values: {
-			type?: string
 			player?: PlayerSearchResult
 			platform?: string
-			user_id?: string
-			game?: string
 			server_id?: number
+			start_date?: number
+			end_date?: number
+			query?: string
 		}
 		errors: {
 			general?: any
-			type?: any
 			player_id?: any
 			platform?: any
-			user_id?: any
-			game?: any
 			server_id?: any
+			start_date?: any
+			end_date?: any
+			query?: any
 		}
 	}
 
@@ -25,17 +29,17 @@
 			page: number
 			wasRun: boolean
 		}
-		results: InfractionSearchResult[]
+		results: ChatMessage[]
 	}
 
 	let store = writable({
 		values: {
-			type: undefined,
 			player: undefined,
 			platform: undefined,
-			user_id: undefined,
-			game: undefined,
 			server_id: undefined,
+			start_date: undefined,
+			end_date: undefined,
+			query: undefined,
 		},
 		errors: {},
 	} as formStore)
@@ -48,64 +52,29 @@
 			page: 0,
 			wasRun: false,
 		},
-		results: [] as InfractionSearchResult[],
+		results: [] as ChatMessage[],
 	} as resultStore)
 </script>
 
 <script lang="ts">
-	import { onMount } from "svelte"
-	import { writable } from "svelte/store"
-
-	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import PlayerSelector from "../../components/PlayerSelector.svelte"
 	import Select from "../../components/Select.svelte"
-	import ServerSelector from "../../components/ServerSelector.svelte"
-	import {
-		getSelfInfo,
-		isAdmin,
-		isSuperAdmin,
-		self,
-	} from "../../domain/auth/store"
+	import type { ChatMessage } from "../../domain/chat/chat.types"
 	import type {
-		InfractionSearchBody,
-		InfractionSearchResult,
+		ChatSearchBody,
 		PlayerSearchResult,
 	} from "../../domain/search/search.types"
-	import { allUsers, getAllUsers } from "../../domain/user/store"
-	import { reduceYupErrors } from "../../utils/yup"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import * as yup from "yup"
-	import {
-		filterEmpty,
-		filterEmptyStrings,
-		filterUndefined,
-		filterZero,
-	} from "../../utils/filters"
+	import { reduceYupErrors } from "../../utils/yup"
+	import { filterEmpty, filterZero } from "../../utils/filters"
 	import { errorToast } from "../../utils/toast"
-	import { searchInfractions } from "../../domain/search/store"
-	import { navigate } from "svelte-routing"
-	import { dateString } from "../../utils/date"
-	import { truncate } from "../../utils/strings"
-	import PageSwitcher from "../../components/PageSwitcher.svelte"
-
-	const pageLimit = 10
-
-	let users = writable([])
-	onMount(async () => {
-		if (!$self) {
-			await getSelfInfo()
-		}
-
-		if ($isAdmin || $isSuperAdmin) {
-			await getAllUsers()
-
-			users.set($allUsers)
-		} else {
-			users.set([$self])
-		}
-	})
+	import { searchChatMessages } from "../../domain/search/store"
+	import TextInput from "../../components/TextInput.svelte"
+	import { string } from "yup/lib/locale"
+	import Button from "../../components/Button.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -139,25 +108,23 @@
 	}
 
 	const schema = yup.object().shape({
-		type: yup.lazy((value) =>
-			shouldValidate(value)
-				? yup.string().trim().oneOf(["WARNING", "MUTE", "KICK", "BAN"])
-				: yup.string(),
-		),
 		player_id: yup.lazy((value) =>
 			shouldValidate(value) ? yup.string().trim() : yup.string(),
 		),
 		platform: yup.lazy((value) =>
 			shouldValidate(value) ? yup.string().trim() : yup.string(),
 		),
-		user_id: yup.lazy((value) =>
-			shouldValidate(value) ? yup.string().trim() : yup.string(),
-		),
-		game: yup.lazy((value) =>
-			shouldValidate(value) ? yup.string().trim() : yup.string(),
-		),
 		server_id: yup.lazy((value) =>
 			shouldValidate(value) ? yup.number() : yup.number(),
+		),
+		start_date: yup.lazy((value) =>
+			shouldValidate(value) ? yup.number() : yup.number(),
+		),
+		end_date: yup.lazy((value) =>
+			shouldValidate(value) ? yup.number() : yup.number(),
+		),
+		query: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string() : yup.string(),
 		),
 	})
 
@@ -165,12 +132,11 @@
 		const offset = $searchStore.meta.page * pageLimit
 
 		let values = {
-			type: $store.values.type,
 			player_id: $store.values.player?.id,
 			platform: $store.values.platform,
-			user_id: $store.values.user_id,
-			game: $store.values.game,
 			server_id: $store.values.server_id,
+			start_date: $store.values.start_date,
+			end_date: $store.values.end_date,
 		}
 
 		// Validate
@@ -206,11 +172,11 @@
 				page: 0,
 				wasRun: false,
 			},
-			results: [] as InfractionSearchResult[],
+			results: [] as ChatMessage[],
 		})
 
 		// Filter out empty strings
-		const searchArgs = filterZero(filterEmpty(values)) as InfractionSearchBody
+		const searchArgs = filterZero(filterEmpty(values)) as ChatSearchBody
 
 		if (Object.keys(searchArgs).length < 1) {
 			errorToast("Please apply at least one filter to search")
@@ -221,10 +187,10 @@
 			...searchArgs,
 			limit: pageLimit,
 			offset,
-		} as InfractionSearchBody
+		} as ChatSearchBody
 
 		// Run search
-		const { results, success, errors } = await searchInfractions(body)
+		const { results, success, errors } = await searchChatMessages(body)
 
 		if (!success) {
 			if (errors) {
@@ -265,10 +231,10 @@
 			...$currentSearch,
 			limit: pageLimit,
 			offset: nextPage * pageLimit,
-		} as InfractionSearchBody
+		} as ChatSearchBody
 
 		// Run search
-		const { results, success, errors } = await searchInfractions(body)
+		const { results, success, errors } = await searchChatMessages(body)
 
 		if (!success) {
 			if (errors) {
@@ -305,10 +271,10 @@
 			...$currentSearch,
 			limit: pageLimit,
 			offset: prevPage * pageLimit,
-		} as InfractionSearchBody
+		} as ChatSearchBody
 
 		// Run search
-		const { results, success, errors } = await searchInfractions(body)
+		const { results, success, errors } = await searchChatMessages(body)
 
 		if (!success) {
 			if (errors) {
@@ -340,7 +306,7 @@
 
 <Container>
 	<div class="title">
-		<Heading type="title">Infraction Records</Heading>
+		<Heading type="title">Chat Records</Heading>
 	</div>
 
 	<SinglePane>
@@ -351,7 +317,14 @@
 
 			<form class="form" on:submit|preventDefault>
 				<div class="main">
-					<Select
+					<TextInput
+						name="query"
+						label="Search query"
+						bind:value={$store.values.query}
+						error={$store.errors.query}
+					/>
+
+					<!-- <Select
 						name="type"
 						label="Infraction type"
 						bind:value={$store.values.type}
@@ -420,7 +393,7 @@
 									server_id: detail,
 								},
 							})}
-					/>
+					/> -->
 				</div>
 
 				<div class="button">
@@ -429,210 +402,4 @@
 			</form>
 		</div>
 	</SinglePane>
-
-	{#if $searchStore.results && $searchStore.results.length > 0}
-		<div class="results">
-			<div class="heading">
-				<Heading>Showing {$searchStore.meta.total} Results</Heading>
-			</div>
-
-			<PageSwitcher
-				on:prev:click={prevPage}
-				on:next:click={nextPage}
-				prevDisabled={$searchStore.meta.page <= 0}
-				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
-				page={$searchStore.meta.page + 1}
-			/>
-
-			<div class="list">
-				<div class="result heading hidemobile">
-					<div class="type">Type</div>
-					<div class="player">Player</div>
-					<div class="issuer">Issuer</div>
-					<div class="date">Date</div>
-					<div class="duration">Duration</div>
-				</div>
-				{#each $searchStore.results as result}
-					<a
-						class="result"
-						class:has-duration={["MUTE", "BAN"].includes(result.type)}
-						href={`/infraction/${result.id}`}
-						on:click|preventDefault={() => navigate(`/infraction/${result.id}`)}
-					>
-						<div class="type">
-							<span class="mobile-label">Type: </span>{result.type}
-						</div>
-						<div class="player">
-							<span class="mobile-label"
-								>Player:
-							</span>{result.platform}/{result.player_name}
-						</div>
-						<div class="issuer">
-							<span class="mobile-label">Issuer: </span>{result.issuer_name}
-						</div>
-						<div class="date">
-							<span class="mobile-label">Date: </span><span class="date">
-								{dateString(new Date(result.created_at)).split(",")[0]}
-							</span>
-							<span class="time">
-								{dateString(new Date(result.created_at)).split(",")[1]}
-							</span>
-						</div>
-						<div class="duration">
-							<span class="mobile-label">Length: </span>{result.duration
-								? `${result.duration} mins`
-								: ""}
-						</div>
-						<div class="reason">
-							<span class="mobile-label">Reason: </span>{truncate(
-								result.reason,
-								100,
-							)}
-						</div>
-					</a>
-				{/each}
-			</div>
-		</div>
-	{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
-		<Heading>No results found</Heading>
-	{/if}
 </Container>
-
-<style lang="scss">
-	@import "../../mixins/mixins";
-
-	.title {
-		margin-bottom: 2rem;
-	}
-
-	.search-form {
-		width: 100%;
-
-		.heading {
-			margin-bottom: 1rem;
-		}
-
-		.form {
-			width: 100%;
-			display: grid;
-
-			.main {
-				width: 100%;
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr;
-				column-gap: 1rem;
-			}
-		}
-
-		@include respond-below(sm) {
-			.form {
-				.main {
-					grid-template-columns: 1fr;
-					column-gap: 0;
-					row-gap: 1rem;
-				}
-			}
-		}
-	}
-
-	@include respond-below(sm) {
-		.hidemobile {
-			display: none !important;
-		}
-	}
-
-	.results {
-		width: 100%;
-		font-size: 1.6rem;
-		margin-bottom: 3rem;
-
-		.list {
-			margin-top: 1rem;
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			height: calc((3rem + 0.5rem) * 11);
-
-			> * {
-				margin-bottom: 0.5rem;
-
-				@include respond-below(sm) {
-					margin-bottom: 1rem;
-				}
-			}
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-
-			.result {
-				width: 100%;
-				display: grid;
-				height: 5rem;
-				grid-template-columns: 1fr 1fr 1fr 2fr 0.5fr;
-				grid-template-rows: 2.5rem 2.5rem;
-				align-items: center;
-				padding: 0 1rem;
-				column-gap: 1rem;
-				background-color: var(--color-background2);
-				border-radius: var(--border-sm);
-				cursor: pointer;
-				transition: all 0.2s;
-				color: var(--color-text2);
-
-				&:hover {
-					background-color: var(--color-background1);
-				}
-
-				.reason {
-					grid-column: span 4;
-				}
-
-				@include respond-below(sm) {
-					padding: 1rem 1rem;
-					grid-template-columns: 1fr;
-					grid-template-rows: 1fr 1fr 1fr 1fr auto;
-
-					.reason {
-						grid-column: auto;
-					}
-
-					.duration .mobile-label {
-						display: none;
-					}
-
-					.date {
-						.time {
-							display: none;
-						}
-					}
-				}
-			}
-
-			.result.has-duration {
-				@include respond-below(sm) {
-					grid-template-rows: 1fr 1fr 1fr 1fr 1fr auto;
-
-					.duration .mobile-label {
-						display: inline;
-					}
-				}
-			}
-
-			.heading {
-				background-color: var(--color-background1);
-				grid-template-rows: 3rem;
-			}
-
-			.mobile-label {
-				display: none;
-
-				@include respond-below(sm) {
-					display: inline-block;
-					color: var(--color-primary);
-					width: 6.5rem;
-				}
-			}
-		}
-	}
-</style>

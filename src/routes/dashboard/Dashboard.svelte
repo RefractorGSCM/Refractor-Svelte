@@ -28,6 +28,7 @@
 	import NameDisplay from "../../components/NameDisplay.svelte"
 	import { getAllGames } from "../../domain/game/store"
 	import Chat from "./Chat.svelte"
+	import ChatRecords from "./ChatRecords.svelte"
 
 	onMount(async () => {
 		openWebsocketConnection()
@@ -196,6 +197,12 @@
 			<RequirePerms allOf={[FLAG_VIEW_INFRACTION_RECORDS]}>
 				<Route path="/records/infractions">
 					<InfractionRecords />
+				</Route>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_VIEW_CHAT_RECORDS]}>
+				<Route path="/records/chat">
+					<ChatRecords />
 				</Route>
 			</RequirePerms>
 		</Router>
