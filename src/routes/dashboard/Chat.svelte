@@ -283,7 +283,7 @@
 					display: flex;
 					flex-direction: row;
 					padding: 0 1rem;
-					height: 2.6rem;
+					min-height: 2.6rem;
 					line-height: 2.6rem;
 
 					span.name {
@@ -292,7 +292,7 @@
 						width: 100%;
 						font-weight: 500;
 						margin-right: 1rem;
-						width: 15%;
+						min-width: 15%;
 						max-width: 10vw;
 					}
 
