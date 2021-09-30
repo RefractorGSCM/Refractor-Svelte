@@ -14,7 +14,7 @@ export function addChatMessage(serverID: number, msg: ChatMessage) {
 
 export async function loadRecentChatMessages(serverId: number) {
 	try {
-		const { data } = await api.getRecentChatMessages(serverId, 20)
+		const { data } = await api.getRecentChatMessages(serverId, 30)
 
 		let recentMessages = data.payload as ChatMessage[]
 		recentMessages = recentMessages.reverse()
