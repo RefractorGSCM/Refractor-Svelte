@@ -8,6 +8,8 @@
 	export let required = false
 	export let value: any = ""
 	export let defaultOption: string = null
+	export let defaultOptionValue: string = ""
+	export let disabled = false
 
 	const dispatch = createEventDispatcher()
 
@@ -22,6 +24,7 @@
 	})
 
 	function update(e) {
+		value = e.target.value
 		dispatch("change", e.target.value)
 	}
 </script>
@@ -33,12 +36,13 @@
 			id="psel-i-{name}"
 			{name}
 			{required}
+			{disabled}
 			{value}
 			on:blur={update}
 			on:change={update}
 		>
 			{#if defaultOption}
-				<option value={defaultOption}>{defaultOption}</option>
+				<option value={defaultOptionValue}>{defaultOption}</option>
 			{/if}
 
 			{#each $allGames as game}
@@ -127,6 +131,23 @@
 				.underline::before {
 					background: var(--color-danger);
 				}
+			}
+
+			// DISABLED STYLING
+			select:disabled,
+			select:disabled + label {
+				cursor: unset;
+				color: var(--color-text-muted);
+			}
+
+			select:disabled ~ label {
+				transform: translateY(-1.8rem);
+				font-size: 1.2rem;
+			}
+
+			select:disabled {
+				color: var(--color-text-muted);
+				border-bottom: 2px solid var(--color-accent);
 			}
 		}
 
