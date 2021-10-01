@@ -202,6 +202,7 @@
 			game: $store.values.game,
 			start_date: $store.values.start_date,
 			end_date: $store.values.end_date,
+			query: $store.values.query,
 		}
 
 		// Validate
@@ -367,8 +368,6 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
-
-	$: console.log($store.values)
 </script>
 
 <Container>
@@ -393,14 +392,6 @@
 							required
 						/>
 					</div>
-
-					<!-- <TextInput
-						name="start_date"
-						label="Start date"
-						bind:value={$store.values.start_date}
-						error={$store.errors.start_date}
-						required
-					/> -->
 
 					<DatePicker
 						name="start_date"

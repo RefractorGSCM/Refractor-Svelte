@@ -65,7 +65,7 @@ export async function searchChatMessages(
 	body: ChatSearchBody,
 ): Promise<chatSearchRes> {
 	try {
-		const { data } = await api.searchInfractions(body)
+		const { data } = await api.searchChatMessages(body)
 
 		return {
 			results: data.payload as ChatSearchResults,
