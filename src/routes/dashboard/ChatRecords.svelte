@@ -76,6 +76,7 @@
 	import { string } from "yup/lib/locale"
 	import Button from "../../components/Button.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
+	import DatePicker from "../../components/DatePicker.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -460,6 +461,8 @@
 			</form>
 		</div>
 	</SinglePane>
+
+	<DatePicker name="test" label="Test" />
 </Container>
 
 <style lang="scss">
