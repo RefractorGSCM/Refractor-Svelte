@@ -1,13 +1,25 @@
+<script context="module">
+	// Since we don't have fine grained control over the date picker styling, we run into issues with
+	// z-index. We need to set the deselect button to have a higher z-index than the date picker for it
+	// to be clickable, but we can't dynamically adjust the date picker calendar display's z-index so we
+	// run into an issue where the deselect button shows over the calendar.
+	//
+	// hideDeselectBtn is used to conditionally assign a class
+	let hideDeselectBtn = writable(false)
+</script>
+
 <script>
 	import DatePicker from "@beyonk/svelte-datepicker/src/components/DatePicker.svelte"
 	import { CalendarStyle } from "@beyonk/svelte-datepicker/src/calendar-style.js"
 	import { stringify } from "query-string"
+	import { createEventDispatcher } from "svelte"
+	import { writable } from "svelte/store"
 
 	export let name
 	export let value
 	export let label = name
 	export let error = ""
-	export let disabled = false
+	export let defaultText = "Select"
 
 	const styling = new CalendarStyle({
 		buttonBackgroundColor: "none",
@@ -15,21 +27,68 @@
 		buttonTextColor: "rgba(0, 0, 0, 0)",
 		buttonHeight: "3rem",
 		buttonWidth: "100%",
+		highlightColor: "var(--color-primary)",
+		contentBackground: "var(--color-background1)",
+		dayTextColor: "var(--color-text2)",
+		dayTextColorIsNight: "var(--color-text2)",
+		dayTextColorInRange: "var(--color-text2)",
+		currentDayTextColor: "var(--color-text2)",
+		selectedDayTextColor: "var(--color-text2)",
+		timeNightModeTextColor: "var(--color-text2)",
+		timeDayModeTextColor: "var(--color-text2)",
+		timeSelectedTextColor: "var(--color-text2)",
+		timeInputTextColor: "var(--color-text2)",
+		timeNightModeBackgroundColor: "var(--color-background1)",
+		timeDayModeBackgroundColor: "var(--color-background1)",
+		monthYearTextColor: "var(--color-text2)",
+		legendTextColor: "var(--color-text-muted)",
+		timeConfirmButtonColor: "var(--color-primary)",
+		timeConfirmButtonTextColor: "var(--color-text1)",
 	})
 
-	$: console.log(value, typeof value)
-</script>
+	const dispatch = createEventDispatcher()
 
-<div class="style-wrapper" />
+	function onChange(date) {
+		value = date.date
+		dispatch("select", date.date)
+	}
+</script>
 
 <div class="datepicker-wrapper">
 	<div class="main">
 		<div class="date">
-			{value?.date.toLocaleString("en-GB", { hour12: true }).replace(",", "")}
+			<span
+				>{!!value
+					? value.toLocaleString("en-GB", { hour12: true }).replace(",", "")
+					: defaultText}
+			</span>
+
+			{#if !!value}
+				<div
+					class="deselect-button"
+					class:reset-z={$hideDeselectBtn}
+					on:click={(e) => {
+						e.stopPropagation()
+						onChange({ date: null })
+					}}
+				>
+					&#10005;
+				</div>
+			{/if}
 		</div>
 
 		<div class="picker">
-			<DatePicker {styling} time on:date-selected={(e) => (value = e.detail)} />
+			<DatePicker
+				{styling}
+				time
+				on:open={() => {
+					hideDeselectBtn.set(true)
+				}}
+				on:close={() => {
+					hideDeselectBtn.set(false)
+				}}
+				on:date-selected={(e) => onChange(e.detail)}
+			/>
 		</div>
 
 		<div class="underline" />
@@ -62,6 +121,30 @@
 				color: var(--color-text2);
 				user-select: none;
 				cursor: pointer;
+
+				span {
+					position: absolute;
+					bottom: calc(50% - 1rem);
+				}
+
+				.deselect-button {
+					position: absolute;
+					top: calc(50% - 1rem);
+					right: 0.5rem;
+					font-size: 1.4rem;
+					height: 2rem;
+					width: 2rem;
+					background-color: var(--color-accent);
+					border-radius: var(--border-sm);
+					display: grid;
+					place-items: center;
+					cursor: pointer;
+					z-index: 1001;
+				}
+
+				.deselect-button.reset-z {
+					z-index: unset;
+				}
 			}
 
 			.picker {
@@ -79,6 +162,16 @@
 
 				:global(.datepicker) {
 					width: 100%;
+				}
+
+				:global(.contents-wrapper) {
+					position: fixed;
+					z-index: 2000 !important;
+					background-color: var(--color-background1);
+				}
+
+				:global(.contents-wrapper *) {
+					z-index: 2000 !important;
 				}
 			}
 

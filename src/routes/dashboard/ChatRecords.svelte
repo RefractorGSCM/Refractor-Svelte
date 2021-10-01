@@ -87,6 +87,7 @@
 	import type { Game } from "../../domain/game/game.types"
 	import { allGames } from "../../domain/game/store"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
+	import Activate from "../Activate.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -393,20 +394,52 @@
 						/>
 					</div>
 
-					<TextInput
+					<!-- <TextInput
 						name="start_date"
 						label="Start date"
 						bind:value={$store.values.start_date}
 						error={$store.errors.start_date}
 						required
+					/> -->
+
+					<DatePicker
+						name="start_date"
+						label="Start date"
+						value={!!$store.values.start_date
+							? new Date($store.values.start_date * 1000)
+							: null}
+						error={$store.errors.start_date}
+						on:select={({ detail }) => {
+							store.set({
+								...$store,
+								values: {
+									...$store.values,
+									start_date: !!detail
+										? Math.round(detail.getTime() / 1000)
+										: undefined,
+								},
+							})
+						}}
 					/>
 
-					<TextInput
+					<DatePicker
 						name="end_date"
 						label="End date"
-						bind:value={$store.values.end_date}
+						value={!!$store.values.end_date
+							? new Date($store.values.end_date * 1000)
+							: null}
 						error={$store.errors.end_date}
-						required
+						on:select={({ detail }) => {
+							store.set({
+								...$store,
+								values: {
+									...$store.values,
+									end_date: !!detail
+										? Math.round(detail.getTime() / 1000)
+										: undefined,
+								},
+							})
+						}}
 					/>
 
 					<PlayerSelector
@@ -422,7 +455,7 @@
 						name="platform"
 						label="Platform"
 						defaultOption="Any"
-						defaultOptionValue=""
+						defaultOptionValue={""}
 						bind:value={$store.values.platform}
 						error={$store.errors.platform}
 						disabled={!!$store.values.player || !!$store.values.server_id}
@@ -434,7 +467,7 @@
 						defaultOption={{ id: 0, name: "Any" }}
 						value={$store.values.server_id}
 						error={$store.errors.server_id}
-						platform={$store.values.platform}
+						platform={!!$store.values.platform ? $store.values.platform : null}
 						on:change={({ detail }) => onServerChange(detail)}
 					/>
 
@@ -455,8 +488,6 @@
 			</form>
 		</div>
 	</SinglePane>
-
-	<DatePicker name="test" label="Test" />
 </Container>
 
 <style lang="scss">
