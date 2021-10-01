@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	import { writable } from "svelte/store"
 
-	const pageLimit = 20
+	const pageLimit = 10
 
 	type formStore = {
 		values: {
@@ -88,6 +88,9 @@
 	import { allGames } from "../../domain/game/store"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Activate from "../Activate.svelte"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
+	import { truncate } from "../../utils/strings"
+	import { dateString } from "../../utils/date"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -479,6 +482,69 @@
 			</form>
 		</div>
 	</SinglePane>
+
+	{#if $searchStore.results?.length > 0}
+		<div class="results">
+			<div class="heading">
+				<Heading>Found {$searchStore.meta.total} Results</Heading>
+			</div>
+
+			<PageSwitcher
+				on:prev:click={prevPage}
+				on:next:click={nextPage}
+				prevDisabled={$searchStore.meta.page <= 0}
+				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+				page={$searchStore.meta.page + 1}
+			/>
+
+			<div class="list">
+				<div class="result heading">
+					<div class="id">ID</div>
+					<div class="date">Date</div>
+					<div class="name">Name</div>
+					<div class="message">Message</div>
+				</div>
+
+				{#each $searchStore.results as result}
+					<div class="result">
+						<div class="id">
+							<span class="mobile-label">ID: </span>{result.id}
+						</div>
+
+						<div class="lastseen">
+							<span class="mobile-label">Date: </span><span class="date">
+								{dateString(new Date(result.created_at)).split(",")[0]}
+							</span>
+							<span class="time">
+								{dateString(new Date(result.created_at)).split(",")[1]}
+							</span>
+						</div>
+
+						<div class="name">
+							<span class="mobile-label">Name: </span>{result.name}
+						</div>
+
+						<div class="message">
+							<span class="mobile-label">Message: </span>{truncate(
+								result.message,
+								150,
+							)}
+						</div>
+					</div>
+				{/each}
+			</div>
+
+			<PageSwitcher
+				on:prev:click={prevPage}
+				on:next:click={nextPage}
+				prevDisabled={$searchStore.meta.page <= 0}
+				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
+				page={$searchStore.meta.page + 1}
+			/>
+		</div>
+	{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
+		<Heading>No results found</Heading>
+	{/if}
 </Container>
 
 <style lang="scss">
@@ -509,14 +575,22 @@
 					grid-column: span 2;
 				}
 			}
-		}
 
-		@include respond-below(sm) {
-			.form {
+			@include respond-below(md) {
+				.main {
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+
+			@include respond-below(xs) {
+				padding-bottom: 2rem;
+
 				.main {
 					grid-template-columns: 1fr;
-					column-gap: 0;
-					row-gap: 1rem;
+				}
+
+				.span-2 {
+					grid-column: unset !important;
 				}
 			}
 		}
@@ -525,6 +599,79 @@
 	@include respond-below(sm) {
 		.hidemobile {
 			display: none !important;
+		}
+	}
+
+	.results {
+		width: 100%;
+		font-size: 1.6rem;
+		margin-bottom: 3rem;
+
+		.list {
+			margin-top: 1rem;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			min-height: calc((2.5rem) * 11);
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			.result {
+				width: 100%;
+				min-height: 2.5rem;
+				display: grid;
+				grid-template-columns: 1fr 3fr 1.5fr 8fr;
+				align-items: center;
+				padding: 0.3rem 1rem;
+				column-gap: 1rem;
+				transition: all 0.2s;
+				color: var(--color-text2);
+
+				&:nth-child(odd) {
+					background-color: var(--color-background2);
+				}
+
+				&:nth-child(even) {
+					background-color: var(--color-background3);
+				}
+
+				.message {
+					min-height: 2.5rem;
+					height: 100%;
+				}
+
+				@include respond-below(sm) {
+					grid-template-columns: 1fr;
+					grid-template-rows: 1fr 1fr 1fr auto;
+				}
+			}
+
+			.result.heading {
+				border-radius: var(--border-sm);
+				font-weight: bold;
+				background-color: var(--color-background1) !important;
+
+				@include respond-below(sm) {
+					display: none;
+				}
+
+				.message {
+					min-height: unset;
+					height: auto;
+				}
+			}
+		}
+
+		.mobile-label {
+			display: none;
+
+			@include respond-below(sm) {
+				display: inline-block;
+				color: var(--color-primary);
+				width: 7.5rem;
+			}
 		}
 	}
 </style>
