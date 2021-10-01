@@ -6,4 +6,6 @@ export type ChatMessage = {
 	message: string
 	sent_by_user?: boolean
 	own_message?: boolean // not a db field
+	created_at?: Date
+	modified_at?: Date
 }
