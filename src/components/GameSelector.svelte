@@ -16,7 +16,7 @@
 	onMount(async () => {
 		let initialValue
 		if (defaultOption) {
-			initialValue = value = defaultOption
+			initialValue = value = defaultOptionValue
 		} else {
 			initialValue = value = $allGames[0]
 		}

@@ -18,7 +18,7 @@ const searchInfractions = (body: InfractionSearchBody) => {
 }
 
 const searchChatMessages = (body: ChatSearchBody) => {
-	return axios.post(`${API_ROOT}/search/chatmessages`, body, {
+	return axios.post(`${API_ROOT}/search/chat`, body, {
 		withCredentials: true,
 	})
 }

@@ -88,6 +88,7 @@
 					hideDeselectBtn.set(false)
 				}}
 				on:date-selected={(e) => onChange(e.detail)}
+				selected={false}
 			/>
 		</div>
 
