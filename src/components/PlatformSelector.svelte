@@ -1,46 +1,31 @@
 <script lang="ts">
-	import Select from "./SimpleSelect.svelte"
 	import { createEventDispatcher, onMount } from "svelte"
-	import { allServers, fragmentServers } from "../domain/server/store"
-	import Server from "../routes/dashboard/Server.svelte"
-	import { serverPlayers } from "../domain/player/store"
-	import { each } from "svelte/internal"
-	import { allGames } from "../domain/game/store"
+	import { allGames, allPlatforms } from "../domain/game/store"
 
 	export let name
 	export let error = null
 	export let label = name
 	export let required = false
 	export let value: any = ""
-	export let defaultOption: { id: number; name: string } = null
-	export let includeFragments: boolean = false
-	export let platform: string = null
+	export let defaultOption: string = null
+	export let defaultOptionValue: string = ""
+	export let disabled = false
 
 	const dispatch = createEventDispatcher()
 
 	onMount(async () => {
 		let initialValue
 		if (defaultOption) {
-			initialValue = value = defaultOption.id
+			initialValue = value = defaultOption
 		} else {
-			initialValue = value = $allServers[0].id
+			initialValue = value = $allPlatforms[0]
 		}
 		update({ target: { value: initialValue } })
 	})
 
 	function update(e) {
-		value = parseInt(e.target.value)
-		dispatch("change", parseInt(e.target.value))
-	}
-
-	function getGamePlatform(gameName: string): string {
-		for (const game of $allGames) {
-			if (game.name === gameName) {
-				return game.platform
-			}
-		}
-
-		return null
+		value = e.target.value
+		dispatch("change", e.target.value)
 	}
 </script>
 
@@ -48,34 +33,25 @@
 	<div class="input-main" class:error={!!error}>
 		<select
 			class="select"
-			id="sel-i-{name}"
+			id="pfsel-i-{name}"
 			{name}
 			{required}
+			{disabled}
 			{value}
 			on:blur={update}
 			on:change={update}
 		>
 			{#if defaultOption}
-				<option value={defaultOption.id}>{defaultOption.name}</option>
+				<option value={defaultOptionValue}>{defaultOption}</option>
 			{/if}
 
-			{#each $allServers as server}
-				{#if !!!platform || getGamePlatform(server.game) === platform}
-					<option value={server.id}>{server.name}</option>
-				{/if}
+			{#each $allPlatforms as platform}
+				<option value={platform}>{platform}</option>
 			{/each}
-
-			{#if includeFragments}
-				{#each $fragmentServers as server}
-					{#if !!!platform || getGamePlatform(server.game) === platform}
-						<option value={server.id}>{server.name}</option>
-					{/if}
-				{/each}
-			{/if}
 		</select>
 
 		<div class="underline" />
-		<label for="sel-i-{name}">{label}</label>
+		<label for="pfsel-i-{name}">{label}</label>
 	</div>
 
 	<div class="error-text">{error ? error : ""}</div>
@@ -155,6 +131,23 @@
 				.underline::before {
 					background: var(--color-danger);
 				}
+			}
+
+			// DISABLED STYLING
+			select:disabled,
+			select:disabled + label {
+				cursor: unset;
+				color: var(--color-text-muted);
+			}
+
+			select:disabled ~ label {
+				transform: translateY(-1.8rem);
+				font-size: 1.2rem;
+			}
+
+			select:disabled {
+				color: var(--color-text-muted);
+				border-bottom: 2px solid var(--color-accent);
 			}
 		}
 

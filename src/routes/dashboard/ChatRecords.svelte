@@ -8,6 +8,7 @@
 			player?: PlayerSearchResult
 			platform?: string
 			server_id?: number
+			game?: string
 			start_date?: number
 			end_date?: number
 			query?: string
@@ -17,6 +18,7 @@
 			player_id?: any
 			platform?: any
 			server_id?: any
+			game?: string
 			start_date?: any
 			end_date?: any
 			query?: any
@@ -37,6 +39,7 @@
 			player: undefined,
 			platform: undefined,
 			server_id: undefined,
+			game: undefined,
 			start_date: undefined,
 			end_date: undefined,
 			query: undefined,
@@ -77,6 +80,13 @@
 	import Button from "../../components/Button.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import DatePicker from "../../components/DatePicker.svelte"
+	import { allServers } from "../../domain/server/store"
+	import type { Server } from "../../domain/server/server.types"
+	import GameSelector from "../../components/GameSelector.svelte"
+	import { validate_each_argument } from "svelte/internal"
+	import type { Game } from "../../domain/game/game.types"
+	import { allGames } from "../../domain/game/store"
+	import PlatformSelector from "../../components/PlatformSelector.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -101,6 +111,54 @@
 		})
 	}
 
+	function onServerChange(serverID) {
+		if (!serverID) {
+			store.set({
+				...$store,
+				values: {
+					...$store.values,
+					server_id: serverID,
+				},
+			})
+
+			return
+		}
+
+		let server: Server = null
+		for (const s of $allServers) {
+			if (s.id === serverID) {
+				server = s
+				break
+			}
+		}
+
+		if (!server) {
+			return
+		}
+
+		let game: Game = null
+		for (const g of $allGames) {
+			if (g.name === server.game) {
+				game = g
+				break
+			}
+		}
+
+		if (!game) {
+			return
+		}
+
+		store.set({
+			...$store,
+			values: {
+				...$store.values,
+				server_id: server.id,
+				platform: game.platform,
+				game: server.game,
+			},
+		})
+	}
+
 	const shouldValidate = (field) => {
 		if (typeof field === "string" && field.length > 0) {
 			return true
@@ -118,6 +176,9 @@
 		),
 		server_id: yup.lazy((value) =>
 			shouldValidate(value) ? yup.number() : yup.number(),
+		),
+		game: yup.lazy((value) =>
+			shouldValidate(value) ? yup.string() : yup.string(),
 		),
 		start_date: yup.lazy((value) =>
 			shouldValidate(value) ? yup.number() : yup.number(),
@@ -137,6 +198,7 @@
 			player_id: $store.values.player?.id,
 			platform: $store.values.platform,
 			server_id: $store.values.server_id,
+			game: $store.values.game,
 			start_date: $store.values.start_date,
 			end_date: $store.values.end_date,
 		}
@@ -304,6 +366,8 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
+
+	$: console.log($store.values)
 </script>
 
 <Container>
@@ -345,57 +409,6 @@
 						required
 					/>
 
-					<div class="span-2">
-						<PlayerSelector
-							name="player"
-							label="Player"
-							selectText="Any"
-							on:change={({ detail }) => onPlayerChange(detail)}
-							bind:value={$store.values.player}
-							error={$store.errors.player_id}
-						/>
-					</div>
-
-					<Select
-						name="platform"
-						label="Platform"
-						bind:value={$store.values.platform}
-						error={$store.errors.platform}
-						disabled={!!$store.values.player}
-					>
-						<option value="">Any</option>
-						<option value="playfab">Playfab</option>
-					</Select>
-
-					<ServerSelector
-						name="server_id"
-						label="Server"
-						defaultOption={{ id: 0, name: "Any" }}
-						value={$store.values.server_id}
-						error={$store.errors.server_id}
-						on:change={({ detail }) =>
-							store.set({
-								...$store,
-								values: {
-									...$store.values,
-									server_id: detail,
-								},
-							})}
-					/>
-
-					<!-- <Select
-						name="type"
-						label="Infraction type"
-						bind:value={$store.values.type}
-						error={$store.errors.type}
-					>
-						<option value="">Any</option>
-						<option value="WARNING">Warning</option>
-						<option value="MUTE">Mute</option>
-						<option value="KICK">Kick</option>
-						<option value="BAN">Ban</option>
-					</Select>
-
 					<PlayerSelector
 						name="player"
 						label="Player"
@@ -405,38 +418,15 @@
 						error={$store.errors.player_id}
 					/>
 
-					<Select
+					<PlatformSelector
 						name="platform"
 						label="Platform"
+						defaultOption="Any"
+						defaultOptionValue=""
 						bind:value={$store.values.platform}
 						error={$store.errors.platform}
-						disabled={!!$store.values.player}
-					>
-						<option value="">Any</option>
-						<option value="playfab">Playfab</option>
-					</Select>
-
-					<Select
-						name="user"
-						label="User"
-						bind:value={$store.values.user_id}
-						error={$store.errors.user_id}
-					>
-						<option value="">Any</option>
-						{#each $users as user}
-							<option value={user.id}>{user.username}</option>
-						{/each}
-					</Select>
-
-					<Select
-						name="game"
-						label="Game"
-						bind:value={$store.values.game}
-						error={$store.errors.game}
-					>
-						<option value="">Any</option>
-						<option value="Mordhau">Mordhau</option>
-					</Select>
+						disabled={!!$store.values.player || !!$store.values.server_id}
+					/>
 
 					<ServerSelector
 						name="server_id"
@@ -444,15 +434,19 @@
 						defaultOption={{ id: 0, name: "Any" }}
 						value={$store.values.server_id}
 						error={$store.errors.server_id}
-						on:change={({ detail }) =>
-							store.set({
-								...$store,
-								values: {
-									...$store.values,
-									server_id: detail,
-								},
-							})}
-					/> -->
+						platform={$store.values.platform}
+						on:change={({ detail }) => onServerChange(detail)}
+					/>
+
+					<GameSelector
+						name="game"
+						label="Game"
+						defaultOption="Any"
+						defaultOptionValue=""
+						bind:value={$store.values.game}
+						error={$store.errors.game}
+						disabled={!!$store.values.server_id}
+					/>
 				</div>
 
 				<div class="button">
