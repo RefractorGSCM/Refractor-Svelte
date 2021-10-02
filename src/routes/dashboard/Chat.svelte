@@ -17,6 +17,7 @@
 		chatMessages,
 		loadRecentChatMessages,
 	} from "../../domain/chat/store"
+	import { allGames } from "../../domain/game/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import type { Server } from "../../domain/server/server.types"
 	import {
@@ -69,6 +70,21 @@
 
 		if (!found) {
 			errmsg.set("Server not found")
+			setLoading("chat", false)
+			return
+		}
+
+		// Check if the server's game has chat enabled
+		let chatEnabled = false
+		for (const g of $allGames) {
+			if (g.name === server.game) {
+				chatEnabled = g.chat_enabled
+				break
+			}
+		}
+
+		if (!chatEnabled) {
+			errmsg.set("Live-chat is not supported for this game.")
 			setLoading("chat", false)
 			return
 		}

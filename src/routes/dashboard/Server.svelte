@@ -21,6 +21,7 @@
 		FLAG_CREATE_KICK,
 		FLAG_CREATE_MUTE,
 		FLAG_CREATE_WARNING,
+		FLAG_READ_LIVE_CHAT,
 		FLAG_VIEW_PLAYER_RECORDS,
 	} from "../../permissions/permissions"
 	import BanModal from "../../components/Modals/BanModal.svelte"
@@ -32,9 +33,12 @@
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import queryString from "query-string"
+	import type { Game } from "../../domain/game/game.types"
+	import { allGames } from "../../domain/game/store"
 
 	export let id
 	let server: Server = null
+	let game: Game = null
 	let errmsg: string
 	let permissions = writable(null as BigInt)
 
@@ -70,6 +74,22 @@
 				server = s
 				break
 			}
+		}
+
+		// Get the game for this server
+		found = false
+		for (const g of $allGames) {
+			if (g.name === server.game) {
+				game = g
+				found = true
+				break
+			}
+		}
+
+		if (!found) {
+			errmsg = "Server's game not found"
+			setLoading("server", false)
+			return
 		}
 
 		// Get computed user permissions scoped to this server
@@ -133,6 +153,8 @@
 			selectedPlayerId = ""
 		}
 	}
+
+	$: console.log(game)
 </script>
 
 <Container>
@@ -141,7 +163,7 @@
 	{/if}
 
 	<div class="wrapper">
-		{#if server === null}
+		{#if server === null || game === null}
 			<Heading type="title">{errmsg}</Heading>
 		{:else if !$permissions}
 			<Heading type="title">Fetching permissions...</Heading>
@@ -163,9 +185,17 @@
 					</div>
 
 					<div class="buttons">
-						<Button on:click={() => navigate(`/server/${id}/chat`)}
-							>Open Chat</Button
-						>
+						{#if game.chat_enabled}
+							<PermissionCheck
+								permissions={$permissions}
+								allOf={[FLAG_READ_LIVE_CHAT]}
+							>
+								<Button on:click={() => navigate(`/server/${id}/chat`)}
+									>Open Chat</Button
+								>
+							</PermissionCheck>
+						{/if}
+
 						<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
 							<Button
 								on:click={() =>
@@ -353,7 +383,7 @@
 		}
 
 		.buttons {
-			margin-top: 2rem;
+			margin-top: 1rem;
 
 			@include respond-below(xxs) {
 				:global(.btn) {
