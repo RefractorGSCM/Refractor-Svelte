@@ -652,6 +652,8 @@
 				border-radius: var(--border-sm);
 				font-weight: bold;
 				background-color: var(--color-background1) !important;
+				height: 3rem;
+				margin-bottom: 0.5rem;
 
 				@include respond-below(sm) {
 					display: none;
