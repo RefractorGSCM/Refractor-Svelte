@@ -8,6 +8,8 @@
 	} from "svelte/internal"
 	import { writable } from "svelte/store"
 	import Heading from "../../components/Heading.svelte"
+	import PermissionCheck from "../../components/PermissionCheck.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { self } from "../../domain/auth/store"
 	import {
@@ -26,6 +28,7 @@
 	import {
 		checkFlag,
 		FLAG_READ_LIVE_CHAT,
+		FLAG_SEND_LIVE_CHAT,
 		FLAG_VIEW_SERVERS,
 		getFlag,
 	} from "../../permissions/permissions"
@@ -220,12 +223,14 @@
 					</div>
 				{/if}
 			</div>
-			<input
-				type="text"
-				class="chatbox"
-				placeholder="Enter a message and hit enter"
-				bind:value={message}
-			/>
+			<PermissionCheck permissions={$permissions} allOf={[FLAG_SEND_LIVE_CHAT]}>
+				<input
+					type="text"
+					class="chatbox"
+					placeholder="Enter a message and hit enter"
+					bind:value={message}
+				/>
+			</PermissionCheck>
 			<div class="legend">
 				<div>= you</div>
 				<div>= other users</div>
