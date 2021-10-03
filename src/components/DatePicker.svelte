@@ -81,6 +81,7 @@
 			<DatePicker
 				{styling}
 				time
+				date={{ date: value }}
 				on:open={() => {
 					hideDeselectBtn.set(true)
 				}}
