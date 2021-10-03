@@ -91,6 +91,7 @@
 	import PageSwitcher from "../../components/PageSwitcher.svelte"
 	import { truncate } from "../../utils/strings"
 	import { dateString } from "../../utils/date"
+	import { navigate } from "svelte-routing"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -384,7 +385,7 @@
 				<Heading>Search Infractions</Heading>
 			</div>
 
-			<form class="form" on:submit|preventDefault>
+			<form class="form" on:submit|preventDefault={search}>
 				<div class="main">
 					<div class="span-2">
 						<TextInput
@@ -520,9 +521,14 @@
 							</span>
 						</div>
 
-						<div class="name">
+						<a
+							href={`/player/${result.platform}/${result.player_id}`}
+							on:click|preventDefault={() =>
+								navigate(`/player/${result.platform}/${result.player_id}`)}
+							class="name"
+						>
 							<span class="mobile-label">Name: </span>{result.name}
-						</div>
+						</a>
 
 						<div class="message">
 							<span class="mobile-label">Message: </span>{truncate(
@@ -645,6 +651,16 @@
 				@include respond-below(sm) {
 					grid-template-columns: 1fr;
 					grid-template-rows: 1fr 1fr 1fr auto;
+				}
+
+				.name {
+					transition: all 0.1s;
+					cursor: pointer;
+					color: var(--color-text2);
+
+					&:hover {
+						color: var(--color-primary-light);
+					}
 				}
 			}
 
