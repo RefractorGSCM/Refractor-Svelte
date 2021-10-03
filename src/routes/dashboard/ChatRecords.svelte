@@ -83,7 +83,7 @@
 	import { allServers } from "../../domain/server/store"
 	import type { Server } from "../../domain/server/server.types"
 	import GameSelector from "../../components/GameSelector.svelte"
-	import { validate_each_argument } from "svelte/internal"
+	import { tick, validate_each_argument } from "svelte/internal"
 	import type { Game } from "../../domain/game/game.types"
 	import { allGames } from "../../domain/game/store"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
@@ -372,6 +372,24 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
+
+	async function onTimeClick(date: Date) {
+		date = new Date(date)
+
+		const startDate = Math.round(date.getTime() / 1000 - 2 * 60) // 2 minutes in the past from the provided date
+		const endDate = Math.round(date.getTime() / 1000 + 2 * 60) // 2 minutes into the future from the provided date
+
+		console.log(startDate, endDate)
+
+		store.set({
+			...$store,
+			values: {
+				...$store.values,
+				start_date: startDate,
+				end_date: endDate,
+			},
+		})
+	}
 </script>
 
 <Container>
@@ -512,7 +530,10 @@
 							<span class="mobile-label">ID: </span>{result.id}
 						</div>
 
-						<div class="lastseen">
+						<div
+							class="date-recorded"
+							on:click={() => onTimeClick(result.created_at)}
+						>
 							<span class="mobile-label">Date: </span><span class="date">
 								{dateString(new Date(result.created_at)).split(",")[0]}
 							</span>
@@ -654,6 +675,16 @@
 				}
 
 				.name {
+					transition: all 0.1s;
+					cursor: pointer;
+					color: var(--color-text2);
+
+					&:hover {
+						color: var(--color-primary-light);
+					}
+				}
+
+				.date-recorded {
 					transition: all 0.1s;
 					cursor: pointer;
 					color: var(--color-text2);
