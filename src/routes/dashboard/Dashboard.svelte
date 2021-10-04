@@ -29,6 +29,8 @@
 	import { getAllGames } from "../../domain/game/store"
 	import Chat from "./Chat.svelte"
 	import ChatRecords from "./ChatRecords.svelte"
+	import FlaggedWords from "./FlaggedWords.svelte"
+	import Settings from "./Settings.svelte"
 
 	onMount(async () => {
 		openWebsocketConnection()
@@ -106,21 +108,10 @@
 			<div class="bottom">
 				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
 					<div class="link">
-						<Link to="/groups">
+						<Link to="/settings">
 							<li>
-								<span class="fas fa-lock" />
-								<span>Manage Groups</span>
-							</li>
-						</Link>
-					</div>
-				</RequirePerms>
-
-				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
-					<div class="link">
-						<Link to="/users">
-							<li>
-								<span class="fas fa-users" />
-								<span>Manage Users</span>
+								<span class="fas fa-cog" />
+								<span>Admin Settings</span>
 							</li>
 						</Link>
 					</div>
@@ -129,8 +120,8 @@
 				<div class="link">
 					<a href={`${AUTH_ROOT}/k/settings`}>
 						<li>
-							<span class="fas fa-cog" />
-							<span>Settings</span>
+							<span class="fas fa-user-circle" />
+							<span>Account</span>
 						</li>
 					</a>
 				</div>
@@ -153,8 +144,9 @@
 	<main>
 		<Router {url}>
 			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
-				<Route path="/groups" component={Groups} />
-				<Route path="/users" component={Users} />
+				<Route path="/settings/groups" component={Groups} />
+				<Route path="/settings/users" component={Users} />
+				<Route path="/settings/chat/flagged" component={FlaggedWords} />
 			</RequirePerms>
 
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
@@ -203,6 +195,12 @@
 			<RequirePerms allOf={[FLAG_VIEW_CHAT_RECORDS]}>
 				<Route path="/records/chat">
 					<ChatRecords />
+				</Route>
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+				<Route path="/settings">
+					<Settings />
 				</Route>
 			</RequirePerms>
 		</Router>

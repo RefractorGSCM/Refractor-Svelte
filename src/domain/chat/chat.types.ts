@@ -9,3 +9,8 @@ export type ChatMessage = {
 	created_at?: Date
 	modified_at?: Date
 }
+
+export type FlaggedWord = {
+	id?: number
+	word: string
+}
