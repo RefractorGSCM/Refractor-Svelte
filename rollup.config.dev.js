@@ -88,12 +88,12 @@ export default {
 		production && terser(),
 
 		replace({
-				COMMUNITY_NAME: JSON.stringify("Refractor Test"),
-				KRATOS_ROOT: JSON.stringify("https://test.dmas.dev/kp"),
-				AUTH_ROOT: JSON.stringify("https://test.dmas.dev/k"),
-				API_ROOT: JSON.stringify("https://test.dmas.dev/api/v1"),
-				WS_ROOT: JSON.stringify("wss://test.dmas.dev/ws"),
-			}),
+			COMMUNITY_NAME: JSON.stringify("Refractor"),
+			KRATOS_ROOT: JSON.stringify("http://127.0.0.1:4433"),
+			AUTH_ROOT: JSON.stringify("http://127.0.0.1:4455"),
+			API_ROOT: JSON.stringify("http://127.0.0.1:4000/api/v1"),
+			WS_ROOT: JSON.stringify("ws://127.0.0.1:4000/ws"),
+		}),
 	],
 	watch: {
 		clearScreen: false,
