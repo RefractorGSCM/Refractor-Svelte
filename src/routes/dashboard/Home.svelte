@@ -26,85 +26,113 @@
 	async function deleteServer(id: number) {
 		await deactivateServer(id)
 	}
+
+	$: console.log($allServers, $allServers.length)
 </script>
 
 <Container>
-	<Heading type="title">Servers</Heading>
+	{#if $allServers && $allServers.length > 0}
+		<Heading type="title">Servers</Heading>
 
-	<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
-		<div class="add-button">
-			<CreateServerModal>
-				<div slot="trigger" let:open>
-					<Button on:click={open}>Add Server</Button>
-				</div>
-			</CreateServerModal>
-		</div>
-	</RequirePerms>
-
-	<div>
-		<div class="servers">
-			<div class="heading server">
-				<div class="server-info">
-					<div class="name">Name</div>
-					<div class="players">Players</div>
-					<div class="status">Status</div>
-				</div>
-				<div class="actions" />
-			</div>
-
-			{#each $allServers as server}
-				<div class="server">
-					<a
-						href={`/server/${server.id}`}
-						on:click|preventDefault={() => navigate(`/server/${server.id}`)}
-					>
-						<div class="server-info">
-							<div class="name">
-								<span class="icon fas fa-server" />{server.name}
-							</div>
-							<div class="players">{server.online_players.length}</div>
-							<div class="status">{server.status}</div>
-						</div>
-					</a>
-					<div class="actions">
-						<EditServerModal initialValues={server} serverId={server.id}>
-							<div slot="trigger" let:open>
-								<Button
-									color="success"
-									size="inline"
-									on:click={(e) => {
-										e.stopPropagation()
-										open()
-									}}>Edit</Button
-								>
-							</div>
-						</EditServerModal>
-
-						<DeleteModal
-							heading={`Deleting server: ${server.name}`}
-							message="Are you sure you wish to delete this server?"
-							on:submit={() => deleteServer(server.id)}
-						>
-							<div slot="trigger" let:open>
-								<Button
-									color="danger"
-									size="inline"
-									on:click={(e) => {
-										e.stopPropagation()
-										open()
-									}}>Delete</Button
-								>
-							</div>
-						</DeleteModal>
+		<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+			<div class="add-button">
+				<CreateServerModal>
+					<div slot="trigger" let:open>
+						<Button on:click={open}>Add Server</Button>
 					</div>
+				</CreateServerModal>
+			</div>
+		</RequirePerms>
+
+		<div>
+			<div class="servers">
+				<div class="heading server">
+					<div class="server-info">
+						<div class="name">Name</div>
+						<div class="players">Players</div>
+						<div class="status">Status</div>
+					</div>
+					<div class="actions" />
 				</div>
-			{/each}
+
+				{#each $allServers as server}
+					<div class="server">
+						<a
+							href={`/server/${server.id}`}
+							on:click|preventDefault={() => navigate(`/server/${server.id}`)}
+						>
+							<div class="server-info">
+								<div class="name">
+									<span class="icon fas fa-server" />{server.name}
+								</div>
+								<div class="players">{server.online_players.length}</div>
+								<div class="status">{server.status}</div>
+							</div>
+						</a>
+						<div class="actions">
+							<EditServerModal initialValues={server} serverId={server.id}>
+								<div slot="trigger" let:open>
+									<Button
+										color="success"
+										size="inline"
+										on:click={(e) => {
+											e.stopPropagation()
+											open()
+										}}>Edit</Button
+									>
+								</div>
+							</EditServerModal>
+
+							<DeleteModal
+								heading={`Deleting server: ${server.name}`}
+								message="Are you sure you wish to delete this server?"
+								on:submit={() => deleteServer(server.id)}
+							>
+								<div slot="trigger" let:open>
+									<Button
+										color="danger"
+										size="inline"
+										on:click={(e) => {
+											e.stopPropagation()
+											open()
+										}}>Delete</Button
+									>
+								</div>
+							</DeleteModal>
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
-	</div>
+	{:else}
+		<div class="no-servers">
+			<Heading type="title">No servers found</Heading>
+
+			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+				<p>Click the Add Server button to add your first server!</p>
+
+				<div class="add-button">
+					<CreateServerModal>
+						<div slot="trigger" let:open>
+							<Button on:click={open}>Add Server</Button>
+						</div>
+					</CreateServerModal>
+				</div>
+			</RequirePerms>
+		</div>
+	{/if}
 </Container>
 
 <style lang="scss">
 	@import "../../mixins/mixins.scss";
+
+	.no-servers {
+		min-height: 12rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		font-size: 1.6rem;
+	}
 
 	.add-button {
 		margin-top: 2rem;
