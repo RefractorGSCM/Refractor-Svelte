@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
@@ -30,15 +31,9 @@
 	import ChatRecords from "./ChatRecords.svelte"
 	import FlaggedWords from "./FlaggedWords.svelte"
 	import Settings from "./Settings.svelte"
-	import { errorToast } from "../../utils/toast";
 
 	onMount(async () => {
-		try {
-			openWebsocketConnection()
-		} catch (err) {
-			console.log(err)
-			errorToast("Could not open websocket connection.")
-		}
+		openWebsocketConnection()
 
 		await getAllGames()
 		await getAllServers()
