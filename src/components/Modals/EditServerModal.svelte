@@ -8,6 +8,7 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import GameSelector from "../GameSelector.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
@@ -233,13 +234,11 @@
 			</p>
 
 			<form class="form" on:submit|preventDefault={() => {}}>
-				<TextInput
+				<GameSelector
 					name="game"
-					autocomplete="off"
 					label="Game"
-					value={$store.values.game}
+					bind:value={$store.values.game}
 					error={$store.errors.game}
-					on:input={onChange}
 				/>
 
 				<TextInput
@@ -315,7 +314,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
-		width: 70rem;
+		width: auto;
 
 		.form {
 			margin-top: 1rem;
