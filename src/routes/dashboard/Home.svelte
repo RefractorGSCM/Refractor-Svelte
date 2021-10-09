@@ -106,7 +106,7 @@
 		</div>
 	{:else}
 		<div class="no-servers">
-			<Heading type="title">No servers found</Heading>
+			<Heading type="title">No servers have been added yet.</Heading>
 
 			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
 				<p>Click the Add Server button to add your first server!</p>
@@ -127,11 +127,14 @@
 	@import "../../mixins/mixins.scss";
 
 	.no-servers {
-		min-height: 12rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 		font-size: 1.6rem;
+
+		p {
+			margin-top: 1rem;
+		}
 	}
 
 	.add-button {

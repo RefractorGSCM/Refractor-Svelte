@@ -11,6 +11,7 @@
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
+	import GameSelector from "../GameSelector.svelte"
 	import Select from "../Select.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
@@ -165,16 +166,14 @@
 	<div slot="content">
 		<div class="content">
 			<form class="form" on:submit|preventDefault={() => {}}>
-				<Select
+				<GameSelector
 					name="game"
 					label="Game"
+					defaultOption="Select"
+					defaultOptionValue=""
 					bind:value={$store.values.game}
 					error={$store.errors.game}
-				>
-					<option value="">Select...</option>
-					<option value="Mordhau">Mordhau</option>
-					<option value="Minecraft">Minecraft</option>
-				</Select>
+				/>
 
 				<TextInput
 					name="name"
@@ -253,7 +252,7 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
-		width: 70rem;
+		width: auto;
 
 		.form {
 			margin-top: 1rem;
