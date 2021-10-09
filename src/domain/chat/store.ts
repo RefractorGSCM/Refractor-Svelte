@@ -44,6 +44,8 @@ export async function createFlaggedWord(
 	word: FlaggedWord,
 ): Promise<FlaggedWord> {
 	try {
+		word.word = word.word.trim()
+
 		const { data } = await api.createFlaggedWord(word)
 
 		return data.payload as FlaggedWord
@@ -59,6 +61,8 @@ export async function updateFlaggedWord(
 	word: FlaggedWord,
 ): Promise<FlaggedWord> {
 	try {
+		word.word = word.word.trim()
+
 		const { data } = await api.updateFlaggedWord(id, word)
 
 		return data.payload as FlaggedWord
