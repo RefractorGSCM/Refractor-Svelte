@@ -1,31 +1,37 @@
 <script>
-	import { Link } from "svelte-routing"
+	import { Link, navigate } from "svelte-routing"
 	import Heading from "../../components/Heading.svelte"
 	import Container from "./components/Container.svelte"
 </script>
 
 <Container>
 	<div class="settings">
-		<Link to="/settings/groups">
-			<div class="card groups">
-				<span class="fas fa-lock" />
-				<Heading type="subtitle">Groups</Heading>
-			</div>
-		</Link>
+		<a
+			class="card groups"
+			href="/settings/groups"
+			on:click|preventDefault={() => navigate("/settings/groups")}
+		>
+			<span class="fas fa-lock" />
+			<Heading type="subtitle">Groups</Heading>
+		</a>
 
-		<Link to="/settings/users">
-			<div class="card users">
-				<span class="fas fa-users" />
-				<Heading type="subtitle">Users</Heading>
-			</div>
-		</Link>
+		<a
+			class="card users"
+			href="/settings/users"
+			on:click|preventDefault={() => navigate("/settings/users")}
+		>
+			<span class="fas fa-users" />
+			<Heading type="subtitle">Users</Heading>
+		</a>
 
-		<Link to="/settings/chat/flagged">
-			<div class="card flagged-words">
-				<span class="fas fa-comments" />
-				<Heading type="subtitle">Flagged Words</Heading>
-			</div>
-		</Link>
+		<a
+			class="card flagged-words"
+			href="/settings/chat/flagged"
+			on:click|preventDefault={() => navigate("/settings/chat/flagged")}
+		>
+			<span class="fas fa-comments" />
+			<Heading type="subtitle">Flagged Words</Heading>
+		</a>
 	</div>
 </Container>
 
@@ -38,12 +44,12 @@
 		.card {
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
+			justify-content: space-around;
 			align-items: center;
 			border-radius: var(--border-md);
 			background-color: var(--color-background2);
-			width: 40rem;
-			height: 40rem;
+			width: clamp(20rem, 20vw, 33.3vw);
+			height: clamp(20rem, 20vw, 33.3vw);
 			margin: 2rem;
 			padding: 12rem 0;
 			cursor: pointer;
@@ -52,6 +58,7 @@
 
 			span {
 				font-size: 8rem;
+				margin-bottom: 2rem;
 			}
 
 			&:hover {
