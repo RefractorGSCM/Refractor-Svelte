@@ -34,7 +34,9 @@
 			return
 		}
 
-		await deleteFlaggedWord(word.id)
+		if (word.id) {
+			await deleteFlaggedWord(word.id)
+		}
 
 		words.update((current) => {
 			current.splice(idx, 1)
@@ -47,7 +49,7 @@
 	async function handleWordChange(idx: number) {
 		const word = $words[idx]
 
-		if (!word) {
+		if (!word || word.word.trim().length === 0) {
 			return
 		}
 
@@ -89,13 +91,17 @@
 						bind:value={word.word}
 						on:blur={() => handleWordChange(idx)}
 					/>
-					<div class="button-submit" on:click={() => handleWordChange(idx)}>
+					<button
+						class="button button-submit"
+						on:click={() => handleWordChange(idx)}
+						class:disabled={word.word.trim().length === 0}
+					>
 						<span class="fas fa-check" />
-					</div>
+					</button>
 
-					<div class="button-delete" on:click={() => deleteWord(idx)}>
+					<button class="button button-delete" on:click={() => deleteWord(idx)}>
 						<span class="fas fa-trash-alt" />
-					</div>
+					</button>
 				</div>
 			{/each}
 
@@ -142,7 +148,7 @@
 				font-size: 1.6rem;
 			}
 
-			.button-submit {
+			.button {
 				display: grid;
 				place-items: center;
 				width: 4rem;
@@ -150,30 +156,36 @@
 				color: var(--color-text-muted);
 				font-size: 1.6rem;
 				transition: 0.2s all;
-				border-left: 1px solid var(--color-accent);
 				cursor: pointer;
+				background: none;
+				border: none;
 
-				&:hover {
-					background-color: var(--color-success);
-					color: var(--color-text1);
+				&-submit {
+					border-left: 1px solid var(--color-accent);
+
+					&:hover {
+						background-color: var(--color-success);
+						color: var(--color-text1);
+					}
+				}
+
+				&-delete {
+					border-top-right-radius: var(--border-sm);
+					border-bottom-right-radius: var(--border-sm);
+
+					&:hover {
+						background-color: var(--color-danger);
+						color: var(--color-text1);
+					}
 				}
 			}
 
-			.button-delete {
-				display: grid;
-				place-items: center;
-				width: 4rem;
-				height: 100%;
-				color: var(--color-text-muted);
-				font-size: 1.6rem;
-				border-top-right-radius: var(--border-sm);
-				border-bottom-right-radius: var(--border-sm);
-				transition: 0.2s all;
-				cursor: pointer;
+			.button.disabled {
+				cursor: unset;
 
 				&:hover {
-					background-color: var(--color-danger);
-					color: var(--color-text1);
+					background: none;
+					color: var(--color-text-muted);
 				}
 			}
 		}
