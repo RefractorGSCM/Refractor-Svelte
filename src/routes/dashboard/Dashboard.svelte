@@ -16,7 +16,7 @@
 	} from "../../permissions/permissions"
 	import PlayerRecords from "./PlayerRecords.svelte"
 	import Groups from "./Groups.svelte"
-	import Home from "./Home.svelte"
+	import Servers from "./Servers.svelte"
 	import Infraction from "./Infraction.svelte"
 	import InfractionRecords from "./InfractionRecords.svelte"
 	import Player from "./Player.svelte"
@@ -30,7 +30,8 @@
 	import ChatRecords from "./ChatRecords.svelte"
 	import FlaggedWords from "./FlaggedWords.svelte"
 	import Settings from "./Settings.svelte"
-	import { errorToast } from "../../utils/toast";
+	import { errorToast } from "../../utils/toast"
+	import Stats from "./Stats.svelte"
 
 	onMount(async () => {
 		try {
@@ -66,9 +67,18 @@
 
 	<div class="menu">
 		<ul>
+			<div class="link">
+				<Link to="/">
+					<li>
+						<span class="fas fa-home" />
+						<span>Dashboard</span>
+					</li>
+				</Link>
+			</div>
+
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
 				<div class="link">
-					<Link to="/">
+					<Link to="/servers">
 						<li>
 							<span class="fas fa-server" />
 							<span>Servers</span>
@@ -155,6 +165,7 @@
 			</RequirePerms>
 
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
+				<Route path="/servers" component={Servers} />
 				<Route path="/server/:id" let:params>
 					<Server id={params.id} />
 				</Route>
@@ -167,10 +178,6 @@
 				<Route path="/player/:platform/:id" let:params>
 					<Player platform={params.platform} id={params.id} />
 				</Route>
-			</RequirePerms>
-
-			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
-				<Route path="/" component={Home} />
 			</RequirePerms>
 
 			<Route path="/server/:id/chat" let:params>
@@ -208,6 +215,8 @@
 					<Settings />
 				</Route>
 			</RequirePerms>
+
+			<Route path="/" component={Stats} />
 		</Router>
 	</main>
 </div>
