@@ -4,4 +4,5 @@ export type Stats = {
 	unique_players_last_day?: number
 	total_infractions?: number
 	new_infractions_last_day?: number
+	total_chat_messages?: number
 }

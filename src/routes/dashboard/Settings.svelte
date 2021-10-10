@@ -36,6 +36,8 @@
 </Container>
 
 <style lang="scss">
+	@import "../../mixins/mixins.scss";
+
 	.settings {
 		display: flex;
 		justify-content: center;
