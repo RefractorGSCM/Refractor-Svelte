@@ -93,6 +93,7 @@
 
 		&-warning {
 			background-color: var(--color-warning);
+			color: var(--color-text3);
 
 			&:hover {
 				background-color: var(--color-warning-light);
