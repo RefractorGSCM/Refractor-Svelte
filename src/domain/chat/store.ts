@@ -84,3 +84,15 @@ export async function deleteFlaggedWord(id: number): Promise<FlaggedWord> {
 		return null
 	}
 }
+
+export async function getRecentFlaggedMessages(): Promise<ChatMessage[]> {
+	try {
+		const { data } = await api.getRecentFlaggedMessages()
+
+		return data.payload as ChatMessage[]
+	} catch (err) {
+		errorToast("Could not get recently flagged messages")
+
+		return null
+	}
+}
