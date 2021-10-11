@@ -27,10 +27,15 @@ const deleteFlaggedWord = (id: number) => {
 	})
 }
 
+const getRecentFlaggedMessages = () => {
+	return axios.get(`${API_ROOT}/chat/recent/flagged`, { withCredentials: true })
+}
+
 export default {
 	getRecentChatMessages,
 	getFlaggedWords,
 	createFlaggedWord,
 	updateFlaggedWord,
 	deleteFlaggedWord,
+	getRecentFlaggedMessages,
 }

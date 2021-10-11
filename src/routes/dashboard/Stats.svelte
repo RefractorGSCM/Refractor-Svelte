@@ -1,15 +1,22 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { writable } from "svelte/store"
+	import Button from "../../components/Button.svelte"
 
 	import Heading from "../../components/Heading.svelte"
 	import { self } from "../../domain/auth/store"
+	import type { ChatMessage } from "../../domain/chat/chat.types"
+	import { getRecentFlaggedMessages } from "../../domain/chat/store"
 	import type { Stats } from "../../domain/stats/stats.types"
 	import { getStats } from "../../domain/stats/store"
+	import Chat from "./Chat.svelte"
 	import Container from "./components/Container.svelte"
 
 	let stats: Stats
+	let flaggedMessages = writable([] as ChatMessage[])
 	onMount(async () => {
 		stats = await getStats()
+		flaggedMessages.set(await getRecentFlaggedMessages())
 	})
 
 	function getTimeWord() {
@@ -66,6 +73,27 @@
 			<div class="note">total</div>
 		</div>
 	</div>
+
+	{#if $flaggedMessages.length > 0}
+		<div class="flagged-messages">
+			<div class="heading">
+				<Heading type="subtitle">Flagged Messages</Heading>
+			</div>
+
+			<div class="list">
+				{#each $flaggedMessages as chat}
+					<div class="message">
+						<div class="player">{chat.name}</div>
+						<div class="msg">{chat.message}</div>
+						<div class="actions">
+							<Button size="inline">Unflag</Button>
+							<Button size="inline" color="warning">Moderate</Button>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </Container>
 
 <style lang="scss">
@@ -140,6 +168,50 @@
 				@include respond-below(xl) {
 					font-size: 1.2rem;
 					bottom: 1rem;
+				}
+			}
+		}
+	}
+
+	.flagged-messages {
+		.heading {
+			margin-top: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.list {
+			.message {
+				min-height: 2rem;
+				font-size: 1.6rem;
+				display: grid;
+				grid-template-columns: 1fr 3fr auto;
+				grid-template-rows: minmax(2rem 4rem);
+				width: 100%;
+				align-items: center;
+				padding: 0.5rem 2rem;
+
+				&:nth-child(odd) {
+					background-color: var(--color-background2);
+				}
+
+				.player {
+				}
+
+				.msg {
+				}
+
+				.actions {
+					display: flex;
+
+					:global(.btn:first-child) {
+						border-top-right-radius: 0;
+						border-bottom-right-radius: 0;
+					}
+
+					:global(.btn:last-child) {
+						border-top-left-radius: 0;
+						border-bottom-left-radius: 0;
+					}
 				}
 			}
 		}
