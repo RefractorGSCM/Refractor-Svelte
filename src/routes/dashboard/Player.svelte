@@ -193,7 +193,7 @@
 	{:else}
 		<SinglePane>
 			<div class="main-heading">
-				<Heading type="title">Player</Heading>
+				<Heading type="title">{$player?.name}</Heading>
 				<div class="status">
 					<div class="status__item">
 						<span>Platform:</span>{platform}
