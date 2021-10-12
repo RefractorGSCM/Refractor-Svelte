@@ -6,4 +6,5 @@ interface ImportMetaEnv {
 	VITE_KRATOS_ROOT: string
 	VITE_AUTH_ROOT: string
 	VITE_API_ROOT: string
+	VITE_WEBSOCKET_ROOT: string
 }
