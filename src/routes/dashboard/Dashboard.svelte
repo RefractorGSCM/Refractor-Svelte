@@ -46,7 +46,9 @@
 	})
 
 	function logout() {
-		window.location.replace(`${KRATOS_ROOT}/self-service/browser/flows/logout`)
+		window.location.replace(
+			`${import.meta.env.VITE_KRATOS_ROOT}/self-service/browser/flows/logout`,
+		)
 	}
 
 	let showAvatarMenu = false
@@ -133,7 +135,7 @@
 				</RequirePerms>
 
 				<div class="link">
-					<a href={`${AUTH_ROOT}/k/settings`}>
+					<a href={`${import.meta.env.VITE_AUTH_ROOT}/k/settings`}>
 						<li>
 							<span class="fas fa-user-circle" />
 							<span>Account</span>
@@ -147,7 +149,7 @@
 
 <div class="content">
 	<header>
-		<div class="brand-name">{COMMUNITY_NAME}</div>
+		<div class="brand-name">{import.meta.env.VITE_COMMUNITY_NAME}</div>
 
 		<div class="right">
 			<div><NameDisplay userId={$self.id}>{$self.username}</NameDisplay></div>

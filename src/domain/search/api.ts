@@ -5,6 +5,8 @@ import type {
 	PlayerSearchBody,
 } from "./search.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const searchPlayers = (body: PlayerSearchBody) => {
 	return axios.post(`${API_ROOT}/search/players`, body, {
 		withCredentials: true,

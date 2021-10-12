@@ -3,7 +3,7 @@
 	import Heading from "../components/Heading.svelte"
 
 	function redirectToRecovery() {
-		window.location.replace(`${AUTH_ROOT}/k/verify`)
+		window.location.replace(`${import.meta.env.VITE_AUTH_ROOT}/k/verify`)
 	}
 </script>
 
@@ -25,7 +25,11 @@
 		</div>
 
 		<div>
-			<a href={`${KRATOS_ROOT}/self-service/browser/flows/logout`}>Log out</a>
+			<a
+				href={`${
+					import.meta.env.VITE_KRATOS_ROOT
+				}/self-service/browser/flows/logout`}>Log out</a
+			>
 		</div>
 	</div>
 </div>

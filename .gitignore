@@ -1,7 +1,5 @@
 /node_modules/
-/public/build/
-
+/dist/
+/.vscode/
 .DS_Store
-
-# Ignore production rollup config
-./rollup.config.js
+.env

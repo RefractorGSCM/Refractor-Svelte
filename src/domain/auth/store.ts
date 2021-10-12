@@ -1,4 +1,4 @@
-import { Writable, writable } from "svelte/store"
+import { writable } from "svelte/store"
 import {
 	checkFlag,
 	FLAG_ADMINISTRATOR,
@@ -9,13 +9,13 @@ import { errorToast } from "../../utils/toast"
 import type { User } from "../user/user.types"
 import api from "./api"
 
-export const isAuthenticated: Writable<boolean> = writable(false)
-export const needsActivation: Writable<boolean> = writable(false)
-export const isDeactivated: Writable<boolean> = writable(false)
+export const isAuthenticated = writable(false)
+export const needsActivation = writable(false)
+export const isDeactivated = writable(false)
 export const session = writable(null)
-export const self: Writable<User> = writable(null)
-export const isSuperAdmin: Writable<boolean> = writable(false)
-export const isAdmin: Writable<boolean> = writable(false)
+export const self = writable(null as User)
+export const isSuperAdmin = writable(false)
+export const isAdmin = writable(false)
 
 export async function checkAuth(): Promise<boolean> {
 	try {

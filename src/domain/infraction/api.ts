@@ -7,6 +7,8 @@ import type {
 	UpdateInfractionParams,
 } from "./infraction.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const createWarning = (serverId: number, data: CreateWarningParams) => {
 	return axios.post(`${API_ROOT}/infractions/warning/${serverId}`, data, {
 		withCredentials: true,

@@ -32,7 +32,7 @@ const toastOptions = {
 }
 
 export function openWebsocketConnection() {
-	socket = new WebSocket(`${WS_ROOT}`)
+	socket = new WebSocket(`${import.meta.env.VITE_WS_ROOT}`)
 
 	socket.addEventListener("open", () => {
 		if (tryingToReconnect) {

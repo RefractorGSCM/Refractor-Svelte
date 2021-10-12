@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { UserTraits } from "./user.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const getAllUsers = () => {
 	return axios.get(`${API_ROOT}/users/`, {
 		withCredentials: true,

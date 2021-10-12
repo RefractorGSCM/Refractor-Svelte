@@ -12,6 +12,7 @@
 	} from "../../domain/group/group.types"
 	import {
 		allGroups,
+		baseGroup,
 		baseGroupId,
 		getAllGroups,
 		getServerOverrides,
@@ -259,15 +260,21 @@
 		<DualPane id="groups-container">
 			<div slot="left-pane" class="groups-list">
 				<div class="groups">
-					{#each $groups as group}
-						<div
-							class="group"
-							style={`color: #${decimalToHex(group.color)}`}
-							on:click={() => switchGroups(group)}
-						>
-							{group.name}
-						</div>
-					{/each}
+					{#if $groups.filter((g) => g.id !== baseGroupId).length > 0}
+						{#each $groups as group}
+							{#if group.id !== baseGroupId}
+								<div
+									class="group"
+									style={`color: #${decimalToHex(group.color)}`}
+									on:click={() => switchGroups(group)}
+								>
+									{group.name}
+								</div>
+							{/if}
+						{/each}
+					{:else}
+						<p>No custom groups found.</p>
+					{/if}
 				</div>
 			</div>
 
