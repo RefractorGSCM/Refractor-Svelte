@@ -20,7 +20,16 @@
 	let words = writable([] as FlaggedWord[])
 
 	onMount(async () => {
-		words.set(await getFlaggedWords())
+		let fetchedWords = await getFlaggedWords()
+		fetchedWords = fetchedWords.sort((f1, f2) => {
+			// sort words alphabetically
+			let word1 = f1.word.toUpperCase()
+			let word2 = f2.word.toUpperCase()
+
+			return word1 < word2 ? -1 : word1 > word2 ? 1 : 0
+		})
+
+		words.set(fetchedWords)
 	})
 
 	function addWord() {
@@ -77,33 +86,38 @@
 	</div>
 
 	<SinglePane>
-		<div class="flagged-words">
+		<div class="wrapper">
 			<div class="intro">
 				Click the Add button to add a new word. Chat messages containing a word
 				in this list will be marked as flagged.
 			</div>
 
-			{#each $words as word, idx}
-				<div class="word">
-					<input
-						type="text"
-						placeholder="Flagged Word"
-						bind:value={word.word}
-						on:blur={() => handleWordChange(idx)}
-					/>
-					<button
-						class="button button-submit"
-						on:click={() => handleWordChange(idx)}
-						class:disabled={word.word.trim().length === 0}
-					>
-						<span class="fas fa-check" />
-					</button>
+			<div class="flagged-words">
+				{#each $words as word, idx}
+					<div class="word">
+						<input
+							type="text"
+							placeholder="Flagged Word"
+							bind:value={word.word}
+							on:blur={() => handleWordChange(idx)}
+						/>
+						<button
+							class="button button-submit"
+							on:click={() => handleWordChange(idx)}
+							class:disabled={word.word.trim().length === 0}
+						>
+							<span class="fas fa-check" />
+						</button>
 
-					<button class="button button-delete" on:click={() => deleteWord(idx)}>
-						<span class="fas fa-trash-alt" />
-					</button>
-				</div>
-			{/each}
+						<button
+							class="button button-delete"
+							on:click={() => deleteWord(idx)}
+						>
+							<span class="fas fa-trash-alt" />
+						</button>
+					</div>
+				{/each}
+			</div>
 
 			<div class="add-btn">
 				<Button on:click={addWord}>Add</Button>
@@ -117,15 +131,25 @@
 		margin-bottom: 2rem;
 	}
 
-	.flagged-words {
+	.wrapper {
 		display: flex;
 		flex-direction: column;
-		width: clamp(40vw, 60vw, 50rem);
-		min-height: clamp(30vh, 50rem, 60vh);
 
 		.intro {
 			margin-bottom: 2rem;
 		}
+
+		.add-btn {
+			margin-top: 1rem;
+		}
+	}
+
+	.flagged-words {
+		display: grid;
+		flex-direction: column;
+		grid-template-columns: 1fr 1fr;
+		column-gap: 1rem;
+		row-gap: 1rem;
 
 		.word {
 			display: flex;
@@ -133,7 +157,6 @@
 			background-color: var(--color-background1);
 			border: 1px solid var(--color-accent);
 			border-radius: var(--border-sm);
-			margin-bottom: 1rem;
 
 			&:first-child {
 				border-top: 1px solid var(--color-accent);
