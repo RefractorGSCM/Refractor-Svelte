@@ -1,5 +1,5 @@
 import { time_ranges_to_array } from "svelte/internal"
-import { Writable, writable } from "svelte/store"
+import { writable } from "svelte/store"
 import { registerPermissions } from "../../permissions/permissions"
 import { sortAsc } from "../../utils/sorting"
 import { errorToast, successToast } from "../../utils/toast"
@@ -13,8 +13,8 @@ import type {
 	ServerOverrides,
 } from "./group.types"
 
-export const allGroups: Writable<Group[]> = writable([])
-const permissions: Writable<Permission[]> = writable([])
+export const allGroups = writable([] as Group[])
+const permissions = writable([] as Permission[])
 export let baseGroup: Group = null
 export const baseGroupId = -1
 const userPrimaryGroups = {} as { [key: string]: Group }

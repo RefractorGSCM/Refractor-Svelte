@@ -6,6 +6,8 @@ import type {
 	ServerOverrides,
 } from "./group.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const getAllGroups = () => {
 	return axios.get(`${API_ROOT}/groups/`, { withCredentials: true })
 }

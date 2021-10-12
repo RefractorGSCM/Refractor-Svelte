@@ -1,7 +1,9 @@
 import axios from "axios"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const getSession = () => {
-	return axios.get(`${KRATOS_ROOT}/sessions/whoami`, {
+	return axios.get(`${import.meta.env.VITE_KRATOS_ROOT}/sessions/whoami`, {
 		withCredentials: true,
 	})
 }

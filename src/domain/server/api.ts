@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { CreateServerParams, UpdateServerParams } from "./server.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const getServers = () => {
 	return axios.get(`${API_ROOT}/servers/`, { withCredentials: true })
 }

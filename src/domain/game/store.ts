@@ -1,10 +1,10 @@
-import { Writable, writable } from "svelte/store"
+import { writable } from "svelte/store"
 import { errorToast } from "../../utils/toast"
 import api from "./api"
 import type { Game } from "./game.types"
 
-export const allGames: Writable<Game[]> = writable([])
-export const allPlatforms: Writable<string[]> = writable([])
+export const allGames = writable([] as Game[])
+export const allPlatforms = writable([] as string[])
 
 export async function getAllGames(): Promise<Game[]> {
 	try {

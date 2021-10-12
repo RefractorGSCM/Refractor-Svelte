@@ -28,7 +28,7 @@
 		await checkAuth()
 
 		if (!$isAuthenticated && !$needsActivation) {
-			window.location.replace(`${AUTH_ROOT}/k/login`)
+			window.location.replace(`${import.meta.env.VITE_AUTH_ROOT}/k/login`)
 			return
 		}
 

@@ -20,7 +20,6 @@
 		NewGroupParams,
 	} from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
-	import type { Writable } from "svelte/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
@@ -59,10 +58,12 @@
 	let previousGroup: Group = null
 	let currentGroup: Group = null
 	let currentPermissions = writable([])
-	let errors: Writable<{
-		name?: string
-		color?: string
-	}> = writable({})
+	let errors = writable(
+		{} as {
+			name?: string
+			color?: string
+		},
+	)
 	const permissions = getAllPermissions()
 
 	function dragstart(e, index: number) {

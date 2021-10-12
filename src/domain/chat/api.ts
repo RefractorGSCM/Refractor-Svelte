@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { FlaggedWord } from "./chat.types"
 
+const API_ROOT = import.meta.env.VITE_API_ROOT
+
 const getRecentChatMessages = (serverId: number, count: number) => {
 	return axios.get(`${API_ROOT}/chat/recent/${serverId}?count=${count}`, {
 		withCredentials: true,
