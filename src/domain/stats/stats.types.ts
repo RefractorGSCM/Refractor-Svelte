@@ -6,4 +6,5 @@ export type Stats = {
 	new_infractions_last_day?: number
 	total_chat_messages?: number
 	total_flagged_chat_messages?: number
+	new_chat_messages_last_day?: number
 }

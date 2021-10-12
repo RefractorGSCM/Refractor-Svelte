@@ -34,6 +34,19 @@
 
 		return "day"
 	}
+
+	let flaggedMessageCountLabelColor = "inherit;"
+	$: {
+		if (!stats) {
+			flaggedMessageCountLabelColor = "inherit"
+		} else if (stats.total_flagged_chat_messages < 50) {
+			flaggedMessageCountLabelColor = "var(--color-success)"
+		} else if (stats.total_flagged_chat_messages < 150) {
+			flaggedMessageCountLabelColor = "var(--color-warning)"
+		} else {
+			flaggedMessageCountLabelColor = "var(--color-danger)"
+		}
+	}
 </script>
 
 <Container>
@@ -73,8 +86,15 @@
 				<div class="label">Chat Messages</div>
 				<div class="note">total</div>
 			</div>
+			<div class="stat new-chatmessages">
+				<div class="count">{stats?.new_chat_messages_last_day}</div>
+				<div class="label">New Chat Messages</div>
+				<div class="note">in the last 24 hours</div>
+			</div>
 			<div class="stat total-flaggedmessages">
-				<div class="count">{stats?.total_flagged_chat_messages}</div>
+				<div class="count" style={`color: ${flaggedMessageCountLabelColor};`}>
+					{stats?.total_flagged_chat_messages}
+				</div>
 				<div class="label">Flagged Messages</div>
 				<div class="note">pending moderation</div>
 			</div>
@@ -116,7 +136,7 @@
 
 	.stats {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 		column-gap: 2rem;
 		row-gap: 2rem;
 
