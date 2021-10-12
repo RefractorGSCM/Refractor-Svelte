@@ -7,6 +7,10 @@ export const chatMessages = writable({} as { [key: number]: ChatMessage[] })
 
 export function addChatMessage(serverID: number, msg: ChatMessage) {
 	chatMessages.update((current) => {
+		if (!current[serverID]) {
+			current[serverID] = []
+		}
+
 		current[serverID].push(msg)
 		return current
 	})
