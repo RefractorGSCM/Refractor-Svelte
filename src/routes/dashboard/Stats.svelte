@@ -169,7 +169,7 @@
 			position: relative;
 			padding: 2.5rem 1rem 3.5rem 1rem;
 			background-color: var(--color-background2);
-			border-radius: var(--border-sm);
+			border-radius: var(--border-md);
 			display: flex;
 			flex-direction: column;
 			align-items: center;
