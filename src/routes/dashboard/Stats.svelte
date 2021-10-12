@@ -41,43 +41,50 @@
 		<Heading type="title">Good {getTimeWord()}, {$self.username}.</Heading>
 	</div>
 
-	<div class="stats">
-		<div class="stat total-players">
-			<div class="count">{stats?.total_players}</div>
-			<div class="label">Players</div>
-			<div class="note">total</div>
-		</div>
-		<div class="stat new-players">
-			<div class="count">{stats?.new_players_last_day}</div>
-			<div class="label">New Players</div>
-			<div class="note">in the last 24 hours</div>
-		</div>
-		<div class="stat unique-players">
-			<div class="count">{stats?.unique_players_last_day}</div>
-			<div class="label">Unique Players</div>
-			<div class="note">in the last 24 hours</div>
-		</div>
-		<div class="stat total-infractions">
-			<div class="count">{stats?.total_infractions}</div>
-			<div class="label">Infractions</div>
-			<div class="note">total</div>
-		</div>
-		<div class="stat new-infractions">
-			<div class="count">{stats?.new_infractions_last_day}</div>
-			<div class="label">New Infractions</div>
-			<div class="note">in the last 24 hours</div>
-		</div>
-		<div class="stat total-chatmessages">
-			<div class="count">{stats?.total_chat_messages}</div>
-			<div class="label">Chat Messages</div>
-			<div class="note">total</div>
+	<div class="stats-wrapper">
+		<div class="stats">
+			<div class="stat total-players">
+				<div class="count">{stats?.total_players}</div>
+				<div class="label">Players</div>
+				<div class="note">total</div>
+			</div>
+			<div class="stat new-players">
+				<div class="count">{stats?.new_players_last_day}</div>
+				<div class="label">New Players</div>
+				<div class="note">in the last 24 hours</div>
+			</div>
+			<div class="stat unique-players">
+				<div class="count">{stats?.unique_players_last_day}</div>
+				<div class="label">Unique Players</div>
+				<div class="note">in the last 24 hours</div>
+			</div>
+			<div class="stat total-infractions">
+				<div class="count">{stats?.total_infractions}</div>
+				<div class="label">Infractions</div>
+				<div class="note">total</div>
+			</div>
+			<div class="stat new-infractions">
+				<div class="count">{stats?.new_infractions_last_day}</div>
+				<div class="label">New Infractions</div>
+				<div class="note">in the last 24 hours</div>
+			</div>
+			<div class="stat total-chatmessages">
+				<div class="count">{stats?.total_chat_messages}</div>
+				<div class="label">Chat Messages</div>
+				<div class="note">total</div>
+			</div>
+			<div class="stat total-flaggedmessages">
+				<div class="count">{stats?.total_flagged_chat_messages}</div>
+				<div class="label">Flagged Messages</div>
+				<div class="note">pending moderation</div>
+			</div>
 		</div>
 	</div>
 
 	{#if $flaggedMessages.length > 0}
 		<div class="flagged-messages">
 			<div class="heading">
-				<Heading type="subtitle">Flagged Messages</Heading>
+				<Heading type="subtitle">Flagged Message Moderation</Heading>
 			</div>
 
 			<div class="list">
@@ -101,6 +108,10 @@
 
 	.heading {
 		margin-bottom: 3rem;
+	}
+
+	.stats-wrapper {
+		min-height: 50vh;
 	}
 
 	.stats {
