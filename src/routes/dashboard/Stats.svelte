@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MessageModeration from "../../components/Modals/MessageModeration.svelte"
 	import { onMount } from "svelte"
 	import { navigate } from "svelte-routing"
 	import { prevent_default } from "svelte/internal"
@@ -109,7 +110,13 @@
 				<Heading type="subtitle">Flagged Message Moderation</Heading>
 			</div>
 
-			<div class="list">
+			<MessageModeration>
+				<div slot="trigger" let:open>
+					<Button on:click={open}>Open Moderation Queue</Button>
+				</div>
+			</MessageModeration>
+
+			<!-- <div class="list">
 				{#each $flaggedMessages as chat}
 					<div class="message">
 						<a
@@ -127,7 +134,7 @@
 						</div>
 					</div>
 				{/each}
-			</div>
+			</div> -->
 		</div>
 	{/if}
 </Container>
