@@ -4,7 +4,7 @@
 	import Container from "./components/Container.svelte"
 </script>
 
-<Container>
+<Container style="max-height: unset;">
 	<div class="settings">
 		<a
 			class="card groups"
@@ -51,8 +51,8 @@
 			align-items: center;
 			border-radius: var(--border-md);
 			background-color: var(--color-background2);
-			width: clamp(20rem, 20vw, 33.3vw);
-			height: clamp(20rem, 20vw, 33.3vw);
+			width: clamp(25rem, 20vw, 33.3vw);
+			height: clamp(25rem, 20vw, 33.3vw);
 			margin: 2rem;
 			padding: 12rem 0;
 			cursor: pointer;
@@ -66,6 +66,16 @@
 
 			&:hover {
 				background-color: var(--color-background1);
+			}
+
+			@include respond-below(xs) {
+				width: 100%;
+				height: auto;
+				padding: 5rem;
+
+				span {
+					margin-bottom: 0;
+				}
 			}
 		}
 	}
