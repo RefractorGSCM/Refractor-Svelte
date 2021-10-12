@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { navigate } from "svelte-routing"
+	import { prevent_default } from "svelte/internal"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 
@@ -110,7 +112,14 @@
 			<div class="list">
 				{#each $flaggedMessages as chat}
 					<div class="message">
-						<div class="player">{chat.name}</div>
+						<a
+							class="player"
+							href={`/player/${chat.platform}/${chat.player_id}`}
+							on:click={(e) => {
+								e.preventDefault()
+								navigate(`/player/${chat.platform}/${chat.player_id}`)
+							}}>{chat.name}</a
+						>
 						<div class="msg">{chat.message}</div>
 						<div class="actions">
 							<Button size="inline">Unflag</Button>
@@ -226,6 +235,13 @@
 				}
 
 				.player {
+					color: var(--color-text2);
+					text-decoration: underline;
+					transition: all 0.2s;
+
+					&:hover {
+						color: var(--color-primary-light);
+					}
 				}
 
 				.msg {
