@@ -3,3 +3,7 @@ export type Game = {
 	platform: string
 	chat_enabled?: boolean
 }
+
+export type GameSettings = {
+	ban_command_pattern: string
+}

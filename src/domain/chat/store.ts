@@ -89,9 +89,12 @@ export async function deleteFlaggedWord(id: number): Promise<FlaggedWord> {
 	}
 }
 
-export async function getRecentFlaggedMessages(): Promise<ChatMessage[]> {
+export async function getRecentFlaggedMessages(
+	count: number,
+): Promise<ChatMessage[]> {
 	try {
-		const { data } = await api.getRecentFlaggedMessages()
+		console.log("Called")
+		const { data } = await api.getRecentFlaggedMessages(count)
 
 		return data.payload as ChatMessage[]
 	} catch (err) {
