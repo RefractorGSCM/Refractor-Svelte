@@ -257,7 +257,10 @@
 										on:submit={deactivateCurrentUser}
 									>
 										<div slot="trigger" let:open>
-											<Button color="danger" on:click={open}
+											<Button
+												color="danger"
+												on:click={open}
+												disabled={currentUser.id === $self.id}
 												>Deactivate Account</Button
 											>
 										</div>
