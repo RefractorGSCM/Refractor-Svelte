@@ -1,4 +1,6 @@
 <script>
+	import RequirePerms from "../../components/RequirePerms.svelte"
+	import { FLAG_SUPER_ADMIN } from "../../permissions/permissions"
 	import { Link, navigate } from "svelte-routing"
 	import Heading from "../../components/Heading.svelte"
 	import Container from "./components/Container.svelte"
@@ -32,6 +34,17 @@
 			<span class="fas fa-comments" />
 			<Heading type="subtitle">Flagged Words</Heading>
 		</a>
+
+		<RequirePerms allOf={[FLAG_SUPER_ADMIN]} adminBypass={false}>
+			<a
+				class="card game-settings"
+				href="/settings/games"
+				on:click|preventDefault={() => navigate("/settings/games")}
+			>
+				<span class="fas fa-gamepad" />
+				<Heading type="subtitle">Games</Heading>
+			</a>
+		</RequirePerms>
 	</div>
 </Container>
 

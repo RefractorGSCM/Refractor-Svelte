@@ -1,9 +1,25 @@
 <script lang="ts">
-	import { onMount } from "svelte"
-	import Button from "../Button.svelte"
-	import Modal from "./Modal.svelte"
+	import type { ChatMessage } from "../../domain/chat/chat.types"
+	import { getRecentFlaggedMessages } from "../../domain/chat/store"
 
-	onMount(async () => {})
+	import { onMount } from "svelte"
+	import { writable } from "svelte/store"
+	import Button from "../Button.svelte"
+	import Spinner from "../Spinner.svelte"
+	import Modal from "./Modal.svelte"
+	import { loading, setLoading } from "../../domain/loading/store"
+
+	let message = writable(null as ChatMessage)
+	onMount(async () => {
+		await getNextMessage()
+	})
+
+	async function getNextMessage() {
+		// setLoading("nextflaggedmessage", true)
+		const messages = await getRecentFlaggedMessages(1)
+		console.log("messages", messages[0])
+		// setLoading("nextflaggedmessage", false)
+	}
 
 	function cleanup() {}
 </script>
@@ -24,14 +40,18 @@
 			</div>
 
 			<div class="queue">
-				<div class="player"><span>Sent by:</span>player name</div>
+				{#if $loading["nextflaggedmessage"] || !$message}
+					<Spinner />
+				{:else}
+					<div class="player"><span>Sent by:</span>{$message.name}</div>
 
-				<div class="message">Lorem ipsum dolor sit amet consectetur</div>
+					<div class="message">{$message.message}</div>
 
-				<div class="queue-buttons">
-					<Button color="warning">Moderate</Button>
-					<Button color="primary">Unflag</Button>
-				</div>
+					<div class="queue-buttons">
+						<Button color="warning">Moderate</Button>
+						<Button color="primary">Unflag</Button>
+					</div>
+				{/if}
 			</div>
 
 			<div class="outro">
@@ -89,6 +109,7 @@
 	.queue {
 		margin-top: 2rem;
 		margin-bottom: 2rem;
+		position: relative;
 
 		.player {
 			display: flex;
