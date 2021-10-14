@@ -11,18 +11,19 @@
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^1.0.0-next.11",
 		"@tsconfig/svelte": "^2.0.1",
-		"svelte": "^3.37.0",
-		"svelte-check": "^2.1.0",
-		"svelte-preprocess": "^4.7.2",
-		"tslib": "^2.2.0",
-		"typescript": "^4.3.2",
-		"vite": "^2.6.4",
+		"@zerodevx/svelte-toast": "^0.4.0",
 		"prettier": "^2.3.1",
 		"prettier-plugin-svelte": "^2.3.0",
 		"sass": "^1.34.1",
-		"yup": "^0.32.9",
+		"svelte": "^3.37.0",
+		"svelte-check": "^2.1.0",
+		"svelte-collapsible": "^0.2.1",
+		"svelte-preprocess": "^4.7.2",
 		"svelte-routing": "^1.6.0",
-		"@zerodevx/svelte-toast": "^0.4.0"
+		"tslib": "^2.2.0",
+		"typescript": "^4.3.2",
+		"vite": "^2.6.4",
+		"yup": "^0.32.9"
 	},
 	"dependencies": {
 		"@beyonk/svelte-datepicker": "^11.0.2",

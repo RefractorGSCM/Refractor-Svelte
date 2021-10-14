@@ -9,6 +9,7 @@
 	import { openWebsocketConnection } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
+		FLAG_SUPER_ADMIN,
 		FLAG_VIEW_CHAT_RECORDS,
 		FLAG_VIEW_INFRACTION_RECORDS,
 		FLAG_VIEW_PLAYER_RECORDS,
@@ -32,6 +33,7 @@
 	import Settings from "./Settings.svelte"
 	import { errorToast } from "../../utils/toast"
 	import Stats from "./Stats.svelte"
+	import GameSettings from "./components/GameSettings.svelte"
 
 	onMount(async () => {
 		try {
@@ -164,6 +166,10 @@
 				<Route path="/settings/groups" component={Groups} />
 				<Route path="/settings/users" component={Users} />
 				<Route path="/settings/chat/flagged" component={FlaggedWords} />
+			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_SUPER_ADMIN]} adminBypass={false}>
+				<Route path="/settings/games" component={GameSettings} />
 			</RequirePerms>
 
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>

@@ -19,7 +19,7 @@
 	let flaggedMessages = writable([] as ChatMessage[])
 	onMount(async () => {
 		stats = await getStats()
-		flaggedMessages.set(await getRecentFlaggedMessages())
+		flaggedMessages.set(await getRecentFlaggedMessages(20))
 	})
 
 	function getTimeWord() {
