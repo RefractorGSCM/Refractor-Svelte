@@ -368,9 +368,9 @@
 		font-size: 1.4rem;
 		padding: 0 2rem;
 		padding-top: 2rem;
-		min-width: 40rem;
-		max-width: 100%;
+		width: 100%;
 		height: 100%;
+		min-height: 15rem;
 
 		.form {
 			width: 100%;

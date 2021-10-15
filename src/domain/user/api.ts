@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { UserTraits } from "./user.types"
+import type { UserLinkParams, UserTraits } from "./user.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 
@@ -39,6 +39,24 @@ const reactivateUser = (id: string) => {
 	})
 }
 
+const linkPlayer = (body: UserLinkParams) => {
+	return axios.post(`${API_ROOT}/users/link/player`, body, {
+		withCredentials: true,
+	})
+}
+
+const unlinkPlayer = (body: UserLinkParams) => {
+	return axios.post(`${API_ROOT}/users/unlink/player`, body, {
+		withCredentials: true,
+	})
+}
+
+const getLinkedPlayers = (userID: string) => {
+	return axios.get(`${API_ROOT}/users/link/player/${userID}`, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllUsers,
 	addUserGroup,
@@ -46,4 +64,7 @@ export default {
 	createUser,
 	deactivateUser,
 	reactivateUser,
+	linkPlayer,
+	unlinkPlayer,
+	getLinkedPlayers,
 }
