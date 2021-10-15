@@ -265,6 +265,32 @@
 											>
 										</div>
 									</DeleteModal>
+
+									<div class="linked-players">
+										<div class="heading">
+											<Heading>Linked Players</Heading>
+										</div>
+
+										<div class="list">
+											<div class="platform">
+												<div class="name">playfab</div>
+												<div class="players">
+													<div class="player">void</div>
+													<div class="player">void</div>
+													<div class="player">void</div>
+												</div>
+											</div>
+											<div class="platform">
+												<div class="name">mojang</div>
+												<div class="players">
+													<div class="player">snidduncfdswjuiidxwngini</div>
+													<div class="player">testtest</div>
+												</div>
+											</div>
+										</div>
+
+										<Button size="inline">Link Player</Button>
+									</div>
 								{:else if currentUser.meta && currentUser.meta.deactivated}
 									<p>
 										This user account is deactivated meaning that they currently
@@ -298,6 +324,41 @@
 
 <style lang="scss">
 	@import "../../mixins/mixins";
+
+	.linked-players {
+		max-width: inherit;
+
+		.heading {
+			margin-top: 2rem;
+		}
+
+		.list {
+			display: flex;
+			flex-direction: column;
+
+			.platform {
+				display: flex;
+				border-top: 2px solid var(--color-accent);
+				padding: 0.5rem 0;
+
+				.name {
+					color: var(--color-primary-light);
+					font-size: 1.4rem;
+					width: 10rem;
+				}
+
+				.players {
+					display: flex;
+					flex-direction: column;
+
+					.player {
+						text-decoration: underline;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
 
 	.users-list {
 		display: flex;
