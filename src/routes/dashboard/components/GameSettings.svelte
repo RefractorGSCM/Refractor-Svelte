@@ -91,7 +91,9 @@
 			</div>
 
 			<div class="placeholders">
-				<div>Available placeholders: {`{{PLAYER_ID}} {{PLAYER_NAME}}`}</div>
+				<div>
+					Available placeholders: {`{{PLAYER_ID}} {{PLAYER_NAME}} {{REASON}}`}
+				</div>
 
 				<div>All durations are in minutes.</div>
 			</div>
