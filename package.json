@@ -29,7 +29,7 @@
 		"@beyonk/svelte-datepicker": "^11.0.2",
 		"@rollup/plugin-replace": "^2.4.2",
 		"axios": "^0.21.1",
-		"postcss": "^8.3.5",
+		"postcss": "^8.3.9",
 		"query-string": "^7.0.1",
 		"sirv-cli": "^1.0.0",
 		"svelte-color-picker": "^1.0.7"
