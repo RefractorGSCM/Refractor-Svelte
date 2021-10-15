@@ -16,3 +16,9 @@ export type UserTraits = {
 	email: string
 	username: string
 }
+
+export type UserLinkParams = {
+	player_id: string
+	platform: string
+	user_id: string
+}

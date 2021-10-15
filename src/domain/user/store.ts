@@ -1,9 +1,10 @@
 import { writable } from "svelte/store"
 import type { Group } from "../group/group.types"
 import api from "./api"
-import type { User, UserTraits } from "./user.types"
+import type { User, UserLinkParams, UserTraits } from "./user.types"
 import { toast } from "@zerodevx/svelte-toast"
 import { errorToast, successToast } from "../../utils/toast"
+import type { Player } from "../player/player.types"
 
 export const allUsers = writable([] as User[])
 
@@ -131,5 +132,43 @@ export async function reactivateUser(id: string) {
 		successToast("Account reactivated")
 	} catch (err) {
 		errorToast("Could not reactivate account")
+	}
+}
+
+export async function getLinkedPlayers(userID: string): Promise<Player[]> {
+	try {
+		const { data } = await api.getLinkedPlayers(userID)
+
+		return data.payload as Player[]
+	} catch (err) {
+		errorToast("Could not get linked players")
+	}
+}
+
+export async function linkUserPlayer(body: UserLinkParams): Promise<boolean> {
+	try {
+		await api.linkPlayer(body)
+
+		return true
+	} catch (err) {
+		const { data } = err.response
+
+		errorToast(data.message ? data.message : "Could not link player")
+
+		return false
+	}
+}
+
+export async function unlinkUserPlayer(body: UserLinkParams): Promise<boolean> {
+	try {
+		await api.unlinkPlayer(body)
+
+		return true
+	} catch (err) {
+		const { data } = err.response
+
+		errorToast(data.message ? data.message : "Could not unlink player")
+
+		return false
 	}
 }

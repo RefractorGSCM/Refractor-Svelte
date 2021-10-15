@@ -9,8 +9,11 @@
 		allUsers,
 		deactivateUser,
 		getAllUsers,
+		getLinkedPlayers,
+		linkUserPlayer,
 		reactivateUser,
 		removeUserGroup,
+		unlinkUserPlayer,
 	} from "../../domain/user/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import { writable } from "svelte/store"
@@ -34,6 +37,10 @@
 	import Flair from "../../components/Flair.svelte"
 	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
+	import PlayerSearchModal from "../../components/Modals/PlayerSearchModal.svelte"
+	import type { Player } from "../../domain/player/player.types"
+	import Player from "./Player.svelte"
+	import { navigate } from "svelte-routing"
 
 	const baseGroupId = -1
 
@@ -59,9 +66,12 @@
 	let currentUser: User = null
 	let currentUserIsAdmin = false
 	let currentUserIsSuperAdmin = false
+	let currentUserLinkedPlayers: {
+		[key: string]: Player[]
+	} = null
 	let currentUserPermissions
 
-	function selectUser(user: User) {
+	async function selectUser(user: User) {
 		previousUser = user
 		currentUser = user
 
@@ -74,6 +84,16 @@
 			user.permissions,
 			getFlag(FLAG_SUPER_ADMIN),
 		)
+
+		const linkedPlayers = await getLinkedPlayers(currentUser.id)
+		currentUserLinkedPlayers = {}
+		for (const player of linkedPlayers) {
+			if (!currentUserLinkedPlayers[player.platform]) {
+				currentUserLinkedPlayers[player.platform] = []
+			}
+
+			currentUserLinkedPlayers[player.platform].push(player)
+		}
 	}
 
 	async function toggleGroup({ target }, group: Group) {
@@ -117,6 +137,40 @@
 		await reactivateUser(currentUser.id)
 
 		users.set([...$allUsers])
+	}
+
+	async function linkPlayer(player) {
+		const success = await linkUserPlayer({
+			user_id: currentUser.id,
+			platform: player.platform,
+			player_id: player.id,
+		})
+
+		if (success) {
+			if (!currentUserLinkedPlayers[player.platform]) {
+				currentUserLinkedPlayers[player.platform] = []
+			}
+
+			currentUserLinkedPlayers[player.platform].push(player)
+		}
+	}
+
+	async function unlinkPlayer(player) {
+		const success = await unlinkUserPlayer({
+			user_id: currentUser.id,
+			platform: player.platform,
+			player_id: player.id,
+		})
+
+		if (success) {
+			currentUserLinkedPlayers[player.platform] = currentUserLinkedPlayers[
+				player.platform
+			].filter((p) => p.id !== player.id)
+
+			if (currentUserLinkedPlayers[player.platform].length === 0) {
+				delete currentUserLinkedPlayers[player.platform]
+			}
+		}
 	}
 </script>
 
@@ -272,24 +326,54 @@
 										</div>
 
 										<div class="list">
-											<div class="platform">
-												<div class="name">playfab</div>
-												<div class="players">
-													<div class="player">void</div>
-													<div class="player">void</div>
-													<div class="player">void</div>
-												</div>
-											</div>
-											<div class="platform">
-												<div class="name">mojang</div>
-												<div class="players">
-													<div class="player">snidduncfdswjuiidxwngini</div>
-													<div class="player">testtest</div>
-												</div>
-											</div>
+											{#if currentUserLinkedPlayers && Object.keys(currentUserLinkedPlayers).length > 0}
+												{#each Object.keys(currentUserLinkedPlayers) as platform}
+													<div class="platform">
+														<div class="name">{platform}</div>
+														<div class="players">
+															{#each currentUserLinkedPlayers[platform] as player}
+																<div class="player">
+																	<a
+																		class="name"
+																		href={`/player/${player.platform}/${player.id}`}
+																		on:click|preventDefault={() =>
+																			navigate(
+																				`/player/${player.platform}/${player.id}`,
+																			)}
+																	>
+																		{player.name}
+																	</a>
+
+																	<DeleteModal
+																		heading="Unlinking player"
+																		message="Are you sure you wish to unlink this player?"
+																		on:submit={() => unlinkPlayer(player)}
+																	>
+																		<div slot="trigger" let:open>
+																			<div class="unlink-btn" on:click={open}>
+																				x
+																			</div>
+																		</div>
+																	</DeleteModal>
+																</div>
+															{/each}
+														</div>
+													</div>
+												{/each}
+											{:else}
+												<div class="no-links">No linked players found</div>
+											{/if}
 										</div>
 
-										<Button size="inline">Link Player</Button>
+										<PlayerSearchModal
+											on:submit={({ detail }) => linkPlayer(detail)}
+										>
+											<div slot="trigger" let:open>
+												<Button size="inline" on:click={open}
+													>Link Player</Button
+												>
+											</div>
+										</PlayerSearchModal>
 									</div>
 								{:else if currentUser.meta && currentUser.meta.deactivated}
 									<p>
@@ -350,12 +434,31 @@
 				.players {
 					display: flex;
 					flex-direction: column;
+					width: 100%;
 
 					.player {
-						text-decoration: underline;
-						cursor: pointer;
+						display: flex;
+						width: 100%;
+						justify-content: space-between;
+
+						.name {
+							text-decoration: underline;
+							color: var(--color-text2);
+							cursor: pointer;
+						}
+
+						.unlink-btn {
+							text-decoration: none;
+							color: var(--color-danger);
+							cursor: pointer;
+						}
 					}
 				}
+			}
+
+			.no-links {
+				color: var(--color-text-muted2);
+				margin-bottom: 1rem;
 			}
 		}
 	}
