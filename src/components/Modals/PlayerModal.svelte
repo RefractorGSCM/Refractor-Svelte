@@ -67,23 +67,20 @@
 		padding-top: 2rem;
 		min-width: 40rem;
 		max-width: 55rem;
+		min-width: 100%;
+		width: 100%;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		row-gap: 0.5rem;
+		column-gap: 0.5rem;
 
-		@include respond-below(sm) {
-			min-width: 100%;
+		.profile {
+			grid-column: span 2;
+			margin-bottom: 2rem;
+		}
+
+		:global(.btn) {
 			width: 100%;
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			row-gap: 0.5rem;
-			column-gap: 0.5rem;
-
-			.profile {
-				grid-column: span 2;
-				margin-bottom: 2rem;
-			}
-
-			:global(.btn) {
-				width: 100%;
-			}
 		}
 	}
 </style>
