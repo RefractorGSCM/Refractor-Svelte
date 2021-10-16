@@ -177,7 +177,7 @@
 							<span>Players:</span>{Object.keys($serverPlayers[id]).length}
 						</div>
 						<div class="status__item">
-							<span>Status:</span>Online
+							<span>Status:</span>{server.status}
 						</div>
 						<div class="status__item hm">
 							<span>Address:</span>{server.address}
