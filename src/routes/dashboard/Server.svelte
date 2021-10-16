@@ -317,7 +317,8 @@
 																			selectedPlayerId === player.id}
 																		on:click={() => togglePlayerMenu(player.id)}
 																	>
-																		{player.name}
+																		<span class="name">{player.name}</span>
+																		<span class="infraction-count">10</span>
 																	</div>
 																</div>
 															</div>
@@ -457,14 +458,23 @@
 				text-decoration: none;
 				position: relative;
 				display: flex;
+				justify-content: space-between;
 				align-items: center;
-				padding-left: 1rem;
+				padding: 0 1rem;
 				-webkit-user-select: none;
 				-moz-user-select: none;
 				user-select: none;
 
 				&:hover {
 					background: var(--color-accent-light);
+				}
+
+				.infraction-count {
+					display: inline-block;
+					background-color: var(--color-accent-light);
+					padding: 1px;
+					border-radius: var(--border-sm);
+					color: var(--color-text-muted);
 				}
 			}
 
