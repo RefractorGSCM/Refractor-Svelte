@@ -34,6 +34,7 @@
 	import { errorToast } from "../../utils/toast"
 	import Stats from "./Stats.svelte"
 	import GameSettings from "./components/GameSettings.svelte"
+	import MessageModeration from "./MessageModeration.svelte"
 
 	onMount(async () => {
 		try {
@@ -223,6 +224,10 @@
 					<Settings />
 				</Route>
 			</RequirePerms>
+
+			<Route path="/chat/moderation">
+				<MessageModeration />
+			</Route>
 
 			<Route path="/" component={Stats} />
 		</Router>
