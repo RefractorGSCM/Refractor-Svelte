@@ -299,7 +299,7 @@
 								<div class="player">
 									<span class="label">Player: </span>{msg.name}
 								</div>
-								<div class="message">{msg.message}</div>
+								<div class="text">{msg.message}</div>
 							</div>
 						{/each}
 					</div>
@@ -440,9 +440,17 @@
 					background-color: var(--color-background2-dark);
 				}
 
+				.text {
+					grid-column: span 4;
+				}
+
 				@include respond-below(sm) {
 					grid-template-columns: 1fr;
 					grid-template-rows: 1fr 1fr 1fr auto;
+
+					.text {
+						grid-column: span 1;
+					}
 				}
 			}
 		}
