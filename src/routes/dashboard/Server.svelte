@@ -35,6 +35,7 @@
 	import queryString from "query-string"
 	import type { Game } from "../../domain/game/game.types"
 	import { allGames } from "../../domain/game/store"
+	import tooltip from "../../actions/tooltip"
 
 	export let id
 	let server: Server = null
@@ -318,7 +319,13 @@
 																		on:click={() => togglePlayerMenu(player.id)}
 																	>
 																		<span class="name">{player.name}</span>
-																		<span class="infraction-count">10</span>
+																		{#if player.infraction_count}
+																			<span
+																				class="infraction-count"
+																				use:tooltip={"Player total infraction count"}
+																				>{player.infraction_count}</span
+																			>
+																		{/if}
 																	</div>
 																</div>
 															</div>
