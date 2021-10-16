@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import { errorToast } from "../../utils/toast"
+import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
 import type { ChatMessage, FlaggedWord } from "./chat.types"
 
@@ -93,7 +93,6 @@ export async function getRecentFlaggedMessages(
 	count: number,
 ): Promise<ChatMessage[]> {
 	try {
-		console.log("Called")
 		const { data } = await api.getRecentFlaggedMessages(count)
 
 		return data.payload as ChatMessage[]
@@ -101,5 +100,15 @@ export async function getRecentFlaggedMessages(
 		errorToast("Could not get recently flagged messages")
 
 		return null
+	}
+}
+
+export async function unflagMessage(id: number) {
+	try {
+		await api.unflagMessage(id)
+
+		successToast("Message unflagged")
+	} catch (err) {
+		errorToast("Could not unflag message")
 	}
 }

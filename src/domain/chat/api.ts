@@ -35,6 +35,12 @@ const getRecentFlaggedMessages = (count: number) => {
 	})
 }
 
+const unflagMessage = (id: number) => {
+	return axios.post(`${API_ROOT}/chat/unflag/${id}`, null, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getRecentChatMessages,
 	getFlaggedWords,
@@ -42,4 +48,5 @@ export default {
 	updateFlaggedWord,
 	deleteFlaggedWord,
 	getRecentFlaggedMessages,
+	unflagMessage,
 }
