@@ -1,4 +1,5 @@
 import type { Attachment } from "../attachment/attachment.types"
+import type { ChatMessage } from "../chat/chat.types"
 
 export type CreateWarningParams = {
 	reason?: string
@@ -55,4 +56,5 @@ export type Infraction = {
 	modified_at?: string
 	issuer_name?: string // not a DB field
 	attachments?: Attachment[] // not a DB field
+	linked_chat_messages?: ChatMessage[] // not a DB field
 }
