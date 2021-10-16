@@ -45,6 +45,7 @@
 		FLAG_EDIT_OWN_INFRACTIONS,
 		getFlag,
 	} from "../../permissions/permissions"
+	import { dateString } from "../../utils/date"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import Server from "./Server.svelte"
@@ -189,6 +190,10 @@
 						{infraction.id}
 					</div>
 					<div class="meta--field">
+						<span>Date:</span>
+						{dateString(new Date(infraction.created_at))}
+					</div>
+					<div class="meta--field">
 						<span>Platform:</span>
 						{infraction.platform}
 					</div>
@@ -270,6 +275,37 @@
 				</div>
 			</div>
 		</SinglePane>
+
+		{#if infraction.linked_chat_messages?.length > 0}
+			<SinglePane>
+				<div class="chatmessages">
+					<div class="chatmessages--heading">
+						<Heading>Referenced Chat Messages</Heading>
+					</div>
+
+					<div class="messages">
+						{#each infraction.linked_chat_messages as msg}
+							<div class="msg">
+								<div class="id"><span class="label">ID: </span>{msg.id}</div>
+								<div class="date">
+									<span class="label">Date: </span>
+									<span class="date"
+										>{dateString(new Date(msg.created_at)).split(",")[0]}</span
+									>
+									<span class="time hidemobile"
+										>{dateString(new Date(msg.created_at)).split(",")[1]}</span
+									>
+								</div>
+								<div class="player">
+									<span class="label">Player: </span>{msg.name}
+								</div>
+								<div class="message">{msg.message}</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</SinglePane>
+		{/if}
 
 		<SinglePane>
 			<div class="attachments">
@@ -378,6 +414,46 @@
 		}
 	}
 
+	.chatmessages {
+		width: 100%;
+
+		&--heading {
+			margin-bottom: 1rem;
+		}
+
+		.messages {
+			display: flex;
+			flex-direction: column;
+			border-radius: var(--border-sm);
+
+			.msg {
+				display: grid;
+				grid-template-columns: 1fr 2fr 2fr;
+				grid-template-rows: 1fr auto;
+				padding: 0.5rem 1rem;
+
+				.label {
+					color: var(--color-primary);
+				}
+
+				&:nth-child(odd) {
+					background-color: var(--color-background2-dark);
+				}
+
+				@include respond-below(sm) {
+					grid-template-columns: 1fr;
+					grid-template-rows: 1fr 1fr 1fr auto;
+				}
+			}
+		}
+
+		@include respond-below(sm) {
+			.hidemobile {
+				display: none;
+			}
+		}
+	}
+
 	.attachments {
 		&--heading {
 			margin-bottom: 2rem;
@@ -396,6 +472,8 @@
 		&--attachment {
 			margin-top: 1rem;
 			margin-bottom: 2rem;
+			display: flex;
+			flex-direction: column;
 
 			.delete-btn {
 				:global(.btn) {
