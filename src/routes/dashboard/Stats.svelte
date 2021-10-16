@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MessageModeration from "../../components/Modals/MessageModeration.svelte"
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
@@ -106,12 +105,6 @@
 			<div class="heading">
 				<Heading type="subtitle">Flagged Message Moderation</Heading>
 			</div>
-
-			<MessageModeration>
-				<div slot="trigger" let:open>
-					<Button on:click={open}>Open Moderation Queue</Button>
-				</div>
-			</MessageModeration>
 
 			<!-- <div class="list">
 				{#each $flaggedMessages as chat}

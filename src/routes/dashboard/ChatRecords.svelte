@@ -91,7 +91,7 @@
 	import PageSwitcher from "../../components/PageSwitcher.svelte"
 	import { truncate } from "../../utils/strings"
 	import { dateString } from "../../utils/date"
-	import { navigate } from "svelte-routing"
+	import { Link, navigate } from "svelte-routing"
 
 	function onPlayerChange(player) {
 		if (!player) {
