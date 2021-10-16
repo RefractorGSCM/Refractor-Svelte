@@ -28,6 +28,7 @@
 	export let serverId: number = null
 	export let mode = "create"
 	export let infractionId: number = null
+	export let linkedChatMessages: number[] = null
 
 	let serverIdProvided = !!serverId
 
@@ -186,6 +187,7 @@
 	}
 
 	async function create(values): Promise<InfractionModifyRes> {
+		console.log({ linkedChatMessages })
 		// Create infraction and report any errors back
 		return await createBan(Number(values.serverId), {
 			reason: values.reason,
@@ -193,6 +195,7 @@
 			player_id: player.id,
 			platform: player.platform,
 			attachments: values.attachments,
+			linked_chat_messages: linkedChatMessages || [],
 		})
 	}
 

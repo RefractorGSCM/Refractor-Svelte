@@ -29,6 +29,7 @@
 	export let serverId: number = null
 	export let mode = "create"
 	export let infractionId: number = null
+	export let linkedChatMessages: number[] = null
 
 	let serverIdProvided = !!serverId
 
@@ -194,6 +195,7 @@
 			player_id: player.id,
 			platform: player.platform,
 			attachments: values.attachments,
+			linked_chat_messages: linkedChatMessages || [],
 		})
 	}
 
