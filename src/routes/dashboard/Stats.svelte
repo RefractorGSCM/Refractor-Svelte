@@ -1,8 +1,6 @@
 <script lang="ts">
 	import MessageModeration from "../../components/Modals/MessageModeration.svelte"
 	import { onMount } from "svelte"
-	import { navigate } from "svelte-routing"
-	import { prevent_default } from "svelte/internal"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 
@@ -12,7 +10,6 @@
 	import { getRecentFlaggedMessages } from "../../domain/chat/store"
 	import type { Stats } from "../../domain/stats/stats.types"
 	import { getStats } from "../../domain/stats/store"
-	import Chat from "./Chat.svelte"
 	import Container from "./components/Container.svelte"
 
 	let stats: Stats
