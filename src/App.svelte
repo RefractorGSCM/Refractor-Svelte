@@ -20,6 +20,8 @@
 	import { SvelteToast } from "@zerodevx/svelte-toast"
 	import RequirePerms from "./components/RequirePerms.svelte"
 	import Unauthorized from "./routes/Unauthorized.svelte"
+	import { connectWebsocket } from "./domain/websocket/store"
+	import { errorToast } from "./utils/toast"
 
 	let authChecked = false
 	onMount(async () => {
@@ -35,6 +37,13 @@
 		if ($isAuthenticated) {
 			await getPermissions()
 			await getSelfInfo()
+
+			try {
+				console.log("Trying websocket connection...")
+				connectWebsocket()
+			} catch (err) {
+				console.log(err)
+			}
 		}
 
 		authChecked = true
