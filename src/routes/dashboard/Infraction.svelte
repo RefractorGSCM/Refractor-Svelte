@@ -339,6 +339,13 @@
 					<span>Reason:</span>
 					{infraction.reason}
 				</div>
+
+				{#if infraction.modified_at}
+					<div class="info--field updated">
+						<span>Last Updated:</span>
+						{dateString(new Date(infraction.modified_at))}
+					</div>
+				{/if}
 			</div>
 		</SinglePane>
 
