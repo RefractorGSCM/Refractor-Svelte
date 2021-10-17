@@ -201,6 +201,12 @@
 					<div class="status__item">
 						<span>ID:</span>{id}
 					</div>
+					<div class="status__item">
+						<span>First Seen:</span>{dateString(new Date($player?.created_at))}
+					</div>
+					<div class="status__item">
+						<span>Last Seen:</span>{dateString(new Date($player?.last_seen))}
+					</div>
 					{#if currentlyOnline}
 						<div class="status__item">
 							<Link to={`/server/${serverId}?highlight=${id}`}>
