@@ -9,7 +9,7 @@
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
 	import BanModal from "../../components/Modals/BanModal.svelte"
-	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
 	import KickModal from "../../components/Modals/KickModal.svelte"
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
@@ -28,6 +28,7 @@
 	import {
 		deleteInfraction,
 		getInfractionById,
+		updateInfraction,
 	} from "../../domain/infraction/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
@@ -46,6 +47,7 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import { dateString } from "../../utils/date"
+	import { successToast } from "../../utils/toast"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import Server from "./Server.svelte"
@@ -115,6 +117,15 @@
 		}
 	}
 
+	async function repealCurrentInfraction() {
+		const success = await updateInfraction(infraction.id, { repealed: true })
+
+		if (success) {
+			successToast("Infraction repealed")
+			infraction.repealed = true
+		}
+	}
+
 	function getServerName(): string {
 		const serverId = infraction.server_id
 
@@ -128,6 +139,11 @@
 	}
 
 	function allowEditing(): boolean {
+		// if this infraction is repealed, do not allow editing.
+		if (infraction.repealed) {
+			return false
+		}
+
 		// if the user created this infraction and they have permission to edit their own infractions then return true
 		if (
 			$self.id === infraction.user_id &&
@@ -150,6 +166,11 @@
 	}
 
 	function allowDeletion(): boolean {
+		// if this infraction is repealed, do not allow editing.
+		if (infraction.repealed) {
+			return false
+		}
+
 		// if the user created this infraction and they have permission to delete their own infractions then return true
 		if (
 			$self.id === infraction.user_id &&
@@ -172,13 +193,7 @@
 	}
 </script>
 
-<Container
-	style={`max-height: unset; ${
-		infraction && infraction.repealed
-			? "border: 2px solid var(--color-success);"
-			: ""
-	}`}
->
+<Container style={`max-height: unset;`}>
 	{#if !infraction}
 		<Heading>Infraction not found</Heading>
 	{:else if !computedPermissions}
@@ -250,10 +265,23 @@
 								<Button on:click={open}>Edit</Button>
 							</div>
 						</svelte:component>
+
+						{#if !infraction.repealed}
+							<ConfirmModal
+								heading="Repeal Infraction"
+								message={"Are you sure you wish to repeal this infraction? It will still be on record, but will marked specially and not shown prominently."}
+								submitText="Repeal"
+								on:submit={repealCurrentInfraction}
+							>
+								<div slot="trigger" let:open>
+									<Button color="success" on:click={open}>Repeal</Button>
+								</div>
+							</ConfirmModal>
+						{/if}
 					{/if}
 
 					{#if allowDeletion()}
-						<DeleteModal
+						<ConfirmModal
 							heading="Delete Infraction"
 							message={"Are you sure you wish to delete this infraction? This action can not be undone."}
 							on:submit={deleteCurrentInfraction}
@@ -261,7 +289,7 @@
 							<div slot="trigger" let:open>
 								<Button color="danger" on:click={open}>Delete</Button>
 							</div>
-						</DeleteModal>
+						</ConfirmModal>
 					{/if}
 				</div>
 			</div>
@@ -318,50 +346,52 @@
 			</SinglePane>
 		{/if}
 
-		<SinglePane>
-			<div class="attachments">
-				<div class="attachments--heading">
-					<Heading>Attachments</Heading>
-				</div>
+		{#if $attachments?.length > 0}
+			<SinglePane>
+				<div class="attachments">
+					<div class="attachments--heading">
+						<Heading>Attachments</Heading>
+					</div>
 
-				{#if $attachments && $attachments.length > 0}
-					<div class="attachments--list">
-						{#each $attachments as attachment}
-							<div class="attachments--attachment">
-								<DeleteModal
-									heading="Deleting attachment"
-									message="Are you sure you want to delete this attachment?"
-									on:submit={() => removeAttachment(attachment.id)}
-								>
-									<div slot="trigger" let:open>
-										<div class="delete-btn">
-											{#if allowEditing()}
-												<Button size="inline" color="danger" on:click={open}
-													>x</Button
-												>
-											{/if}
+					{#if $attachments && $attachments.length > 0}
+						<div class="attachments--list">
+							{#each $attachments as attachment}
+								<div class="attachments--attachment">
+									<ConfirmModal
+										heading="Deleting attachment"
+										message="Are you sure you want to delete this attachment?"
+										on:submit={() => removeAttachment(attachment.id)}
+									>
+										<div slot="trigger" let:open>
+											<div class="delete-btn">
+												{#if allowEditing()}
+													<Button size="inline" color="danger" on:click={open}
+														>x</Button
+													>
+												{/if}
+											</div>
 										</div>
-									</div>
-								</DeleteModal>
-								<a href={attachment.url}>
-									<img src={attachment.url} alt="attachment" />
-								</a>
-								<span>{attachment.note}</span>
-							</div>
-						{/each}
-					</div>
-				{/if}
+									</ConfirmModal>
+									<a href={attachment.url}>
+										<img src={attachment.url} alt="attachment" />
+									</a>
+									<span>{attachment.note}</span>
+								</div>
+							{/each}
+						</div>
+					{/if}
 
-				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
-					createAttachment(detail)}>
-					<div slot="trigger" let:open>
-						{#if allowEditing()}
-							<Button on:click={open}>Add Attachment</Button>
-						{/if}
-					</div>
-				</AttachmentModal>
-			</div>
-		</SinglePane>
+					<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
+						createAttachment(detail)}>
+						<div slot="trigger" let:open>
+							{#if allowEditing()}
+								<Button on:click={open}>Add Attachment</Button>
+							{/if}
+						</div>
+					</AttachmentModal>
+				</div>
+			</SinglePane>
+		{/if}
 	{/if}
 </Container>
 
@@ -406,11 +436,7 @@
 		.buttons {
 			display: flex;
 			margin-top: 1rem;
-			width: 100%;
-
-			:global(.btn:first-child) {
-				margin-right: 0.5rem;
-			}
+			column-gap: 0.5rem;
 		}
 	}
 

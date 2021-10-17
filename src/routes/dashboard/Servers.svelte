@@ -4,7 +4,7 @@
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import CreateServerModal from "../../components/Modals/CreateServerModal.svelte"
-	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
 	import EditServerModal from "../../components/Modals/EditServerModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
@@ -83,7 +83,7 @@
 								</div>
 							</EditServerModal>
 
-							<DeleteModal
+							<ConfirmModal
 								heading={`Deleting server: ${server.name}`}
 								message="Are you sure you wish to delete this server?"
 								on:submit={() => deleteServer(server.id)}
@@ -98,7 +98,7 @@
 										}}>Delete</Button
 									>
 								</div>
-							</DeleteModal>
+							</ConfirmModal>
 						</div>
 					</div>
 				{/each}

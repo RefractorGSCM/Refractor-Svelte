@@ -32,7 +32,7 @@
 	import BottomBar from "./components/BottomBar.svelte"
 	import { sortAsc } from "../../utils/sorting"
 	import TextInput from "../../components/TextInput.svelte"
-	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
 	import DualPane from "./components/DualPane.svelte"
 	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
 	import { decimalToHex, hexToDecimal } from "../../utils/color"
@@ -537,7 +537,7 @@
 
 					{#if currentGroup.id !== baseGroupId && !editingNewGroup}
 						<div class="delete-button">
-							<DeleteModal
+							<ConfirmModal
 								heading={`Deleting group: ${currentGroup.name}`}
 								message="Are you sure you wish to delete this group?"
 								on:submit={handleDeleteGroup}
@@ -545,7 +545,7 @@
 								<div slot="trigger" let:open>
 									<Button color="danger" on:click={open}>Delete Group</Button>
 								</div>
-							</DeleteModal>
+							</ConfirmModal>
 						</div>
 					{/if}
 				{:else}

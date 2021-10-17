@@ -35,7 +35,7 @@
 	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
 	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
 	import Flair from "../../components/Flair.svelte"
-	import DeleteModal from "../../components/Modals/DeleteModal.svelte"
+	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
 	import PlayerSearchModal from "../../components/Modals/PlayerSearchModal.svelte"
 	import type { Player } from "../../domain/player/player.types"
@@ -304,7 +304,7 @@
 										to Refractor.
 									</p>
 
-									<DeleteModal
+									<ConfirmModal
 										heading={`Deactivating User ${currentUser.username}`}
 										message="Are you sure you wish to deactivate this user account? This will revoke their access to Refractor."
 										submitText="Deactivate"
@@ -318,7 +318,7 @@
 												>Deactivate Account</Button
 											>
 										</div>
-									</DeleteModal>
+									</ConfirmModal>
 
 									<div class="linked-players">
 										<div class="heading">
@@ -344,7 +344,7 @@
 																		{player.name}
 																	</a>
 
-																	<DeleteModal
+																	<ConfirmModal
 																		heading="Unlinking player"
 																		message="Are you sure you wish to unlink this player?"
 																		on:submit={() => unlinkPlayer(player)}
@@ -354,7 +354,7 @@
 																				x
 																			</div>
 																		</div>
-																	</DeleteModal>
+																	</ConfirmModal>
 																</div>
 															{/each}
 														</div>
@@ -382,7 +382,7 @@
 										their account using the button below.
 									</p>
 
-									<DeleteModal
+									<ConfirmModal
 										heading={`Reactivating User ${currentUser.username}`}
 										message="Are you sure you wish to activate this user account? This will restore their access to Refractor."
 										submitText="Reactivate"
@@ -393,7 +393,7 @@
 												>Reactivate Account</Button
 											>
 										</div>
-									</DeleteModal>
+									</ConfirmModal>
 								{/if}
 							</div>
 						</PermsCheck>
