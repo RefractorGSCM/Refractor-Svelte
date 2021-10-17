@@ -346,52 +346,49 @@
 			</SinglePane>
 		{/if}
 
-		{#if $attachments?.length > 0}
-			<SinglePane>
-				<div class="attachments">
-					<div class="attachments--heading">
-						<Heading>Attachments</Heading>
-					</div>
-
-					{#if $attachments && $attachments.length > 0}
-						<div class="attachments--list">
-							{#each $attachments as attachment}
-								<div class="attachments--attachment">
-									<ConfirmModal
-										heading="Deleting attachment"
-										message="Are you sure you want to delete this attachment?"
-										on:submit={() => removeAttachment(attachment.id)}
-									>
-										<div slot="trigger" let:open>
-											<div class="delete-btn">
-												{#if allowEditing()}
-													<Button size="inline" color="danger" on:click={open}
-														>x</Button
-													>
-												{/if}
-											</div>
-										</div>
-									</ConfirmModal>
-									<a href={attachment.url}>
-										<img src={attachment.url} alt="attachment" />
-									</a>
-									<span>{attachment.note}</span>
-								</div>
-							{/each}
-						</div>
-					{/if}
-
-					<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
-						createAttachment(detail)}>
-						<div slot="trigger" let:open>
-							{#if allowEditing()}
-								<Button on:click={open}>Add Attachment</Button>
-							{/if}
-						</div>
-					</AttachmentModal>
+		<SinglePane>
+			<div class="attachments">
+				<div class="attachments--heading">
+					<Heading>Attachments</Heading>
 				</div>
-			</SinglePane>
-		{/if}
+
+				{#if $attachments && $attachments.length > 0}
+					<div class="attachments--list">
+						{#each $attachments as attachment}
+							<div class="attachments--attachment">
+								<ConfirmModal
+									heading="Deleting attachment"
+									message="Are you sure you want to delete this attachment?"
+									on:submit={() => removeAttachment(attachment.id)}
+								>
+									<div slot="trigger" let:open>
+										<div class="delete-btn">
+											{#if allowEditing()}
+												<Button size="inline" color="danger" on:click={open}
+													>x</Button
+												>
+											{/if}
+										</div>
+									</div>
+								</ConfirmModal>
+								<a href={attachment.url}>
+									<img src={attachment.url} alt="attachment" />
+								</a>
+								<span>{attachment.note}</span>
+							</div>
+						{/each}
+					</div>
+				{/if}
+
+				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
+					<div slot="trigger" let:open>
+						{#if allowEditing()}
+							<Button on:click={open}>Add Attachment</Button>
+						{/if}
+					</div>
+				</AttachmentModal>
+			</div>
+		</SinglePane>
 	{/if}
 </Container>
 
