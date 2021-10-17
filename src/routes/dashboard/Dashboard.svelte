@@ -6,7 +6,7 @@
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { self } from "../../domain/auth/store"
 	import { getAllServers } from "../../domain/server/store"
-	import { openWebsocketConnection } from "../../domain/websocket/store"
+	import { connectWebsocket } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_MODERATE_FLAGGED_MESSAGES,
@@ -38,13 +38,6 @@
 	import MessageModeration from "./MessageModeration.svelte"
 
 	onMount(async () => {
-		try {
-			openWebsocketConnection()
-		} catch (err) {
-			console.log(err)
-			errorToast("Could not open websocket connection.")
-		}
-
 		await getAllGames()
 		await getAllServers()
 	})
