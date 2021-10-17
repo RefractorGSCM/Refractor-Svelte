@@ -168,10 +168,6 @@ export function openWebsocketConnection() {
 				addChatMessage(body.server_id, body)
 				break
 			}
-
-			case "permissions-changed": {
-				getSelfInfo()
-			}
 		}
 	})
 }
