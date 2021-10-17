@@ -29,6 +29,7 @@
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import queryString from "query-string"
+	import Checkbox from "../../components/Checkbox.svelte"
 
 	export let platform: string = ""
 	export let id: string = ""
@@ -72,6 +73,11 @@
 		infractions = await getPlayerInfractions(platform, id)
 
 		for (const infraction of infractions) {
+			// Do not show repealed infractions by default
+			if (infraction.repealed) {
+				continue
+			}
+
 			// make sure that type is valid
 			if (!$store[keys[infraction.type]]) {
 				continue
@@ -115,8 +121,18 @@
 		return date.toLocaleString("en-GB", { hour12: true })
 	}
 
+	function showRepealedChange(e) {
+		const target = e.target as HTMLInputElement
+		showRepealed = target.checked
+		changeServerFilter(currentServerId)
+	}
+
+	let showRepealed = false
+	let currentServerId = -1
 	const anyServerId = -1
 	function changeServerFilter(id: number) {
+		currentServerId = id
+
 		// If the ID == anyServerId then we don't filter by server and just allow all infractions
 		if (id === anyServerId) {
 			for (const [type, key] of Object.entries(keys)) {
@@ -124,6 +140,10 @@
 
 				for (const infraction of infractions) {
 					if (infraction.type !== type) {
+						continue
+					}
+
+					if (!showRepealed && infraction.repealed) {
 						continue
 					}
 
@@ -144,6 +164,10 @@
 
 			for (const infraction of infractions) {
 				if (infraction.server_id !== id || infraction.type !== type) {
+					continue
+				}
+
+				if (!showRepealed && infraction.repealed) {
 					continue
 				}
 
@@ -282,6 +306,15 @@
 						label="Server"
 						includeFragments={true}
 					/>
+
+					<div class="show-repealed">
+						<Checkbox
+							label="Show Repealed"
+							name="show-repealed"
+							bind:checked={showRepealed}
+							on:change={showRepealedChange}
+						/>
+					</div>
 				</div>
 
 				<div class="infraction-lists">
@@ -603,6 +636,12 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+
+			.show-repealed {
+				font-size: 1.4rem;
+				width: clamp(13rem, 10%, 100%);
+				margin-bottom: 1rem;
+			}
 		}
 
 		.infraction-lists {
