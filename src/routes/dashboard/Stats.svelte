@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
+	import tooltip from "../../actions/tooltip"
 	import Button from "../../components/Button.svelte"
 
 	import Heading from "../../components/Heading.svelte"
@@ -102,9 +103,9 @@
 
 	{#if $flaggedMessages.length > 0}
 		<div class="flagged-messages">
-			<div class="heading">
+			<!-- <div class="heading">
 				<Heading type="subtitle">Flagged Message Moderation</Heading>
-			</div>
+			</div> -->
 
 			<!-- <div class="list">
 				{#each $flaggedMessages as chat}

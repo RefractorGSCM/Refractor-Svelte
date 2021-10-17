@@ -19,6 +19,7 @@
 	import SinglePane from "./components/SinglePane.svelte"
 	import { fade } from "svelte/transition"
 	import sleep from "../../utils/sleep"
+	import { Link } from "svelte-routing"
 
 	let message = writable(null as ChatMessage)
 	onMount(async () => {
@@ -68,7 +69,12 @@
 			{/if}
 			{#if $message && !hideMessage}
 				<div class="message" transition:fade>
-					<div class="player"><span>Sent by:</span> {$message.name}</div>
+					<div class="player">
+						<span>Sent by:</span>
+						<Link to={`/player/${$message.platform}/${$message.player_id}`}
+							>{$message.name}</Link
+						>
+					</div>
 					<div class="text">
 						{$message.message}
 					</div>
@@ -119,6 +125,11 @@
 
 			.player {
 				padding: 1rem;
+
+				:global(a) {
+					color: var(--color-text2);
+					text-decoration: underline;
+				}
 
 				span {
 					font-weight: bold;
