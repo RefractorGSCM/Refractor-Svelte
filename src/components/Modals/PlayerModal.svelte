@@ -1,12 +1,28 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte"
+
 	import { navigate } from "svelte-routing"
 
 	import type { Player } from "../../domain/player/player.types"
+	import MessageModeration from "../../routes/dashboard/MessageModeration.svelte"
 
 	import Button from "../Button.svelte"
+	import BanModal from "./BanModal.svelte"
+	import KickModal from "./KickModal.svelte"
 	import Modal from "./Modal.svelte"
+	import MuteModal from "./MuteModal.svelte"
+	import WarningModal from "./WarningModal.svelte"
 
 	export let player: Player = null
+	export let serverId: number = null
+	export let linkedChatMessages: number[] = null
+
+	const dispatch = createEventDispatcher()
+
+	function onInfractionCreated(e, close) {
+		dispatch("newInfraction", e.detail)
+		close()
+	}
 </script>
 
 <Modal>
@@ -18,7 +34,7 @@
 			{player.name}
 		</div>
 	</div>
-	<div slot="content">
+	<div slot="content" let:store={{ close }}>
 		<div class="content">
 			<div class="profile">
 				<Button
@@ -31,10 +47,47 @@
 					}}>View Player</Button
 				>
 			</div>
-			<Button>Log Warning</Button>
-			<Button>Log Mute</Button>
-			<Button color="warning">Log Kick</Button>
-			<Button color="danger">Log Ban</Button>
+
+			<WarningModal
+				{serverId}
+				{player}
+				{linkedChatMessages}
+				on:submit={(e) => onInfractionCreated(e, close)}
+			>
+				<div slot="trigger" let:open>
+					<Button on:click={open}>Log Warning</Button>
+				</div>
+			</WarningModal>
+			<MuteModal
+				{serverId}
+				{player}
+				{linkedChatMessages}
+				on:submit={(e) => onInfractionCreated(e, close)}
+			>
+				<div slot="trigger" let:open>
+					<Button on:click={open}>Log Mute</Button>
+				</div>
+			</MuteModal>
+			<KickModal
+				{serverId}
+				{player}
+				{linkedChatMessages}
+				on:submit={(e) => onInfractionCreated(e, close)}
+			>
+				<div slot="trigger" let:open>
+					<Button color="warning" on:click={open}>Log Kick</Button>
+				</div>
+			</KickModal>
+			<BanModal
+				{serverId}
+				{player}
+				{linkedChatMessages}
+				on:submit={(e) => onInfractionCreated(e, close)}
+			>
+				<div slot="trigger" let:open>
+					<Button color="danger" on:click={open}>Log Ban</Button>
+				</div>
+			</BanModal>
 		</div>
 	</div>
 

@@ -106,8 +106,6 @@ export async function getRecentFlaggedMessages(
 export async function unflagMessage(id: number) {
 	try {
 		await api.unflagMessage(id)
-
-		successToast("Message unflagged")
 	} catch (err) {
 		errorToast("Could not unflag message")
 	}

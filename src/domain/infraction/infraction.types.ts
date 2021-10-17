@@ -6,6 +6,7 @@ export type CreateWarningParams = {
 	platform?: string
 	player_id?: string
 	attachments?: Attachment[]
+	linked_chat_messages?: number[]
 }
 
 export type CreateMuteParams = {
@@ -14,6 +15,7 @@ export type CreateMuteParams = {
 	platform?: string
 	player_id?: string
 	attachments?: Attachment[]
+	linked_chat_messages?: number[]
 }
 
 export type CreateKickParams = {
@@ -21,6 +23,7 @@ export type CreateKickParams = {
 	platform?: string
 	player_id?: string
 	attachments?: Attachment[]
+	linked_chat_messages?: number[]
 }
 
 export type CreateBanParams = {
@@ -29,6 +32,7 @@ export type CreateBanParams = {
 	platform?: string
 	player_id?: string
 	attachments?: Attachment[]
+	linked_chat_messages?: number[]
 }
 
 export type UpdateInfractionParams = {

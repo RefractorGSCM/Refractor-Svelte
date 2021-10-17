@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	import { onMount, tick } from "svelte"
 	import { writable } from "svelte/store"
 
 	import Button from "../../components/Button.svelte"
@@ -8,12 +8,17 @@
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import type { ChatMessage } from "../../domain/chat/chat.types"
-	import { getRecentFlaggedMessages } from "../../domain/chat/store"
+	import {
+		getRecentFlaggedMessages,
+		unflagMessage,
+	} from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
+	import { fade } from "svelte/transition"
+	import sleep from "../../utils/sleep"
 
 	let message = writable(null as ChatMessage)
 	onMount(async () => {
@@ -23,6 +28,24 @@
 		message.set(msg)
 		setLoading("messagemoderation", false)
 	})
+
+	let hideMessage = false
+
+	async function getNextMessage() {
+		await tick()
+		hideMessage = true
+		const msgArr = await getRecentFlaggedMessages(1)
+		const msg = msgArr[0]
+
+		await sleep(750)
+		message.set(msg)
+		hideMessage = false
+	}
+
+	async function unflag() {
+		await unflagMessage($message.id)
+		await getNextMessage()
+	}
 </script>
 
 <Container>
@@ -42,21 +65,25 @@
 		<div class="messages">
 			{#if $loading["messagemoderation"] || !$message}
 				<Spinner />
-			{:else}
-				<div class="message">
+			{/if}
+			{#if $message && !hideMessage}
+				<div class="message" transition:fade>
 					<div class="player"><span>Sent by:</span> {$message.name}</div>
 					<div class="text">
 						{$message.message}
 					</div>
 					<div class="buttons">
-						<Button color="primary">Unflag</Button>
+						<Button color="primary" on:click={() => unflag()}>Unflag</Button>
 
 						<PlayerModal
+							serverId={$message.server_id}
 							player={{
 								id: $message.player_id,
 								platform: $message.platform,
 								name: $message.name,
 							}}
+							linkedChatMessages={[$message.id]}
+							on:newInfraction={() => unflag()}
 						>
 							<div slot="trigger" let:open>
 								<Button color="warning" on:click={open}>Moderate</Button>
@@ -77,12 +104,18 @@
 	}
 
 	.messages {
-		min-height: 20rem;
+		height: 23rem;
 		width: 100%;
 
 		.message {
 			display: flex;
 			flex-direction: column;
+			height: 100%;
+			flex: 1;
+
+			&.hide {
+				display: none;
+			}
 
 			.player {
 				padding: 1rem;

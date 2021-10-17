@@ -2,6 +2,7 @@ export type ChatMessage = {
 	id: number
 	player_id: string
 	platform: string
+	server_id: number
 	name: string
 	message: string
 	sent_by_user?: boolean
