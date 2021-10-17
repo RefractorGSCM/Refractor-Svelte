@@ -99,6 +99,10 @@
 				<div class="note">pending moderation</div>
 			</div>
 		</div>
+
+		<div class="notice" use:tooltip={"stats are cached for 120 seconds"}>
+			caching notice
+		</div>
 	</div>
 
 	{#if $flaggedMessages.length > 0}
@@ -134,11 +138,17 @@
 	@import "../../mixins/mixins.scss";
 
 	.heading {
-		margin-bottom: 3rem;
+		margin-bottom: 1rem;
 	}
 
 	.stats-wrapper {
 		min-height: 50vh;
+
+		.notice {
+			display: inline-block;
+			margin-top: 1rem;
+			color: var(--color-text-muted2);
+		}
 	}
 
 	.stats {

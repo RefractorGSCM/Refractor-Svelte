@@ -298,6 +298,7 @@
 							{#each $store.warnings as infraction}
 								<a
 									class="infraction noduration"
+									class:repealed={infraction.repealed}
 									href={`/infraction/${infraction.id}`}
 									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
@@ -327,8 +328,12 @@
 									</div>
 									<div class="field reason">
 										<span class="label">Reason</span>
-										<span class="value">{truncate(infraction.reason, 100)}</span
-										>
+										<span class="value">
+											{#if infraction.repealed}
+												<span class="repealed">[REPEALED]</span>
+											{/if}
+											{truncate(infraction.reason, 100)}
+										</span>
 									</div>
 								</a>
 							{/each}
@@ -348,6 +353,7 @@
 							{#each $store.mutes as infraction}
 								<a
 									class="infraction"
+									class:repealed={infraction.repealed}
 									href={`/infraction/${infraction.id}`}
 									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
@@ -377,8 +383,12 @@
 									</div>
 									<div class="field reason">
 										<span class="label">Reason</span>
-										<span class="value">{truncate(infraction.reason, 100)}</span
-										>
+										<span class="value">
+											{#if infraction.repealed}
+												<span class="repealed">[REPEALED]</span>
+											{/if}
+											{truncate(infraction.reason, 100)}
+										</span>
 									</div>
 								</a>
 							{/each}
@@ -398,6 +408,7 @@
 							{#each $store.kicks as infraction}
 								<a
 									class="infraction noduration"
+									class:repealed={infraction.repealed}
 									href={`/infraction/${infraction.id}`}
 									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
@@ -427,8 +438,12 @@
 									</div>
 									<div class="field reason">
 										<span class="label">Reason</span>
-										<span class="value">{truncate(infraction.reason, 100)}</span
-										>
+										<span class="value">
+											{#if infraction.repealed}
+												<span class="repealed">[REPEALED]</span>
+											{/if}
+											{truncate(infraction.reason, 100)}
+										</span>
 									</div>
 								</a>
 							{/each}
@@ -448,6 +463,7 @@
 							{#each $store.bans as infraction}
 								<a
 									class="infraction"
+									class:repealed={infraction.repealed}
 									href={`/infraction/${infraction.id}`}
 									bind:this={infractionRefs[infraction.id]}
 									on:click|preventDefault={() =>
@@ -477,8 +493,12 @@
 									</div>
 									<div class="field reason">
 										<span class="label">Reason</span>
-										<span class="value">{truncate(infraction.reason, 100)}</span
-										>
+										<span class="value">
+											{#if infraction.repealed}
+												<span class="repealed">[REPEALED]</span>
+											{/if}
+											{truncate(infraction.reason, 100)}
+										</span>
 									</div>
 								</a>
 							{/each}
@@ -706,6 +726,15 @@
 					text-overflow: clip;
 					font-size: 1.6rem;
 				}
+			}
+
+			&.repealed {
+				border: 1px solid var(--color-success);
+				border-right: 8px solid var(--color-success);
+			}
+
+			.repealed {
+				color: var(--color-success);
 			}
 		}
 

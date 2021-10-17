@@ -58,6 +58,7 @@ export type Infraction = {
 	system_action?: boolean
 	created_at?: string
 	modified_at?: string
+	repealed?: boolean
 	issuer_name?: string // not a DB field
 	attachments?: Attachment[] // not a DB field
 	linked_chat_messages?: ChatMessage[] // not a DB field
