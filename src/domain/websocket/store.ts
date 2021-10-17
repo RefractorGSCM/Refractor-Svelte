@@ -1,6 +1,7 @@
 import { toast } from "@zerodevx/svelte-toast"
 import { writable } from "svelte/store"
 import { errorToast, successToast } from "../../utils/toast"
+import { getSelfInfo } from "../auth/store"
 import { addChatMessage } from "../chat/store"
 import { addPlayerToServer, removePlayerFromServer } from "../player/store"
 import { setServerStatus } from "../server/store"
@@ -166,6 +167,10 @@ export function openWebsocketConnection() {
 			case "chat": {
 				addChatMessage(body.server_id, body)
 				break
+			}
+
+			case "permissions-changed": {
+				getSelfInfo()
 			}
 		}
 	})
