@@ -44,6 +44,7 @@
 		FLAG_DELETE_OWN_INFRACTIONS,
 		FLAG_EDIT_ANY_INFRACTIONS,
 		FLAG_EDIT_OWN_INFRACTIONS,
+		FLAG_VIEW_PLAYER_RECORDS,
 		getFlag,
 	} from "../../permissions/permissions"
 	import { dateString } from "../../utils/date"
@@ -65,7 +66,12 @@
 
 		if (infraction) {
 			if (infraction.attachments) attachments.set(infraction.attachments)
-			player = await getPlayer(infraction.player_id, infraction.platform)
+
+			// If this user has permission to view player records, fetch the player.
+			// If they don't have permission, the player's ID will be displayed instead of their name.
+			if (checkFlag($self.permissions, getFlag(FLAG_VIEW_PLAYER_RECORDS))) {
+				player = await getPlayer(infraction.player_id, infraction.platform)
+			}
 
 			switch (infraction.type) {
 				case "WARNING":
@@ -223,15 +229,17 @@
 						<span>Platform:</span>
 						{infraction.platform}
 					</div>
-					{#if player}
-						<div class="meta--field">
-							<span>Player:</span>
+					<div class="meta--field">
+						<span>Player:</span>
+						{#if player}
 							<Link
 								to={`/player/${infraction.platform}/${infraction.player_id}`}
 								>{player.name}</Link
 							>
-						</div>
-					{/if}
+						{:else}
+							{infraction.player_id}
+						{/if}
+					</div>
 					<div class="meta--field">
 						<span>Issued by:</span>
 						<NameDisplay userId={infraction.user_id}
