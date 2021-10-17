@@ -57,6 +57,12 @@
 
 	let infraction: Infraction = null
 	let attachments = writable([] as Attachment[])
+	let access = writable(
+		{} as {
+			canEdit?: boolean
+			canDelete?: boolean
+		},
+	)
 	let player: Player = null
 	let editComponent
 	let computedPermissions = null
@@ -64,34 +70,42 @@
 	onMount(async () => {
 		infraction = await getInfractionById(id)
 
-		if (infraction) {
-			if (infraction.attachments) attachments.set(infraction.attachments)
-
-			// If this user has permission to view player records, fetch the player.
-			// If they don't have permission, the player's ID will be displayed instead of their name.
-			if (checkFlag($self.permissions, getFlag(FLAG_VIEW_PLAYER_RECORDS))) {
-				player = await getPlayer(infraction.player_id, infraction.platform)
-			}
-
-			switch (infraction.type) {
-				case "WARNING":
-					editComponent = WarningModal
-					break
-				case "MUTE":
-					editComponent = MuteModal
-					break
-				case "KICK":
-					editComponent = KickModal
-					break
-				case "BAN":
-					editComponent = BanModal
-					break
-			}
-
-			// Get computed user permissions scoped to this server
-			const perms = await getServerPermissions(infraction.server_id)
-			computedPermissions = writable(perms as bigint)
+		if (!infraction) {
+			return
 		}
+
+		if (infraction.attachments) attachments.set(infraction.attachments)
+
+		// If this user has permission to view player records, fetch the player.
+		// If they don't have permission, the player's ID will be displayed instead of their name.
+		if (checkFlag($self.permissions, getFlag(FLAG_VIEW_PLAYER_RECORDS))) {
+			player = await getPlayer(infraction.player_id, infraction.platform)
+		}
+
+		switch (infraction.type) {
+			case "WARNING":
+				editComponent = WarningModal
+				break
+			case "MUTE":
+				editComponent = MuteModal
+				break
+			case "KICK":
+				editComponent = KickModal
+				break
+			case "BAN":
+				editComponent = BanModal
+				break
+		}
+
+		// Get computed user permissions scoped to this server
+		const perms = await getServerPermissions(infraction.server_id)
+		computedPermissions = writable(perms as bigint)
+
+		// Determine edit and delete access
+		access.set({
+			canEdit: allowEditing(),
+			canDelete: allowDeletion(),
+		})
 	})
 
 	async function addAttachment(attachment: CreateAttachmentParams) {
@@ -129,6 +143,11 @@
 		if (success) {
 			successToast("Infraction repealed")
 			infraction.repealed = true
+
+			access.set({
+				canEdit: false,
+				canDelete: false,
+			})
 		}
 	}
 
@@ -254,7 +273,7 @@
 				</div>
 
 				<div class="buttons">
-					{#if allowEditing()}
+					{#if $access.canEdit}
 						<svelte:component
 							this={editComponent}
 							mode="edit"
@@ -288,7 +307,7 @@
 						{/if}
 					{/if}
 
-					{#if allowDeletion()}
+					{#if $access.canDelete}
 						<ConfirmModal
 							heading="Delete Infraction"
 							message={"Are you sure you wish to delete this infraction? This action can not be undone."}
@@ -371,7 +390,7 @@
 								>
 									<div slot="trigger" let:open>
 										<div class="delete-btn">
-											{#if allowEditing()}
+											{#if $access.canEdit}
 												<Button size="inline" color="danger" on:click={open}
 													>x</Button
 												>
@@ -390,7 +409,7 @@
 
 				<AttachmentModal on:submit={({ detail }) => addAttachment(detail)}>
 					<div slot="trigger" let:open>
-						{#if allowEditing()}
+						{#if $access.canEdit}
 							<Button on:click={open}>Add Attachment</Button>
 						{/if}
 					</div>
