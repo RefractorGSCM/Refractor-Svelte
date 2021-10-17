@@ -463,9 +463,7 @@
 							<span class="mobile-label">Type: </span>{result.type}
 						</div>
 						<div class="player">
-							<span class="mobile-label"
-								>Player:
-							</span>{result.platform}/{result.player_name}
+							<span class="mobile-label">Player: </span>{result.player_name}
 						</div>
 						<div class="issuer">
 							<span class="mobile-label">Issuer: </span>{result.issuer_name}
