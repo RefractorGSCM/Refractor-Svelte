@@ -172,14 +172,25 @@
 	}
 </script>
 
-<Container style="max-height: unset;">
+<Container
+	style={`max-height: unset; ${
+		infraction && infraction.repealed
+			? "border: 2px solid var(--color-success);"
+			: ""
+	}`}
+>
 	{#if !infraction}
 		<Heading>Infraction not found</Heading>
 	{:else if !computedPermissions}
 		<Heading>Fetching permissions...</Heading>
 	{:else}
 		<div class="heading">
-			<Heading type="title">Infraction {id}</Heading>
+			<Heading type="title"
+				>Infraction {id}
+				{#if infraction.repealed}
+					<span class="repealed"> [REPEALED]</span>
+				{/if}
+			</Heading>
 		</div>
 
 		<SinglePane>
@@ -359,6 +370,12 @@
 
 	.heading {
 		margin-bottom: 2rem;
+		display: flex;
+
+		.repealed {
+			margin-left: 1rem;
+			color: var(--color-success);
+		}
 	}
 
 	.head-wrapper {
