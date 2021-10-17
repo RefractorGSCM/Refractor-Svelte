@@ -36,7 +36,7 @@ const getRecentFlaggedMessages = (count: number) => {
 }
 
 const unflagMessage = (id: number) => {
-	return axios.post(`${API_ROOT}/chat/unflag/${id}`, null, {
+	return axios.patch(`${API_ROOT}/chat/unflag/${id}`, null, {
 		withCredentials: true,
 	})
 }

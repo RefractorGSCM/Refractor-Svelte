@@ -9,6 +9,7 @@
 	import { openWebsocketConnection } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
+		FLAG_MODERATE_FLAGGED_MESSAGES,
 		FLAG_SUPER_ADMIN,
 		FLAG_VIEW_CHAT_RECORDS,
 		FLAG_VIEW_INFRACTION_RECORDS,
@@ -124,6 +125,17 @@
 					</Link>
 				</div>
 			</RequirePerms>
+
+			<RequirePerms allOf={[FLAG_MODERATE_FLAGGED_MESSAGES]}>
+				<div class="link">
+					<Link to="/chat/moderation">
+						<li>
+							<span class="fas fa-bullhorn" />
+							<span>Flagged Messages</span>
+						</li>
+					</Link>
+				</div></RequirePerms
+			>
 
 			<div class="bottom">
 				<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
