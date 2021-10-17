@@ -92,6 +92,12 @@
 	import { truncate } from "../../utils/strings"
 	import { dateString } from "../../utils/date"
 	import { Link, navigate } from "svelte-routing"
+	import {
+		checkFlag,
+		FLAG_VIEW_PLAYER_RECORDS,
+		getFlag,
+	} from "../../permissions/permissions"
+	import { self } from "../../domain/auth/store"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -459,6 +465,10 @@
 						name="player"
 						label="Player"
 						selectText="Any"
+						disabled={!checkFlag(
+							$self.permissions,
+							getFlag(FLAG_VIEW_PLAYER_RECORDS),
+						)}
 						on:change={({ detail }) => onPlayerChange(detail)}
 						bind:value={$store.values.player}
 						error={$store.errors.player_id}
