@@ -38,6 +38,7 @@ export type CreateBanParams = {
 export type UpdateInfractionParams = {
 	reason?: string
 	duration?: string
+	repealed?: boolean
 }
 
 export type InfractionModifyRes = {
