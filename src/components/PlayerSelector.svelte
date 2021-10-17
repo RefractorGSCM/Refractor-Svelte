@@ -12,10 +12,13 @@
 	export let error = null
 	export let value: PlayerSearchResult = null
 	export let selectText = "Select"
+	export let disabled = false
 
 	const dispatch = createEventDispatcher()
 
 	function onChange(player: PlayerSearchResult) {
+		if (disabled) return
+
 		value = player
 
 		dispatch("change", player)
@@ -25,8 +28,18 @@
 <PlayerSearchModal on:submit={({ detail }) => onChange(detail)}>
 	<div slot="trigger" let:open>
 		<div class="wrapper">
-			<div class="main" class:error={!!error} class:selected={!!value}>
-				<div class="player" on:click={open}>
+			<div
+				class="main"
+				class:error={!!error}
+				class:selected={!!value}
+				class:disabled={!!disabled}
+			>
+				<div
+					class="player"
+					on:click={() => {
+						if (!disabled) open()
+					}}
+				>
 					<span>{value?.name || selectText}</span>
 					{#if !!value}
 						<div
@@ -139,6 +152,25 @@
 			&.selected {
 				.player {
 					cursor: unset;
+				}
+			}
+
+			&.disabled {
+				label {
+					color: var(--color-text-muted);
+					transform: translateY(-1.8rem);
+					font-size: 1.2rem;
+				}
+
+				.player {
+					color: var(--color-text-muted);
+					border-bottom: 2px solid var(--color-disabled);
+					cursor: unset;
+				}
+
+				.underline,
+				.underline::before {
+					background: var(--color-disabled);
 				}
 			}
 		}
