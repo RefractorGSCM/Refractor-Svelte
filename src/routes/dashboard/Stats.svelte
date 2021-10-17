@@ -13,10 +13,8 @@
 	import Container from "./components/Container.svelte"
 
 	let stats: Stats
-	let flaggedMessages = writable([] as ChatMessage[])
 	onMount(async () => {
 		stats = await getStats()
-		flaggedMessages.set(await getRecentFlaggedMessages(20))
 	})
 
 	function getTimeWord() {
@@ -104,34 +102,6 @@
 			caching notice
 		</div>
 	</div>
-
-	{#if $flaggedMessages.length > 0}
-		<div class="flagged-messages">
-			<!-- <div class="heading">
-				<Heading type="subtitle">Flagged Message Moderation</Heading>
-			</div> -->
-
-			<!-- <div class="list">
-				{#each $flaggedMessages as chat}
-					<div class="message">
-						<a
-							class="player"
-							href={`/player/${chat.platform}/${chat.player_id}`}
-							on:click={(e) => {
-								e.preventDefault()
-								navigate(`/player/${chat.platform}/${chat.player_id}`)
-							}}>{chat.name}</a
-						>
-						<div class="msg">{chat.message}</div>
-						<div class="actions">
-							<Button size="inline">Unflag</Button>
-							<Button size="inline" color="warning">Moderate</Button>
-						</div>
-					</div>
-				{/each}
-			</div> -->
-		</div>
-	{/if}
 </Container>
 
 <style lang="scss">
