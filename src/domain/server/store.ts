@@ -144,3 +144,13 @@ export async function deactivateServer(id: number) {
 		errorToast("Could not delete server")
 	}
 }
+
+export async function refreshPlayerList(id: number) {
+	try {
+		await api.refreshPlayerList(id)
+
+		successToast("Player list refreshed")
+	} catch (err) {
+		errorToast("Could not refresh player list")
+	}
+}
