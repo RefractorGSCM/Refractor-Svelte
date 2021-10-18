@@ -88,6 +88,12 @@ export function checkFlag(permissions, flag): boolean {
 		return true
 	}
 
+	// Return true if the user is a super admin
+	const superAdminFlag = getFlag(FLAG_SUPER_ADMIN)
+	if ((permissions & superAdminFlag) === superAdminFlag) {
+		return true
+	}
+
 	return false
 }
 
@@ -103,4 +109,72 @@ export function getAllPermissions(): Permission[] {
 	}
 
 	return permissionsArr
+}
+
+export function hasAllOf(
+	perms: BigInt,
+	adminBypass: boolean,
+	...flagNames: string[]
+): boolean {
+	const flags: BigInt[] = []
+	let hasPermission = false
+
+	for (const f of flagNames) {
+		const flag = getFlag(f)
+
+		if (!checkFlag(perms, flag)) {
+			hasPermission = false
+			break
+		}
+	}
+
+	// Check for admin bypass
+	if (
+		!hasPermission &&
+		adminBypass &&
+		checkFlag(perms, getFlag(FLAG_ADMINISTRATOR))
+	) {
+		return true
+	}
+
+	// Check if user is super admin
+	if (checkFlag(perms, getFlag(FLAG_SUPER_ADMIN))) {
+		return true
+	}
+
+	return hasPermission
+}
+
+export function hasOneOf(
+	perms: BigInt,
+	adminBypass: boolean,
+	...flagNames: string[]
+): boolean {
+	const flags: BigInt[] = []
+	let hasPermission = false
+
+	for (const f of flagNames) {
+		const flag = getFlag(f)
+
+		if (checkFlag(perms, flag)) {
+			hasPermission = true
+			break
+		}
+	}
+
+	// Check for admin bypass
+	if (
+		!hasPermission &&
+		adminBypass &&
+		checkFlag(perms, getFlag(FLAG_ADMINISTRATOR))
+	) {
+		return true
+	}
+
+	// Check if user is super admin
+	if (!hasPermission && checkFlag(perms, getFlag(FLAG_SUPER_ADMIN))) {
+		return true
+	}
+
+	return hasPermission
 }
