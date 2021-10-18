@@ -24,7 +24,7 @@ export async function checkAuth(): Promise<boolean> {
 		const msUntilExpiry =
 			new Date(data.expires_at).getTime() - Date.now() + 1000
 
-		console.log("expires in", msUntilExpiry)
+		console.log("expires in minutes", msUntilExpiry / 1000 / 60)
 
 		setTimeout(() => {
 			// log out when session expires
