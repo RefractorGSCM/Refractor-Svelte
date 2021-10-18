@@ -26,8 +26,6 @@
 	async function deleteServer(id: number) {
 		await deactivateServer(id)
 	}
-
-	$: console.log($allServers, $allServers.length)
 </script>
 
 <Container>
@@ -65,7 +63,9 @@
 								<div class="name">
 									<span class="icon fas fa-server" />{server.name}
 								</div>
-								<div class="players">{server.online_players.length}</div>
+								<div class="players">
+									{Object.keys($serverPlayers[server.id]).length}
+								</div>
 								<div class="status">{server.status}</div>
 							</div>
 						</a>
