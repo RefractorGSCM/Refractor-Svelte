@@ -36,6 +36,18 @@ export function removePlayerFromServer(serverId: number, playerId: string) {
 	})
 }
 
+export function setServerPlayers(serverId: number, players: Player[]) {
+	serverPlayers.update((current) => {
+		const newPlayers = {}
+		players.forEach((p) => {
+			newPlayers[p.id] = p
+		})
+		current[serverId] = newPlayers
+
+		return current
+	})
+}
+
 export async function getPlayer(id: string, platform: string): Promise<Player> {
 	try {
 		const { data } = await api.getPlayer(id, platform)
