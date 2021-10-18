@@ -26,16 +26,29 @@
 		setLoading("messagemoderation", true)
 		const msgArr = await getRecentFlaggedMessages(1)
 		const msg = msgArr[0]
+		if (!msg) {
+			noMessagesLeft = true
+			setLoading("messagemoderation", false)
+			return
+		}
+
 		message.set(msg)
 		setLoading("messagemoderation", false)
 	})
 
 	let hideMessage = false
+	let noMessagesLeft = false
 
 	async function getNextMessage() {
 		await tick()
 		hideMessage = true
 		const msgArr = await getRecentFlaggedMessages(1)
+
+		if (!msgArr || msgArr.length < 1) {
+			noMessagesLeft = true
+			return
+		}
+
 		const msg = msgArr[0]
 
 		await sleep(750)
@@ -64,7 +77,7 @@
 
 	<SinglePane>
 		<div class="messages">
-			{#if $loading["messagemoderation"] || !$message}
+			{#if $loading["messagemoderation"]}
 				<Spinner />
 			{/if}
 			{#if $message && !hideMessage}
@@ -97,6 +110,8 @@
 						</PlayerModal>
 					</div>
 				</div>
+			{:else if noMessagesLeft}
+				<Heading>There are no flagged messages remaining. Nice work!</Heading>
 			{/if}
 		</div>
 	</SinglePane>
