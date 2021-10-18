@@ -50,6 +50,7 @@
 
 		<div class="quickselects">
 			<Select name="quickselects" on:change={updateValue}>
+				<option value="">Select...</option>
 				{#each quickselects as option}
 					<option value={option.value}>{option.name}</option>
 				{/each}
