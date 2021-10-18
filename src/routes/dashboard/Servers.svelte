@@ -22,6 +22,7 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
+	import Server from "./Server.svelte"
 
 	async function deleteServer(id: number) {
 		await deactivateServer(id)
@@ -64,7 +65,11 @@
 									<span class="icon fas fa-server" />{server.name}
 								</div>
 								<div class="players">
-									{Object.keys($serverPlayers[server.id]).length}
+									{#if $serverPlayers && $serverPlayers[server.id]}
+										{Object.keys($serverPlayers[server.id]).length}
+									{:else}
+										{server.online_players.length}
+									{/if}
 								</div>
 								<div class="status">{server.status}</div>
 							</div>
