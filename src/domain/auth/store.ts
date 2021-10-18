@@ -21,6 +21,18 @@ export async function checkAuth(): Promise<boolean> {
 	try {
 		const { data } = await api.getSession()
 
+		const msUntilExpiry =
+			new Date(data.expires_at).getTime() - Date.now() + 1000
+
+		console.log("expires in", msUntilExpiry)
+
+		setTimeout(() => {
+			// log out when session expires
+			window.location.replace(
+				`${import.meta.env.VITE_KRATOS_ROOT}/self-service/browser/flows/logout`,
+			)
+		}, msUntilExpiry)
+
 		let accountActivated = false
 		for (const address of data.identity.verifiable_addresses) {
 			if (address.verified === true) {

@@ -110,7 +110,7 @@
 	}
 
 	.messages {
-		height: 23rem;
+		height: 25rem;
 		width: 100%;
 
 		.message {
