@@ -33,6 +33,12 @@ const deactivateServer = (id: number) => {
 	})
 }
 
+const refreshPlayerList = (id: number) => {
+	return axios.post(`${API_ROOT}/servers/${id}/refreshplayers`, null, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getServers,
 	createServer,
@@ -40,4 +46,5 @@ export default {
 	getServerById,
 	getScopedServerPermissions,
 	deactivateServer,
+	refreshPlayerList,
 }

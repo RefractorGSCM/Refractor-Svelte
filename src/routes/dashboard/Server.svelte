@@ -9,6 +9,7 @@
 		allServers,
 		getAllServers,
 		getServerPermissions,
+		refreshPlayerList,
 	} from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
@@ -339,6 +340,20 @@
 							{/each}
 						</div>
 					{/if}
+
+					<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+						<div
+							use:tooltip={"Forces a full refresh of the player list"}
+							style="display: inline-block;"
+						>
+							<Button size="inline" color="disabled">
+								<span
+									class="fas fa-sync"
+									on:click={() => refreshPlayerList(server.id)}
+								/>
+							</Button>
+						</div>
+					</RequirePerms>
 				</div>
 			</SinglePane>
 		{/if}
