@@ -1,4 +1,6 @@
 <script>
+	import { AUTH_ROOT } from "../env"
+
 	import Button from "../components/Button.svelte"
 	import Heading from "../components/Heading.svelte"
 
@@ -25,8 +27,7 @@
 		<div class="resend-notice">
 			If you didn't receive a verification email, please make sure that you're
 			using the correct email and check your spam folder. If you still don't
-			have a verification email, <a
-				href={`${import.meta.env.AUTH_ROOT}/k/verify`}>click here</a
+			have a verification email, <a href={`${AUTH_ROOT}/k/verify`}>click here</a
 			> to receive a new one.
 		</div>
 	</div>
