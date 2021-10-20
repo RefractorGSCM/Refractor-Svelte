@@ -567,7 +567,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		height: 14rem;
+		max-width: 80%;
 
 		> * {
 			margin-top: 1rem;
@@ -575,17 +575,17 @@
 
 		@include respond-below(sm) {
 			height: auto;
+			max-width: 100%;
 		}
 
 		.status {
-			display: flex;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			row-gap: 0.5rem;
+			width: 100%;
 
-			> * {
-				margin-right: 2rem;
-
-				&:last-child {
-					margin-right: 0;
-				}
+			@include respond-below(md) {
+				grid-template-columns: 1fr;
 			}
 
 			&__item {
