@@ -29,6 +29,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Refractor - Servers</title>
+</svelte:head>
+
 <Container>
 	{#if $allServers && $allServers.length > 0}
 		<Heading type="title">Servers</Heading>

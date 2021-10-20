@@ -178,6 +178,10 @@
 	<Spinner blocking={true} />
 {/if}
 
+<svelte:head>
+	<title>Refractor - User Settings</title>
+</svelte:head>
+
 <Container>
 	<Heading type="title">Users</Heading>
 

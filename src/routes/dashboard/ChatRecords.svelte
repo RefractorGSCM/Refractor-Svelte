@@ -404,6 +404,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Refractor - Chat Records</title>
+</svelte:head>
+
 <Container>
 	<div class="title">
 		<Heading type="title">Chat Records</Heading>
