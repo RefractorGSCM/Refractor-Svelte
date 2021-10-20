@@ -208,7 +208,7 @@
 	}
 </script>
 
-<Modal on:close={cleanup} fullWidth>
+<Modal on:close={cleanup}>
 	<div slot="trigger" let:open>
 		<slot name="trigger" openMute={open} {open} />
 	</div>
@@ -328,7 +328,8 @@
 		padding: 0 2rem;
 		padding-top: 2rem;
 		min-width: 40rem;
-		width: 100%;
+		max-width: 60rem;
+		width: clamp(40rem, 60vw, 60rem);
 
 		.form {
 			margin-top: 1rem;
