@@ -94,6 +94,7 @@
 		FLAG_VIEW_PLAYER_RECORDS,
 		getFlag,
 	} from "../../permissions/permissions"
+	import NameDisplay from "../../components/NameDisplay.svelte"
 
 	const pageLimit = 10
 
@@ -475,7 +476,10 @@
 							<span class="mobile-label">Player: </span>{result.player_name}
 						</div>
 						<div class="issuer">
-							<span class="mobile-label">Issuer: </span>{result.issuer_name}
+							<span class="mobile-label">Issuer: </span>
+							<NameDisplay userId={result.user_id}
+								>{result.issuer_name}</NameDisplay
+							>
 						</div>
 						<div class="date">
 							<span class="mobile-label">Date: </span><span class="date">
