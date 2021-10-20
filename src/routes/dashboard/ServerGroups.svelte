@@ -265,6 +265,7 @@
 							{#if group.id !== baseGroupId}
 								<div
 									class="group"
+									class:selected={currentGroup && currentGroup.id === group.id}
 									style={`color: #${decimalToHex(group.color)}`}
 									on:click={() => switchGroups(group)}
 								>
