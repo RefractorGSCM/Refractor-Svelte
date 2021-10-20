@@ -59,8 +59,17 @@ export function connectWebsocket() {
 
 	socket.addEventListener("error", () => {})
 
-	socket.addEventListener("close", () => {
+	socket.addEventListener("close", (info) => {
 		console.log("Websocket connection closed")
+
+		if (info.wasClean || reconnecting) {
+			// if the disconnect was clean or we are reconnecting, this disconnect was
+			// expected so we do not inform the user of a disconnect.
+			//
+			// This prevents the disconnect notice flashing when the user navigates away from
+			// the frontend application.
+			return
+		}
 
 		if (!reconnecting) {
 			reconnecting = true
