@@ -30,6 +30,7 @@
 	import SinglePane from "./components/SinglePane.svelte"
 	import queryString from "query-string"
 	import Checkbox from "../../components/Checkbox.svelte"
+	import tooltip from "../../actions/tooltip"
 
 	export let platform: string = ""
 	export let id: string = ""
@@ -234,7 +235,12 @@
 					{#if currentlyOnline}
 						<div class="status__item">
 							<Link to={`/server/${serverId}?highlight=${id}`}>
-								<Flair color="success">Online</Flair>
+								<div
+									style="display: inline-block;"
+									use:tooltip={"This player is online. Click to jump to their current server."}
+								>
+									<Flair color="success">Online</Flair>
+								</div>
 							</Link>
 						</div>
 					{/if}
