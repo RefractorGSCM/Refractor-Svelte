@@ -1,12 +1,14 @@
 <script lang="ts">
 	export let fullscreen = false
 	export let blocking = false
+	export let noBackground = false
 </script>
 
 <div
-	class={`spinner wrapper ${fullscreen ? "wrapper-fullscreen" : null} ${
-		blocking ? "wrapper-blocking" : null
-	}`}
+	class="spinner wrapper"
+	class:wrapper-fullscreen={fullscreen}
+	class:wrapper-blocking={blocking}
+	class:wrapper-no-bg={noBackground}
 >
 	<div class="lds-roller">
 		<div />
@@ -45,6 +47,10 @@
 
 	.wrapper-blocking {
 		background: var(--color-background3);
+	}
+
+	.wrapper-no-bg {
+		background: none;
 	}
 
 	.lds-roller {
