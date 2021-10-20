@@ -98,6 +98,9 @@
 		getFlag,
 	} from "../../permissions/permissions"
 	import { self } from "../../domain/auth/store"
+	import { loading, setLoading } from "../../domain/loading/store"
+	import Spinner from "../../components/Spinner.svelte"
+	import sleep from "../../utils/sleep"
 
 	function onPlayerChange(player) {
 		if (!player) {
@@ -266,7 +269,10 @@
 		} as ChatSearchBody
 
 		// Run search
+		setLoading("chatmessage-search", true)
 		const { results, success, errors } = await searchChatMessages(body)
+		await sleep(500)
+		setLoading("chatmessage-search", false)
 
 		if (!success) {
 			if (errors) {
@@ -512,8 +518,8 @@
 		</div>
 	</SinglePane>
 
-	{#if $searchStore.results?.length > 0}
-		<div class="results">
+	<div class="results">
+		{#if $searchStore.results?.length > 0}
 			<div class="heading">
 				<Heading>Found {$searchStore.meta.total} Results</Heading>
 			</div>
@@ -578,10 +584,12 @@
 				nextDisabled={$searchStore.meta.page >= $amountOfPages - 1}
 				page={$searchStore.meta.page + 1}
 			/>
-		</div>
-	{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
-		<Heading>No results found</Heading>
-	{/if}
+		{:else if $loading["chatmessage-search"]}
+			<Spinner noBackground />
+		{:else if $searchStore.meta.wasRun && (!$searchStore.results || $searchStore.results.length < 1)}
+			<Heading>No results found</Heading>
+		{/if}
+	</div>
 </Container>
 
 <style lang="scss">
@@ -643,6 +651,8 @@
 		width: 100%;
 		font-size: 1.6rem;
 		margin-bottom: 3rem;
+		position: relative;
+		min-height: 30vh;
 
 		.list {
 			margin-top: 1rem;
