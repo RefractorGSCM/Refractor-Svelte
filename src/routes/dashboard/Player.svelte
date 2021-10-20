@@ -581,7 +581,8 @@
 		.status {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			row-gap: 0.5rem;
+			column-gap: 2rem;
+			row-gap: 1rem;
 			width: 100%;
 
 			@include respond-below(md) {
