@@ -30,12 +30,14 @@ export default function tooltip(element: HTMLElement, text: string) {
 	element.addEventListener("mouseover", mouseOver)
 	element.addEventListener("mouseleave", mouseLeave)
 	element.addEventListener("mousemove", mouseMove)
+	element.addEventListener("click", mouseLeave)
 
 	return {
 		destroy() {
 			element.removeEventListener("mouseover", mouseOver)
 			element.removeEventListener("mouseleave", mouseLeave)
 			element.removeEventListener("mousemove", mouseMove)
+			element.removeEventListener("click", mouseLeave)
 		},
 	}
 }
