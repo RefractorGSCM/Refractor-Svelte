@@ -204,6 +204,10 @@
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
 </script>
 
+<svelte:head>
+	<title>Refractor - Player Records</title>
+</svelte:head>
+
 <Container>
 	<div class="title">
 		<Heading type="title">Player Records</Heading>

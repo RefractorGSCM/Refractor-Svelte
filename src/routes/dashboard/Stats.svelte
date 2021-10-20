@@ -47,6 +47,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Refractor - Home</title>
+</svelte:head>
+
 <Container>
 	<div class="heading">
 		<Heading type="title">Good {getTimeWord()}, {$self.username}.</Heading>

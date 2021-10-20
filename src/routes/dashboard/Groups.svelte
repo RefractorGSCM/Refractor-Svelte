@@ -414,6 +414,10 @@
 	<Spinner blocking={true} />
 {/if}
 
+<svelte:head>
+	<title>Refractor - Group Settings</title>
+</svelte:head>
+
 <Container>
 	<Heading type="title">Groups</Heading>
 	<DualPane id="groups-container">

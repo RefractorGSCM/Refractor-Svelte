@@ -80,6 +80,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Refractor - Flagged Word Settings</title>
+</svelte:head>
+
 <Container>
 	<div class="heading">
 		<Heading type="title">Settings: Flagged Words</Heading>

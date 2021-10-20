@@ -62,6 +62,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Refractor - Message Moderation</title>
+</svelte:head>
+
 <Container>
 	<div class="title">
 		<Heading type="title">Message Moderation</Heading>

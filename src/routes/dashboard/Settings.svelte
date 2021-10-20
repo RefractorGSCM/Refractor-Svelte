@@ -6,6 +6,10 @@
 	import Container from "./components/Container.svelte"
 </script>
 
+<svelte:head>
+	<title>Refractor - Admin Settings</title>
+</svelte:head>
+
 <Container style="max-height: unset;">
 	<div class="settings">
 		<a
