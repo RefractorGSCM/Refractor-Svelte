@@ -498,9 +498,7 @@
 		}
 
 		.users {
-			@include respond-below(sm) {
-				overflow-y: scroll;
-			}
+			overflow-y: scroll;
 
 			.deactivated-heading {
 				font-size: 1.2rem;
