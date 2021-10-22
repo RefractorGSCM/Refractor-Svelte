@@ -25,6 +25,19 @@
 
 	let authChecked = false
 	onMount(async () => {
+		// getVersion function to return the current version in production. Call it from the developer console.
+		// @ts-ignore
+		window.getVersion = () => {
+			const version = import.meta.env.VITE_APP_VERSION || "dev"
+
+			console.log(
+				`%c${version}`,
+				"font-family:system-ui;font-size:2rem;-webkit-text-stroke: 1px black;font-weight:bold",
+			)
+
+			return version
+		}
+
 		setLoading("app", true)
 
 		await checkAuth()

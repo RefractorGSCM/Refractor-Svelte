@@ -4,8 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
-		"serve": "vite preview",
+		"build": "VITE_APP_VERSION=`echo $(git rev-parse --abbrev-ref HEAD):$(git describe --exact-match --tags 2> /dev/null || git rev-parse --short HEAD)` vite build",
+		"serve": "vite preview --host --port 3000",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
