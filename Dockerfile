@@ -1,5 +1,8 @@
 FROM node:15-alpine AS build
 
+# git is required for production version display
+RUN apk --no-cache add git
+
 WORKDIR /app
 
 COPY . /app
