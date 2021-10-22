@@ -143,7 +143,7 @@
 				</RequirePerms>
 
 				<div class="link">
-					<a href={`${import.meta.env.VITE_AUTH_ROOT}/k/settings`}>
+					<a href={`${import.meta.env.VITE_AUTH_ROOT}/settings`}>
 						<li>
 							<span class="fas fa-user-circle" />
 							<span>Account</span>

@@ -3,7 +3,7 @@
 	import Heading from "../components/Heading.svelte"
 
 	function redirectToRecovery() {
-		window.location.replace(`${import.meta.env.VITE_AUTH_ROOT}/k/verify`)
+		window.location.replace(`${import.meta.env.VITE_AUTH_ROOT}/verify`)
 	}
 </script>
 
