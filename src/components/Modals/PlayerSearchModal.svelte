@@ -37,6 +37,7 @@
 		meta: {
 			total: number
 			page: number
+			searchWasRun: boolean
 		}
 		results: PlayerSearchResult[]
 	}
@@ -64,6 +65,7 @@
 		meta: {
 			total: 0,
 			page: 0,
+			searchWasRun: false,
 		},
 		results: [] as PlayerSearchResult[],
 	} as resultStore)
@@ -92,6 +94,7 @@
 			meta: {
 				total: 0,
 				page: 0,
+				searchWasRun: false,
 			},
 			results: [] as PlayerSearchResult[],
 		})
@@ -143,6 +146,7 @@
 			meta: {
 				total: 0,
 				page: 0,
+				searchWasRun: false,
 			},
 			results: [] as PlayerSearchResult[],
 		})
@@ -159,6 +163,7 @@
 
 		searchStore.update((current) => {
 			current.meta.total = total
+			current.meta.searchWasRun = true
 			current.results = results
 			return current
 		})
@@ -189,6 +194,7 @@
 
 		searchStore.update((current) => {
 			current.meta.total = total
+			current.meta.searchWasRun = true
 			current.meta.page = nextPage
 			current.results = results
 			return current
@@ -214,6 +220,7 @@
 
 		searchStore.update((current) => {
 			current.meta.total = total
+			current.meta.searchWasRun = true
 			current.meta.page = prevPage
 			current.results = results
 			return current
@@ -285,7 +292,7 @@
 				</div>
 			</form>
 
-			{#if $searchStore.results.length > 0}
+			{#if $searchStore.meta.searchWasRun && $searchStore.results?.length > 0}
 				<div class="results">
 					<div class="heading">
 						<Heading>Showing {$searchStore.meta.total} Results</Heading>
@@ -331,6 +338,8 @@
 						</div>
 					</div>
 				</div>
+			{:else if $searchStore.meta.searchWasRun}
+				<Heading>No results found</Heading>
 			{/if}
 		</div>
 	</div>
