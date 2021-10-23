@@ -43,17 +43,42 @@ export async function getAllServers() {
 	}
 }
 
-export async function createServer(newServer: CreateServerParams) {
+type creationRes = {
+	server?: Server
+	errors?: any
+}
+
+export async function createServer(
+	newServer: CreateServerParams,
+): Promise<creationRes> {
 	try {
 		const { data } = await api.createServer(newServer)
 
 		successToast("Server created")
+
+		const server = data.payload
+
+		allServers.update((current) => {
+			current.push({
+				...server,
+				online_players: [],
+				is_fragment: false,
+				status: "Unknown",
+			})
+			return current
+		})
+
+		return {
+			server,
+		}
 	} catch (err) {
 		const { data } = err.response
 
 		if (data.errors) {
 			return {
-				...data.errors,
+				errors: {
+					...data.errors,
+				},
 			}
 		}
 
