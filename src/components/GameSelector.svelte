@@ -18,23 +18,20 @@
 		let initialValue
 		if (defaultOption) {
 			initialValue = value = defaultOptionValue
-		} else {
-			initialValue = value = $allGames[0]
+		} else if (!value) {
+			initialValue = value = $allGames[0].name
+			update({ target: { value: initialValue } })
 		}
-		update({ target: { value: initialValue } })
 	})
 
 	function update(e) {
 		value = e.target.value
-		console.log(value)
 		dispatch("change", e.target.value)
 	}
 
 	$: {
 		if (typeof value !== "string" && (value as Game)) {
-			console.log("before", value)
 			value = (value as Game).name
-			console.log("after", value)
 		}
 	}
 </script>
