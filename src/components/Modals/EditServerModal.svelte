@@ -9,6 +9,7 @@
 
 	import Button from "../Button.svelte"
 	import GameSelector from "../GameSelector.svelte"
+	import NumberInput from "../NumberInput.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
@@ -76,13 +77,6 @@
 				[target.name]: target.value,
 			},
 		})
-	}
-
-	function onPortKeyDown(e) {
-		var regex = /[0-9]|\./
-		if (!regex.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
-			if (e.preventDefault) e.preventDefault()
-		}
 	}
 
 	const shouldValidate = (field) => {
@@ -259,14 +253,11 @@
 					on:input={onChange}
 				/>
 
-				<TextInput
+				<NumberInput
 					name="rcon_port"
-					autocomplete="off"
-					label="RCON Port"
-					type="text"
+					label="RCON port"
 					value={$store.values.rcon_port}
 					error={$store.errors.rcon_port}
-					on:keydown={onPortKeyDown}
 					on:input={onChange}
 				/>
 
