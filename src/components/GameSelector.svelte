@@ -31,8 +31,10 @@
 	}
 
 	$: {
-		if (value as Game) {
+		if (typeof value !== "string" && (value as Game)) {
+			console.log("before", value)
 			value = (value as Game).name
+			console.log("after", value)
 		}
 	}
 </script>
