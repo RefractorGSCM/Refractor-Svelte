@@ -143,7 +143,7 @@
 		}
 
 		// Create user and report any errors back
-		const errors = await createServer(values as CreateServerParams)
+		const { server, errors } = await createServer(values as CreateServerParams)
 		store.set({
 			...$store,
 			errors,
@@ -151,6 +151,17 @@
 
 		// If no errors were returned, the user creation succeeded. Close the form.
 		if (!errors) {
+			dispatch("submit", server)
+			store.set({
+				values: {
+					game: "",
+					name: "",
+					address: "",
+					rcon_port: "",
+					rcon_password: "",
+				},
+				errors: {},
+			})
 			close()
 		}
 	}

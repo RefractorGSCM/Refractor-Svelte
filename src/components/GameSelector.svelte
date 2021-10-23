@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte"
+	import type { Game } from "../domain/game/game.types"
 	import { allGames } from "../domain/game/store"
 
 	export let name
@@ -25,7 +26,14 @@
 
 	function update(e) {
 		value = e.target.value
+		console.log(value)
 		dispatch("change", e.target.value)
+	}
+
+	$: {
+		if (value as Game) {
+			value = (value as Game).name
+		}
 	}
 </script>
 
