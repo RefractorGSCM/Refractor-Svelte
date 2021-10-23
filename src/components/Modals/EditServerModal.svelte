@@ -274,7 +274,7 @@
 					name="rcon_password"
 					autocomplete="off"
 					label="RCON Password"
-					value={$store.values.rcon_password}
+					value={$store.values.rcon_password || ""}
 					error={$store.errors.rcon_password}
 					on:input={onChange}
 				/>
