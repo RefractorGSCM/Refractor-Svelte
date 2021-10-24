@@ -101,7 +101,10 @@ export async function updateServer(
 				const server = servers[i]
 
 				if (server.id === id) {
-					servers[i] = data.payload
+					servers[i] = {
+						...server,
+						...data.payload,
+					}
 					break
 				}
 			}
