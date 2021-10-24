@@ -51,8 +51,7 @@
 		try {
 			id = parseInt(id)
 		} catch (err) {
-			errmsg.set("Server not found")
-			console.log("Invalid server ID")
+			errmsg.set("Invalid server ID")
 			setLoading("chat", false)
 			return
 		}
@@ -72,7 +71,6 @@
 
 		if (!found) {
 			errmsg.set("Server not found")
-			console.log("Server not found")
 			setLoading("chat", false)
 			return
 		}
@@ -88,7 +86,6 @@
 
 		if (!chatEnabled) {
 			errmsg.set("Live-chat is not supported for this game.")
-			console.log("Chat not enabled for this server")
 			setLoading("chat", false)
 			return
 		}
@@ -98,9 +95,8 @@
 		permissions.set(perms)
 
 		if (!hasAllOf(perms, true, FLAG_READ_LIVE_CHAT)) {
-			errmsg.set("Server not found")
+			errmsg.set("Unauthorized")
 			setLoading("chat", false)
-			console.log("Lacking permission to read live chat")
 			return
 		}
 

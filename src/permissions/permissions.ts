@@ -116,8 +116,7 @@ export function hasAllOf(
 	adminBypass: boolean,
 	...flagNames: string[]
 ): boolean {
-	const flags: BigInt[] = []
-	let hasPermission = false
+	let hasPermission = true
 
 	for (const f of flagNames) {
 		const flag = getFlag(f)
@@ -150,7 +149,6 @@ export function hasOneOf(
 	adminBypass: boolean,
 	...flagNames: string[]
 ): boolean {
-	const flags: BigInt[] = []
 	let hasPermission = false
 
 	for (const f of flagNames) {
