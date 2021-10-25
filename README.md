@@ -1,3 +1,14 @@
+![GitHub](https://img.shields.io/github/license/RefractorGSCM/Refractor-Svelte?style=flat-square)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/RefractorGSCM/Refractor-Svelte?style=flat-square)
+![GitHub contributors](https://img.shields.io/github/contributors/RefractorGSCM/Refractor-Svelte?style=flat-square)
+
+# Refractor-Svelte
+
+Refractor svelte is the frontend application for Refractor.
+
+For more information on Refractor, check out it's repository [here](https://github.com/RefractorGSCM/Refractor/) or it's documentation [here](https://refractor.dmas.dev/).
+
+## Svelte Instructions Below
 # Svelte + TS + Vite
 
 This template should help get you started developing with Svelte and TypeScript in Vite.
