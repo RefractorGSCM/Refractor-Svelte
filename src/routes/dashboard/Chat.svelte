@@ -221,16 +221,15 @@
 		<form class="chat-window" on:submit|preventDefault={sendMessage}>
 			<div class="wrapper" bind:this={messageBoxRef} on:scroll={onScroll}>
 				<div class="content">
-					{#each $chatMessages[server.id] as msg}
+					{#each $chatMessages[server.id] as msg, idx}
 						{#if !(msg.sent_by_user && msg.name === $self.username)}
-							<div class="message">
-								<span
-									class="name"
-									class:own-message={msg.own_message}
-									class:user-message={msg.sent_by_user && !msg.own_message}
-									>{msg.name}</span
-								>
-								{msg.message}
+							<div
+								class="message"
+								class:own-message={msg.own_message}
+								class:user-message={msg.sent_by_user && !msg.own_message}
+							>
+								<span class="name">{msg.name}</span>
+								<div class="text">{msg.message}</div>
 							</div>
 						{/if}
 					{/each}
@@ -258,6 +257,7 @@
 </Container>
 
 <style lang="scss">
+	@import "../../mixins/mixins";
 	.chat-window {
 		height: clamp(25vh, 60vh, 70vh);
 		display: flex;
@@ -321,12 +321,46 @@
 						max-width: 10vw;
 					}
 
-					.own-message {
+					&.own-message {
 						border-right: 0.8rem solid var(--color-primary-light);
+
+						@include respond-below(sm) {
+							border-right: 0;
+							border-left: 0.4rem solid var(--color-primary-light);
+							padding-left: 0.5rem;
+						}
 					}
 
-					.user-message {
-						border-right: 0.8rem solid var(--color-warning);
+					&.user-message {
+						border-right: 0.4rem solid var(--color-warning);
+
+						@include respond-below(sm) {
+							border-right: 0;
+							border-left: 0.4rem solid var(--color-warning);
+							padding-left: 0.5rem;
+						}
+					}
+
+					@include respond-below(sm) {
+						display: grid;
+						grid-template-rows: auto auto;
+						line-height: unset;
+						padding: 0.2rem 1rem;
+						padding-left: calc(0.5rem + 0.4rem);
+
+						span.name {
+							font-size: 1.2rem;
+							display: inline-block;
+							min-width: unset;
+							max-width: 100%;
+							width: 100%;
+							color: var(--color-text-muted);
+						}
+
+						.text {
+							font-size: 1.2rem;
+							margin-left: 0.2rem;
+						}
 					}
 				}
 			}
@@ -386,6 +420,12 @@
 
 			> :hover {
 				cursor: pointer;
+			}
+
+			@include respond-below(sm) {
+				margin-left: 25%;
+				margin-right: 25%;
+				width: 50%;
 			}
 		}
 	}
