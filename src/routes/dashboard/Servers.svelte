@@ -79,35 +79,37 @@
 							</div>
 						</a>
 						<div class="actions">
-							<EditServerModal initialValues={server} serverId={server.id}>
-								<div slot="trigger" let:open>
-									<Button
-										color="success"
-										size="inline"
-										on:click={(e) => {
-											e.stopPropagation()
-											open()
-										}}>Edit</Button
-									>
-								</div>
-							</EditServerModal>
+							<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
+								<EditServerModal initialValues={server} serverId={server.id}>
+									<div slot="trigger" let:open>
+										<Button
+											color="success"
+											size="inline"
+											on:click={(e) => {
+												e.stopPropagation()
+												open()
+											}}>Edit</Button
+										>
+									</div>
+								</EditServerModal>
 
-							<ConfirmModal
-								heading={`Deleting server: ${server.name}`}
-								message="Are you sure you wish to delete this server?"
-								on:submit={() => deleteServer(server.id)}
-							>
-								<div slot="trigger" let:open>
-									<Button
-										color="danger"
-										size="inline"
-										on:click={(e) => {
-											e.stopPropagation()
-											open()
-										}}>Delete</Button
-									>
-								</div>
-							</ConfirmModal>
+								<ConfirmModal
+									heading={`Deleting server: ${server.name}`}
+									message="Are you sure you wish to delete this server?"
+									on:submit={() => deleteServer(server.id)}
+								>
+									<div slot="trigger" let:open>
+										<Button
+											color="danger"
+											size="inline"
+											on:click={(e) => {
+												e.stopPropagation()
+												open()
+											}}>Delete</Button
+										>
+									</div>
+								</ConfirmModal>
+							</RequirePerms>
 						</div>
 					</div>
 				{/each}
