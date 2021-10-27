@@ -54,7 +54,7 @@
 			.string()
 			.url("Invalid URL")
 			.test("image-url", "URL must point to an image", (url) => {
-				return url.match(/\.(jpeg|jpg|gif|png)$/) != null
+				return url.toLowerCase().match(/\.(jpeg|jpg|gif|png)$/) != null
 			})
 			.required("URL is a required field"),
 		note: yup
