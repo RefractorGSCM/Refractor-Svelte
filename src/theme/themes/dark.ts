@@ -1,5 +1,3 @@
-import type { Theme } from "../theme.types"
-
 const dark: Theme = {
 	colors: {
 		background1: "#1F2B5E",

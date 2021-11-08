@@ -15,29 +15,22 @@
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import NameDisplay from "../../components/NameDisplay.svelte"
 	import PermsCheck from "../../components/PermsCheck.svelte"
-	import type {
-		Attachment,
-		CreateAttachmentParams,
-	} from "../../domain/attachment/attachment.types"
 	import {
 		createAttachment,
 		deleteAttachment,
 	} from "../../domain/attachment/store"
 	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
-	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import {
 		deleteInfraction,
 		getInfractionById,
 		updateInfraction,
 	} from "../../domain/infraction/store"
-	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
 	import {
 		allServers,
 		fragmentServers,
 		getServerPermissions,
 	} from "../../domain/server/store"
-	import type { User } from "../../domain/user/user.types"
 	import {
 		checkFlag,
 		FLAG_DELETE_ANY_INFRACTIONS,

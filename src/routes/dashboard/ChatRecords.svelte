@@ -63,11 +63,6 @@
 	import Heading from "../../components/Heading.svelte"
 	import PlayerSelector from "../../components/PlayerSelector.svelte"
 	import Select from "../../components/Select.svelte"
-	import type { ChatMessage } from "../../domain/chat/chat.types"
-	import type {
-		ChatSearchBody,
-		PlayerSearchResult,
-	} from "../../domain/search/search.types"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
 	import * as yup from "yup"
@@ -81,14 +76,11 @@
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import DatePicker from "../../components/DatePicker.svelte"
 	import { allServers } from "../../domain/server/store"
-	import type { Server } from "../../domain/server/server.types"
 	import GameSelector from "../../components/GameSelector.svelte"
 	import { tick, validate_each_argument } from "svelte/internal"
-	import type { Game } from "../../domain/game/game.types"
 	import { allGames } from "../../domain/game/store"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Activate from "../Activate.svelte"
-	import PageSwitcher fr../../domain/game/gametcher.svelte"
 	import { truncate } from "../../utils/strings"
 	import { dateString } from "../../utils/date"
 	import { Link, navigate } from "svelte-routing"
@@ -101,6 +93,7 @@
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import sleep from "../../utils/sleep"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
 
 	function onPlayerChange(player) {
 		if (!player) {

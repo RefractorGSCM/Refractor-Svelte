@@ -1,6 +1,4 @@
-import type { Group } from "../group/group.types"
-
-export type Self = {
+type Self = {
 	id: string
 	username: string
 	permissions: string | number | bigint

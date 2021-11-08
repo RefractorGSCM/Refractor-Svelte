@@ -6,7 +6,6 @@
 	import Button from "../../../components/Button.svelte"
 	import Heading from "../../../components/Heading.svelte"
 	import TextInput from "../../../components/TextInput.svelte"
-	import type { FlaggedWord } from "../../../domain/chat/chat.types"
 	import {
 		createFlaggedWord,
 		deleteFlaggedWord,

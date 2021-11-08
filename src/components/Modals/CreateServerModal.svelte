@@ -3,10 +3,8 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import { string } from "yup/lib/locale"
-	import type { CreateServerParams } from "../../domain/server/server.types"
 	import { createServer } from "../../domain/server/store"
 	import { createUser } from "../../domain/user/store"
-	import type { UserTraits } from "../../domain/user/user.types"
 	import { errorToast } from "../../utils/toast"
 	import { reduceYupErrors } from "../../utils/yup"
 

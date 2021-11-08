@@ -1,10 +1,5 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte"
-	import { allServers, fragmentServers } from "../domain/server/store"
-	import Server from "../routes/dashboard/Server.svelte"
-	import { serverPlayers } from "../domain/player/store"
-	import { each } from "svelte/internal"
-	import type { PlayerSearchResult } from "../domain/search/search.types"
 	import PlayerSearchModal from "./Modals/PlayerSearchModal.svelte"
 
 	export let name

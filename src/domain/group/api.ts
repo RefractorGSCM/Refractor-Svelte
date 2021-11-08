@@ -1,10 +1,4 @@
 import axios from "axios"
-import type {
-	Group,
-	GroupReorderInfo,
-	NewGroupParams,
-	ServerOverrides,
-} from "./group.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 

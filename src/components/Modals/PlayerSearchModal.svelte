@@ -2,10 +2,6 @@
 	import { createEventDispatcher, onMount } from "svelte"
 
 	import { writable } from "svelte/store"
-	import type {
-		PlayerSearchBody,
-		PlayerSearchResult,
-	} from "../../domain/search/search.types"
 	import Button from "../Button.svelte"
 	import Select from "../Select.svelte"
 	import TextInput from "../TextInput.svelte"

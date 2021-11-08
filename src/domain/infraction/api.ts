@@ -1,11 +1,4 @@
 import axios from "axios"
-import type {
-	CreateBanParams,
-	CreateKickParams,
-	CreateMuteParams,
-	CreateWarningParams,
-	UpdateInfractionParams,
-} from "./infraction.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 

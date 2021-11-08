@@ -1,8 +1,6 @@
 import { writable } from "svelte/store"
-import type GameSettings__SvelteComponent_ from "../../routes/dashboard/settings/Games.svelte"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type { Game, GameSettings } from "./game"
 
 export const allGames = writable([] as Game[])
 export const allPlatforms = writable([] as string[])
@@ -50,18 +48,18 @@ export async function getGameSettings(
 	}
 }
 
-export async function setGameSettings(
+export async function setGameCommandSettings(
 	game: string,
-	body: GameSettings,
+	body: GameCommandSettings,
 ): Promise<{ [key: string]: string }> {
 	try {
-		await api.setGameSettings(game, body)
+		await api.setGameCommandSettings(game, body)
 
-		successToast("Game settings saved")
+		successToast("Game commands saved")
 
 		return null
 	} catch (err) {
-		errorToast("Could not set game settings")
+		errorToast("Could not set game commands")
 
 		const { data } = err.response
 

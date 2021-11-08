@@ -1,7 +1,4 @@
-import type { Attachment } from "../attachment/attachment.types"
-import type { ChatMessage } from "../chat/chat.types"
-
-export type CreateWarningParams = {
+type CreateWarningParams = {
 	reason?: string
 	platform?: string
 	player_id?: string
@@ -9,7 +6,7 @@ export type CreateWarningParams = {
 	linked_chat_messages?: number[]
 }
 
-export type CreateMuteParams = {
+type CreateMuteParams = {
 	reason?: string
 	duration?: number
 	platform?: string
@@ -18,7 +15,7 @@ export type CreateMuteParams = {
 	linked_chat_messages?: number[]
 }
 
-export type CreateKickParams = {
+type CreateKickParams = {
 	reason?: string
 	platform?: string
 	player_id?: string
@@ -26,7 +23,7 @@ export type CreateKickParams = {
 	linked_chat_messages?: number[]
 }
 
-export type CreateBanParams = {
+type CreateBanParams = {
 	reason?: string
 	duration?: number
 	platform?: string
@@ -35,19 +32,19 @@ export type CreateBanParams = {
 	linked_chat_messages?: number[]
 }
 
-export type UpdateInfractionParams = {
+type UpdateInfractionParams = {
 	reason?: string
 	duration?: string
 	repealed?: boolean
 }
 
-export type InfractionModifyRes = {
+type InfractionModifyRes = {
 	infraction: Infraction
 	success: boolean
 	errors?: any
 }
 
-export type Infraction = {
+type Infraction = {
 	id: number
 	player_id: string
 	platform: string

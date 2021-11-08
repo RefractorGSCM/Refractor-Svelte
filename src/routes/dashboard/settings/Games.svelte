@@ -3,7 +3,7 @@
 	import {
 		allGames,
 		getGameSettings,
-		setGameSettings,
+		setGameCommandSettings,
 	} from "../../../domain/game/store"
 	import Container from "../components/Container.svelte"
 	import SinglePane from "../components/SinglePane.svelte"
@@ -45,7 +45,7 @@
 
 		const settings = await getGameSettings(game, false)
 		store.set({
-			values: { ...settings },
+			values: { ...settings.commands },
 			errors: {},
 		})
 
@@ -57,7 +57,7 @@
 			...$store.values,
 		}
 
-		const errors = await setGameSettings($currentlyOpen, body)
+		const errors = await setGameCommandSettings($currentlyOpen, body)
 
 		if (errors) {
 			store.set({
@@ -75,7 +75,7 @@
 
 		store.set({
 			...$store,
-			values: defaultSettings,
+			values: defaultSettings.commands,
 			errors: {},
 		})
 	}

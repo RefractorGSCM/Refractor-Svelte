@@ -17,11 +17,9 @@
 	} from "../../../domain/user/store"
 	import Spinner from "../../../components/Spinner.svelte"
 	import { writable } from "svelte/store"
-	import type { User } from "../../../domain/user/user.types"
 	import Button from "../../../components/Button.svelte"
 	import { getTopGroup } from "../../../utils/groups"
 	import { decimalToHex } from "../../../utils/color"
-	import type { Group } from "../../../domain/group/group.types"
 	import { allGroups, getAllGroups } from "../../../domain/group/store"
 	import Checkbox from "../../../components/Checkbox.svelte"
 	import { group_outros } from "svelte/internal"
@@ -38,7 +36,6 @@
 	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
 	import PermsCheck from "../../../components/PermsCheck.svelte"
 	import PlayerSearchModal from "../../../components/Modals/PlayerSearchModal.svelte"
-	import type { Player } from "../../../domain/player/player.types"
 	import { navigate } from "svelte-routing"
 
 	const baseGroupId = -1

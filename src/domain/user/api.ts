@@ -1,5 +1,4 @@
 import axios from "axios"
-import type { UserLinkParams, UserTraits } from "./user.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 

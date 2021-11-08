@@ -1,6 +1,5 @@
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type { Attachment, CreateAttachmentParams } from "./attachment.types"
 
 type createAttachmentRes = {
 	attachment: Attachment

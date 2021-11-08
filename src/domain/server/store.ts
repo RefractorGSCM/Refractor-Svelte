@@ -2,11 +2,6 @@ import { writable } from "svelte/store"
 import { errorToast, successToast } from "../../utils/toast"
 import { addPlayerToServer } from "../player/store"
 import api from "./api"
-import type {
-	CreateServerParams,
-	Server,
-	UpdateServerParams,
-} from "./server.types"
 
 export const allServers = writable([] as Server[])
 export const fragmentServers = writable([] as Server[])

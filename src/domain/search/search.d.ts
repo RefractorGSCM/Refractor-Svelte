@@ -1,7 +1,4 @@
-import type { ChatMessage } from "../chat/chat.types"
-import type { Player } from "../player/player.types"
-
-export type PlayerSearchBody = {
+type PlayerSearchBody = {
 	term: string
 	type: string
 	platform?: string
@@ -9,29 +6,29 @@ export type PlayerSearchBody = {
 	offset: number
 }
 
-export type PlayerSearchResult = {
+type PlayerSearchResult = {
 	id: string
 	platform: string
 	name: string
 	last_seen: Date
 }
 
-export type PlayerSearchResults = {
+type PlayerSearchResults = {
 	total: number
 	results: PlayerSearchResult[]
 }
 
-export type InfractionSearchResults = {
+type InfractionSearchResults = {
 	total: number
 	results: InfractionSearchResult[]
 }
 
-export type ChatSearchResults = {
+type ChatSearchResults = {
 	total: number
 	results: ChatMessage[]
 }
 
-export type InfractionSearchResult = {
+type InfractionSearchResult = {
 	id: number
 	player_id: string
 	platform: string
@@ -47,7 +44,7 @@ export type InfractionSearchResult = {
 	player_name?: string
 }
 
-export type InfractionSearchBody = {
+type InfractionSearchBody = {
 	type?: string
 	player_id?: string
 	platform?: string
@@ -58,7 +55,7 @@ export type InfractionSearchBody = {
 	offset: number
 }
 
-export type ChatSearchBody = {
+type ChatSearchBody = {
 	player_id?: string
 	platform?: string
 	server_id?: number

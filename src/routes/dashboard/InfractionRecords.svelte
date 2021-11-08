@@ -67,11 +67,6 @@
 		isSuperAdmin,
 		self,
 	} from "../../domain/auth/store"
-	import type {
-		InfractionSearchBody,
-		InfractionSearchResult,
-		PlayerSearchResult,
-	} from "../../domain/search/search.types"
 	import { allUsers, getAllUsers } from "../../domain/user/store"
 	import { reduceYupErrors } from "../../utils/yup"
 	import Container from "./components/Container.svelte"

@@ -1,7 +1,6 @@
 import { writable } from "svelte/store"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type { ChatMessage, FlaggedWord } from "./chat.types"
 
 export const chatMessages = writable({} as { [key: number]: ChatMessage[] })
 
