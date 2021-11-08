@@ -1,23 +1,20 @@
 <script lang="ts">
 	import { onMount, tick } from "svelte"
+	import { Link } from "svelte-routing"
 	import { writable } from "svelte/store"
-
+	import { fade } from "svelte/transition"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
-	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import {
 		getRecentFlaggedMessages,
 		unflagMessage,
 	} from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
-	import { getPlayer } from "../../domain/player/store"
+	import sleep from "../../utils/sleep"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import { fade } from "svelte/transition"
-	import sleep from "../../utils/sleep"
-	import { Link } from "svelte-routing"
 
 	let message = writable(null as ChatMessage)
 	onMount(async () => {

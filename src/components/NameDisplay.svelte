@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
-	import { baseGroup, getUserPrimaryGroup } from "../domain/group/store"
+	import { getUserPrimaryGroup } from "../domain/group/store"
 	import { decimalToHex, hexToDecimal } from "../utils/color"
-	import Spinner from "./Spinner.svelte"
 
 	export let userId
 

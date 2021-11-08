@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
+	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
 	import Spinner from "../../components/Spinner.svelte"
+	import TextInput from "../../components/TextInput.svelte"
+	import Toggle from "../../components/Toggle.svelte"
+	import { isSuperAdmin } from "../../domain/auth/store"
 	import {
 		allGroups,
 		createGroup,
@@ -12,27 +19,17 @@
 		updateGroup,
 	} from "../../domain/group/store"
 	import { loading, setLoading } from "../../domain/loading/store"
-	import Container from "./components/Container.svelte"
-	import Toggle from "../../components/Toggle.svelte"
-	import { writable } from "svelte/store"
 	import {
-		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
-		FLAG_VIEW_SERVERS,
 		getAllPermissions,
-		getDescription,
 		getFlag,
 		getSetFlags,
 	} from "../../permissions/permissions"
-	import BottomBar from "./components/BottomBar.svelte"
-	import { sortAsc } from "../../utils/sorting"
-	import TextInput from "../../components/TextInput.svelte"
-	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
-	import DualPane from "./components/DualPane.svelte"
-	import ColorPicker from "../../components/Modals/ColorPicker.svelte"
 	import { decimalToHex, hexToDecimal } from "../../utils/color"
-	import RequirePerms from "../../components/RequirePerms.svelte"
-	import { isSuperAdmin } from "../../domain/auth/store"
+	import { sortAsc } from "../../utils/sorting"
+	import BottomBar from "./components/BottomBar.svelte"
+	import Container from "./components/Container.svelte"
+	import DualPane from "./components/DualPane.svelte"
 
 	const baseGroupId = -1
 

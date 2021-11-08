@@ -1,21 +1,17 @@
 <script lang="ts">
-	import { onMount } from "svelte"
-	import { Link, navigate } from "svelte-routing"
+	import { navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
+	import * as yup from "yup"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
 	import Select from "../../components/Select.svelte"
 	import TextInput from "../../components/TextInput.svelte"
 	import { searchPlayers } from "../../domain/search/store"
+	import { dateString } from "../../utils/date"
+	import { reduceYupErrors } from "../../utils/yup"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import * as yup from "yup"
-	import { reduceYupErrors } from "../../utils/yup"
-	import BottomBar from "./components/BottomBar.svelte"
-	import PlayerSelector from "../../components/Modals/PlayerSearchModal.svelte"
-	import PageSwitcher from "../../components/PageSwitcher.svelte"
-	import { dateString } from "../../utils/date"
-	import { boolean } from "yup/lib/locale"
 
 	const pageLimit = 10
 

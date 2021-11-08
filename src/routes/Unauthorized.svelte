@@ -1,5 +1,4 @@
 <script>
-	import Button from "../components/Button.svelte"
 	import Heading from "../components/Heading.svelte"
 
 	function redirectToRecovery() {

@@ -4,7 +4,6 @@
 
 <script lang="ts">
 	import { createEventDispatcher, noop } from "svelte/internal"
-
 	import Button from "../Button.svelte"
 	import { modalStore } from "./Modal.store"
 

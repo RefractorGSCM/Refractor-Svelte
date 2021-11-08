@@ -1,4 +1,4 @@
-import { errorToast, successToast } from "../../utils/toast"
+import { errorToast } from "../../utils/toast"
 import api from "./api"
 
 export async function searchPlayers(

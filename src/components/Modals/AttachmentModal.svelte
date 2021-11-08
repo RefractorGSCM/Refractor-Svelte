@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte"
 	import { writable } from "svelte/store"
-	import Button from "../Button.svelte"
-	import TextInput from "../TextInput.svelte"
-	import Modal from "./Modal.svelte"
 	import * as yup from "yup"
 	import { reduceYupErrors } from "../../utils/yup"
+	import Button from "../Button.svelte"
 	import TextArea from "../TextArea.svelte"
+	import TextInput from "../TextInput.svelte"
+	import Modal from "./Modal.svelte"
 
 	const dispatch = createEventDispatcher()
 

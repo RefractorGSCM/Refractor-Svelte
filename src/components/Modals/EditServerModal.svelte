@@ -5,7 +5,6 @@
 	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
-
 	import Button from "../Button.svelte"
 	import GameSelector from "../GameSelector.svelte"
 	import NumberInput from "../NumberInput.svelte"

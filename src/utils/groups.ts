@@ -1,5 +1,4 @@
 import { baseGroup } from "../domain/group/store"
-import { decimalToHex, hexToDecimal } from "./color"
 import { sortAsc } from "./sorting"
 
 export function getTopGroup(groups: Group[]): Group {

@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-
 	import { writable } from "svelte/store"
-
 	import Button from "../../../components/Button.svelte"
 	import Heading from "../../../components/Heading.svelte"
-	import TextInput from "../../../components/TextInput.svelte"
 	import {
 		createFlaggedWord,
 		deleteFlaggedWord,

@@ -4,7 +4,6 @@
 	import * as yup from "yup"
 	import { createUser } from "../../domain/user/store"
 	import { reduceYupErrors } from "../../utils/yup"
-
 	import Button from "../Button.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"

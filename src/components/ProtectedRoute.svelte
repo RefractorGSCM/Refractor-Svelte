@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { navigate, Route } from "svelte-routing"
+	import { Route } from "svelte-routing"
 	import NotLoggedIn from "../routes/NotLoggedIn.svelte"
 
 	export let path: string

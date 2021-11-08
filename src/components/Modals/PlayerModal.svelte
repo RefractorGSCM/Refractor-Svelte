@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte"
-
 	import { navigate } from "svelte-routing"
-
-	import MessageModeration from "../../routes/dashboard/MessageModeration.svelte"
-
 	import Button from "../Button.svelte"
 	import BanModal from "./BanModal.svelte"
 	import KickModal from "./KickModal.svelte"

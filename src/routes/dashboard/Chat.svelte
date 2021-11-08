@@ -1,15 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import {
-		afterUpdate,
-		beforeUpdate,
-		missing_component,
-		tick,
-	} from "svelte/internal"
+	import { afterUpdate, tick } from "svelte/internal"
 	import { writable } from "svelte/store"
 	import Heading from "../../components/Heading.svelte"
 	import PermissionCheck from "../../components/PermissionCheck.svelte"
-	import RequirePerms from "../../components/RequirePerms.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { self } from "../../domain/auth/store"
 	import {
@@ -26,11 +20,8 @@
 	} from "../../domain/server/store"
 	import { getCurrentWebsocket } from "../../domain/websocket/store"
 	import {
-		checkFlag,
 		FLAG_READ_LIVE_CHAT,
 		FLAG_SEND_LIVE_CHAT,
-		FLAG_VIEW_SERVERS,
-		getFlag,
 		hasAllOf,
 	} from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"

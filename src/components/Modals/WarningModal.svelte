@@ -6,17 +6,11 @@
 		createWarning,
 		updateInfraction,
 	} from "../../domain/infraction/store"
-	import { updateServer } from "../../domain/server/store"
-	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
 	import AttachmentManager from "../AttachmentManager.svelte"
-
 	import Button from "../Button.svelte"
-	import Heading from "../Heading.svelte"
 	import ServerSelector from "../ServerSelector.svelte"
 	import TextArea from "../TextArea.svelte"
-	import TextInput from "../TextInput.svelte"
-	import AttachmentModal from "./AttachmentModal.svelte"
 	import Modal from "./Modal.svelte"
 
 	export let mode = "create"

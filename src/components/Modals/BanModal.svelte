@@ -3,17 +3,12 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import { createBan, updateInfraction } from "../../domain/infraction/store"
-	import { updateServer } from "../../domain/server/store"
-	import Server from "../../routes/dashboard/Server.svelte"
-	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"
 	import AttachmentManager from "../AttachmentManager.svelte"
-
 	import Button from "../Button.svelte"
 	import DurationPicker from "../DurationPicker.svelte"
 	import ServerSelector from "../ServerSelector.svelte"
 	import TextArea from "../TextArea.svelte"
-	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 
 	export let initialValues: CreateBanParams = {}
