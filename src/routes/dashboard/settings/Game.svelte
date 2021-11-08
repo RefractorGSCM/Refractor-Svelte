@@ -228,7 +228,6 @@
 														bind:value={$store.values[action][infractionType][
 															key
 														]}
-														placeholder={key}
 														error={$store.errors[action][infractionType][key]}
 														showConfirm={false}
 														on:delete={() => {
