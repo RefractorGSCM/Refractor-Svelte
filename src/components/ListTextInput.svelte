@@ -47,7 +47,6 @@
 
 <style lang="scss">
 	.input-wrapper {
-		margin-top: 1rem;
 		min-height: 3rem;
 	}
 

@@ -83,7 +83,7 @@
 	export let url = ""
 </script>
 
-<Container>
+<Container style="max-height: auto; height: auto;">
 	<Router {url}>
 		<Route path="/:game" let:params>
 			<Game name={params.game} />
