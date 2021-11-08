@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Container from "./components/Container.svelte"
-	import Heading from "../../components/Heading.svelte"
-	import DualPane from "./components/DualPane.svelte"
+	import Container from "../components/Container.svelte"
+	import Heading from "../../../components/Heading.svelte"
+	import DualPane from "../components/DualPane.svelte"
 	import { onMount } from "svelte"
-	import { loading, setLoading } from "../../domain/loading/store"
+	import { loading, setLoading } from "../../../domain/loading/store"
 	import {
 		addUserGroup,
 		allUsers,
@@ -14,32 +14,31 @@
 		reactivateUser,
 		removeUserGroup,
 		unlinkUserPlayer,
-	} from "../../domain/user/store"
-	import Spinner from "../../components/Spinner.svelte"
+	} from "../../../domain/user/store"
+	import Spinner from "../../../components/Spinner.svelte"
 	import { writable } from "svelte/store"
-	import type { User } from "../../domain/user/user.types"
-	import Button from "../../components/Button.svelte"
-	import { getTopGroup } from "../../utils/groups"
-	import { decimalToHex } from "../../utils/color"
-	import type { Group } from "../../domain/group/group.types"
-	import { allGroups, getAllGroups } from "../../domain/group/store"
-	import Checkbox from "../../components/Checkbox.svelte"
+	import type { User } from "../../../domain/user/user.types"
+	import Button from "../../../components/Button.svelte"
+	import { getTopGroup } from "../../../utils/groups"
+	import { decimalToHex } from "../../../utils/color"
+	import type { Group } from "../../../domain/group/group.types"
+	import { allGroups, getAllGroups } from "../../../domain/group/store"
+	import Checkbox from "../../../components/Checkbox.svelte"
 	import { group_outros } from "svelte/internal"
-	import Groups from "./Groups.svelte"
+	import Groups from "../Groups.svelte"
 	import {
 		checkFlag,
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
 		getFlag,
-	} from "../../permissions/permissions"
-	import { isAdmin, isSuperAdmin, self } from "../../domain/auth/store"
-	import CreateUserModal from "../../components/Modals/CreateUserModal.svelte"
-	import Flair from "../../components/Flair.svelte"
-	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
-	import PermsCheck from "../../components/PermsCheck.svelte"
-	import PlayerSearchModal from "../../components/Modals/PlayerSearchModal.svelte"
-	import type { Player } from "../../domain/player/player.types"
-	import Player from "./Player.svelte"
+	} from "../../../permissions/permissions"
+	import { isAdmin, isSuperAdmin, self } from "../../../domain/auth/store"
+	import CreateUserModal from "../../../components/Modals/CreateUserModal.svelte"
+	import Flair from "../../../components/Flair.svelte"
+	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import PermsCheck from "../../../components/PermsCheck.svelte"
+	import PlayerSearchModal from "../../../components/Modals/PlayerSearchModal.svelte"
+	import type { Player } from "../../../domain/player/player.types"
 	import { navigate } from "svelte-routing"
 
 	const baseGroupId = -1
@@ -411,7 +410,7 @@
 </Container>
 
 <style lang="scss">
-	@import "../../mixins/mixins";
+	@import "../../../mixins/mixins";
 
 	.linked-players {
 		max-width: inherit;

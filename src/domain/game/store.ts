@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import type GameSettings__SvelteComponent_ from "../../routes/dashboard/components/GameSettings.svelte"
+import type GameSettings__SvelteComponent_ from "../../routes/dashboard/settings/Games.svelte"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
 import type { Game, GameSettings } from "./game.types"

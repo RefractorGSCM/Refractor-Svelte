@@ -5,8 +5,8 @@
 		getGameSettings,
 		setGameSettings,
 	} from "../../../domain/game/store"
-	import Container from "./Container.svelte"
-	import SinglePane from "./SinglePane.svelte"
+	import Container from "../components/Container.svelte"
+	import SinglePane from "../components/SinglePane.svelte"
 	import { Accordion, AccordionItem } from "svelte-collapsible"
 	import GameSelector from "../../../components/GameSelector.svelte"
 	import TextInput from "../../../components/TextInput.svelte"
@@ -15,6 +15,8 @@
 	import Spinner from "../../../components/Spinner.svelte"
 	import Button from "../../../components/Button.svelte"
 	import Activate from "../../Activate.svelte"
+	import { Link, Route, Router } from "svelte-routing"
+	import Game from "./Game.svelte"
 
 	let currentlyOpen = writable("")
 
@@ -77,9 +79,41 @@
 			errors: {},
 		})
 	}
+
+	export let url = ""
 </script>
 
 <Container>
+	<Router {url}>
+		<Route path="/:game" let:params>
+			<Game name={params.game} />
+		</Route>
+
+		<Route path="/">
+			<div class="title">
+				<Heading type="title">Games</Heading>
+			</div>
+
+			<SinglePane>
+				<div class="games-list">
+					<div class="intro">Select the game you wish to configure.</div>
+
+					<div class="list">
+						{#each $allGames as game}
+							<Link to={`/settings/games/${game.name}`}>
+								<div class="game">
+									{game.name}
+								</div>
+							</Link>
+						{/each}
+					</div>
+				</div>
+			</SinglePane>
+		</Route>
+	</Router>
+</Container>
+
+<!-- <Container>
 	<div class="title">
 		<Heading type="title">Game Settings</Heading>
 	</div>
@@ -146,79 +180,112 @@
 			</div>
 		</div>
 	</SinglePane>
-</Container>
-
+</Container> -->
 <style lang="scss">
 	.title {
 		margin-bottom: 2rem;
 	}
 
 	.games-list {
-		width: 100%;
+		display: flex;
+		flex-direction: column;
 
-		.heading {
-			margin-bottom: 1rem;
-		}
-
-		.placeholders {
+		.intro {
 			margin-bottom: 2rem;
 		}
 
-		.games {
+		.list {
 			display: flex;
-			flex-direction: column;
-			column-gap: 1rem;
-			row-gap: 1rem;
+			flex-wrap: wrap;
+			column-gap: 0.5rem;
+			row-gap: 0.5rem;
 
 			.game {
-				width: 100%;
-				padding: 1rem;
-				background-color: var(--color-background1);
-				font-size: 1.6rem;
-				transition: background 0.2s;
-				cursor: pointer;
+				background-color: var(--color-accent);
+				padding: 0.5rem 1rem;
 				border-radius: var(--border-sm);
-				user-select: none;
-				margin-bottom: 1rem;
+				cursor: pointer;
+				transition: all 0.2s;
+				text-decoration: none;
+				color: var(--color-text2);
 
 				&:hover {
-					background-color: var(--color-topbar);
-				}
-
-				&.expanded {
-					margin-bottom: 0;
-					border-bottom-left-radius: 0;
-					border-bottom-right-radius: 0;
-				}
-			}
-
-			.game-content {
-				width: 100%;
-				padding: 1rem;
-				position: relative;
-				min-height: 20rem;
-
-				&.expanded {
-					margin-bottom: 0.5rem;
-					border: 2px solid var(--color-background1);
-				}
-
-				.game-form {
-					margin-top: 2rem;
-				}
-
-				.button-save {
-					position: absolute;
-					bottom: 1rem;
-					right: 1rem;
-				}
-
-				.button-reset {
-					position: absolute;
-					bottom: 1rem;
-					left: 1rem;
+					background-color: var(--color-accent-light);
 				}
 			}
 		}
 	}
+
+	// .title {
+	// 	margin-bottom: 2rem;
+	// }
+
+	// .games-list {
+	// 	width: 100%;
+
+	// 	.heading {
+	// 		margin-bottom: 1rem;
+	// 	}
+
+	// 	.placeholders {
+	// 		margin-bottom: 2rem;
+	// 	}
+
+	// 	.games {
+	// 		display: flex;
+	// 		flex-direction: column;
+	// 		column-gap: 1rem;
+	// 		row-gap: 1rem;
+
+	// 		.game {
+	// 			width: 100%;
+	// 			padding: 1rem;
+	// 			background-color: var(--color-background1);
+	// 			font-size: 1.6rem;
+	// 			transition: background 0.2s;
+	// 			cursor: pointer;
+	// 			border-radius: var(--border-sm);
+	// 			user-select: none;
+	// 			margin-bottom: 1rem;
+
+	// 			&:hover {
+	// 				background-color: var(--color-topbar);
+	// 			}
+
+	// 			&.expanded {
+	// 				margin-bottom: 0;
+	// 				border-bottom-left-radius: 0;
+	// 				border-bottom-right-radius: 0;
+	// 			}
+	// 		}
+
+	// 		.game-content {
+	// 			width: 100%;
+	// 			padding: 1rem;
+	// 			position: relative;
+	// 			min-height: 20rem;
+
+	// 			&.expanded {
+	// 				margin-bottom: 0.5rem;
+	// 				border: 2px solid var(--color-background1);
+	// 			}
+
+	// 			.game-form {
+	// 				margin-top: 2rem;
+	// 			}
+
+	// 			.button-save {
+	// 				position: absolute;
+	// 				bottom: 1rem;
+	// 				right: 1rem;
+	// 			}
+
+	// 			.button-reset {
+	// 				position: absolute;
+	// 				bottom: 1rem;
+	// 				left: 1rem;
+	// 			}
+	// 		}
+	// 	}
+	// }
 </style>
