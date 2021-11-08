@@ -34,7 +34,7 @@
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import queryString from "query-string"
-	import type { Game } from "../../domain/game/game.types"
+	import type { Game } fro../../domain/game/gamepes"
 	import { allGames } from "../../domain/game/store"
 	import tooltip from "../../actions/tooltip"
 
