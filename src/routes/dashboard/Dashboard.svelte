@@ -430,10 +430,6 @@
 					font-size: 1.6rem;
 				}
 			}
-
-			.active {
-				display: block;
-			}
 		}
 
 		main {
@@ -446,12 +442,6 @@
 			@include respond-below(xl) {
 				margin-top: 6rem;
 				min-height: calc(100vh - 6rem);
-			}
-
-			.title {
-				font-size: 2.4rem;
-				font-weight: 500;
-				margin-bottom: 3rem;
 			}
 		}
 
