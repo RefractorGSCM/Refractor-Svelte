@@ -408,10 +408,6 @@
 			margin-left: 35%;
 			margin-right: 35%;
 
-			> :hover {
-				cursor: pointer;
-			}
-
 			@include respond-below(sm) {
 				margin-left: 25%;
 				margin-right: 25%;
