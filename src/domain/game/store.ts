@@ -2,7 +2,7 @@ import { writable } from "svelte/store"
 import type GameSettings__SvelteComponent_ from "../../routes/dashboard/settings/Games.svelte"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type { Game, GameSettings } from "./game.types"
+import type { Game, GameSettings } from "./game"
 
 export const allGames = writable([] as Game[])
 export const allPlatforms = writable([] as string[])

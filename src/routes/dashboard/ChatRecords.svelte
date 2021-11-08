@@ -88,7 +88,7 @@
 	import { allGames } from "../../domain/game/store"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Activate from "../Activate.svelte"
-	import PageSwitcher from "../../components/PageSwitcher.svelte"
+	import PageSwitcher fr../../domain/game/gametcher.svelte"
 	import { truncate } from "../../utils/strings"
 	import { dateString } from "../../utils/date"
 	import { Link, navigate } from "svelte-routing"
