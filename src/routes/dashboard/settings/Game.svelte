@@ -339,7 +339,7 @@
 				row-gap: 1rem;
 				column-gap: 1rem;
 
-				@include respond-below(lg) {
+				@include respond-below(xl) {
 					grid-template-columns: 1fr;
 				}
 			}
