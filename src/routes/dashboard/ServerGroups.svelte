@@ -5,10 +5,8 @@
 	import Flair from "../../components/Flair.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
-	import { isSuperAdmin } from "../../domain/auth/store"
 	import {
 		allGroups,
-		baseGroup,
 		baseGroupId,
 		getAllGroups,
 		getServerOverrides,
@@ -22,7 +20,6 @@
 	} from "../../permissions/permissions"
 	import { decimalToHex } from "../../utils/color"
 	import BottomBar from "./components/BottomBar.svelte"
-
 	import Container from "./components/Container.svelte"
 	import DualPane from "./components/DualPane.svelte"
 

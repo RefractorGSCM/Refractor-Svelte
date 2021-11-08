@@ -1,8 +1,6 @@
 <script>
-	import { AUTH_ROOT, KRATOS_ROOT } from "../env"
-
-	import Button from "../components/Button.svelte"
 	import Heading from "../components/Heading.svelte"
+	import { AUTH_ROOT, KRATOS_ROOT } from "../env"
 
 	function redirectToRecovery() {
 		window.location.replace(`${import.meta.env.VITE_AUTH_ROOT}/k/verify`)

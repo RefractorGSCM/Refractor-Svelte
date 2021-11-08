@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte"
-
+	import { createEventDispatcher } from "svelte"
 	import { writable } from "svelte/store"
-	import Button from "../Button.svelte"
-	import Select from "../Select.svelte"
-	import TextInput from "../TextInput.svelte"
-	import Modal from "./Modal.svelte"
 	import * as yup from "yup"
 	import { searchPlayers } from "../../domain/search/store"
 	import { reduceYupErrors } from "../../utils/yup"
-	import { navigate } from "svelte-routing"
+	import Button from "../Button.svelte"
 	import Heading from "../Heading.svelte"
+	import Select from "../Select.svelte"
+	import TextInput from "../TextInput.svelte"
+	import Modal from "./Modal.svelte"
 
 	let selectedPlayer = writable(null as PlayerSearchResult)
 

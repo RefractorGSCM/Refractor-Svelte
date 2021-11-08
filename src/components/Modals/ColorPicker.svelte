@@ -1,6 +1,7 @@
 <script>
-	import { createEventDispatcher } from "svelte"
+	// @ts-nocheck
 
+	import { createEventDispatcher } from "svelte"
 	import { HsvPicker } from "svelte-color-picker"
 	import { hexToDecimal, rgbToHex } from "../../utils/color"
 	import Button from "../Button.svelte"

@@ -1,7 +1,6 @@
 import { writable } from "svelte/store"
-import api from "./api"
-import { toast } from "@zerodevx/svelte-toast"
 import { errorToast, successToast } from "../../utils/toast"
+import api from "./api"
 
 export const allUsers = writable([] as User[])
 

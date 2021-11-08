@@ -1,9 +1,7 @@
-import { time_ranges_to_array } from "svelte/internal"
 import { writable } from "svelte/store"
 import { registerPermissions } from "../../permissions/permissions"
 import { sortAsc } from "../../utils/sorting"
 import { errorToast, successToast } from "../../utils/toast"
-import { getAllServers } from "../server/store"
 import api from "./api"
 
 export const allGroups = writable([] as Group[])

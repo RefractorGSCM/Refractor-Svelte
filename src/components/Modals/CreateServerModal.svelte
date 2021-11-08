@@ -2,16 +2,11 @@
 	import { createEventDispatcher } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
-	import { string } from "yup/lib/locale"
 	import { createServer } from "../../domain/server/store"
-	import { createUser } from "../../domain/user/store"
-	import { errorToast } from "../../utils/toast"
 	import { reduceYupErrors } from "../../utils/yup"
-
 	import Button from "../Button.svelte"
 	import GameSelector from "../GameSelector.svelte"
 	import NumberInput from "../NumberInput.svelte"
-	import Select from "../Select.svelte"
 	import TextInput from "../TextInput.svelte"
 	import Modal from "./Modal.svelte"
 

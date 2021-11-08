@@ -1,6 +1,6 @@
 <script lang="ts">
-	import dark from "./themes/dark"
 	import { currentTheme } from "./store"
+	import dark from "./themes/dark"
 
 	const themes = {
 		dark,

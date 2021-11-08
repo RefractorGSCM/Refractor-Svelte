@@ -9,9 +9,8 @@
 </script>
 
 <script>
-	import DatePicker from "@beyonk/svelte-datepicker/src/components/DatePicker.svelte"
 	import { CalendarStyle } from "@beyonk/svelte-datepicker/src/calendar-style.js"
-	import { stringify } from "query-string"
+	import DatePicker from "@beyonk/svelte-datepicker/src/components/DatePicker.svelte"
 	import { createEventDispatcher } from "svelte"
 	import { writable } from "svelte/store"
 

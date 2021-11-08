@@ -1,7 +1,7 @@
 import { toast } from "@zerodevx/svelte-toast"
+import ReconnectingWebSocket from "reconnecting-websocket"
 import { writable } from "svelte/store"
-import { errorToast, successToast } from "../../utils/toast"
-import { getSelfInfo } from "../auth/store"
+import { successToast } from "../../utils/toast"
 import { addChatMessage } from "../chat/store"
 import {
 	addPlayerToServer,
@@ -9,7 +9,6 @@ import {
 	setServerPlayers,
 } from "../player/store"
 import { setServerStatus } from "../server/store"
-import ReconnectingWebSocket from "reconnecting-websocket"
 
 const messageStore = writable("")
 

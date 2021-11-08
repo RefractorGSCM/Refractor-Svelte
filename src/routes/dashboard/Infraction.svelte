@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { Link, navigate } from "svelte-routing"
-	import { component_subscribe } from "svelte/internal"
 	import { writable } from "svelte/store"
-	import { boolean } from "yup/lib/locale"
-	import AttachmentManager from "../../components/AttachmentManager.svelte"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
@@ -14,7 +11,6 @@
 	import MuteModal from "../../components/Modals/MuteModal.svelte"
 	import WarningModal from "../../components/Modals/WarningModal.svelte"
 	import NameDisplay from "../../components/NameDisplay.svelte"
-	import PermsCheck from "../../components/PermsCheck.svelte"
 	import {
 		createAttachment,
 		deleteAttachment,
@@ -44,7 +40,6 @@
 	import { successToast } from "../../utils/toast"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import Server from "./Server.svelte"
 
 	export let id
 

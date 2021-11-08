@@ -1,23 +1,20 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-
-	import Heading from "../../../components/Heading.svelte"
-	import Spinner from "../../../components/Spinner.svelte"
-	import { loading, setLoading } from "../../../domain/loading/store"
-	import SinglePane from "../components/SinglePane.svelte"
 	import { Accordion, AccordionItem } from "svelte-collapsible"
-	import TextInput from "../../../components/TextInput.svelte"
 	import { writable } from "svelte/store"
-	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import Button from "../../../components/Button.svelte"
-	import { now } from "svelte/internal"
+	import Heading from "../../../components/Heading.svelte"
+	import ListTextInput from "../../../components/ListTextInput.svelte"
+	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import Spinner from "../../../components/Spinner.svelte"
 	import {
 		allGames,
 		getAllGames,
 		getGameSettings,
 		setGameCommandSettings,
 	} from "../../../domain/game/store"
-	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import { loading, setLoading } from "../../../domain/loading/store"
+	import SinglePane from "../components/SinglePane.svelte"
 
 	export let name
 

@@ -1,21 +1,9 @@
 <script lang="ts">
+	import { Link, Route, Router } from "svelte-routing"
 	import Heading from "../../../components/Heading.svelte"
-	import {
-		allGames,
-		getGameSettings,
-		setGameCommandSettings,
-	} from "../../../domain/game/store"
+	import { allGames } from "../../../domain/game/store"
 	import Container from "../components/Container.svelte"
 	import SinglePane from "../components/SinglePane.svelte"
-	import { Accordion, AccordionItem } from "svelte-collapsible"
-	import GameSelector from "../../../components/GameSelector.svelte"
-	import TextInput from "../../../components/TextInput.svelte"
-	import { writable } from "svelte/store"
-	import { loading, setLoading } from "../../../domain/loading/store"
-	import Spinner from "../../../components/Spinner.svelte"
-	import Button from "../../../components/Button.svelte"
-	import Activate from "../../Activate.svelte"
-	import { Link, Route, Router } from "svelte-routing"
 	import Game from "./Game.svelte"
 
 	export let url = ""

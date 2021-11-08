@@ -1,28 +1,15 @@
 <script lang="ts">
-	import { Link, navigate } from "svelte-routing"
-	import { component_subscribe, onMount } from "svelte/internal"
+	import { navigate } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
-	import CreateServerModal from "../../components/Modals/CreateServerModal.svelte"
 	import ConfirmModal from "../../components/Modals/ConfirmModal.svelte"
+	import CreateServerModal from "../../components/Modals/CreateServerModal.svelte"
 	import EditServerModal from "../../components/Modals/EditServerModal.svelte"
-	import PermsCheck from "../../components/PermsCheck.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
-	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { serverPlayers } from "../../domain/player/store"
-	import {
-		allServers,
-		deactivateServer,
-		getAllServers,
-	} from "../../domain/server/store"
-	import {
-		FLAG_ADMINISTRATOR,
-		FLAG_SUPER_ADMIN,
-		FLAG_VIEW_SERVERS,
-		getFlag,
-	} from "../../permissions/permissions"
+	import { allServers, deactivateServer } from "../../domain/server/store"
+	import { FLAG_ADMINISTRATOR } from "../../permissions/permissions"
 	import Container from "./components/Container.svelte"
-	import Server from "./Server.svelte"
 
 	async function deleteServer(id: number) {
 		await deactivateServer(id)

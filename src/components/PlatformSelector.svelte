@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte"
-	import { allGames, allPlatforms } from "../domain/game/store"
+	import { allPlatforms } from "../domain/game/store"
 
 	export let name
 	export let error = null

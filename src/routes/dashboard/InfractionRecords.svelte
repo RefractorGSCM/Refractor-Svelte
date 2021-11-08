@@ -54,10 +54,13 @@
 
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
-
+	import * as yup from "yup"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import NameDisplay from "../../components/NameDisplay.svelte"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
 	import PlayerSelector from "../../components/PlayerSelector.svelte"
 	import Select from "../../components/Select.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
@@ -67,29 +70,20 @@
 		isSuperAdmin,
 		self,
 	} from "../../domain/auth/store"
-	import { allUsers, getAllUsers } from "../../domain/user/store"
-	import { reduceYupErrors } from "../../utils/yup"
-	import Container from "./components/Container.svelte"
-	import SinglePane from "./components/SinglePane.svelte"
-	import * as yup from "yup"
-	import {
-		filterEmpty,
-		filterEmptyStrings,
-		filterUndefined,
-		filterZero,
-	} from "../../utils/filters"
-	import { errorToast } from "../../utils/toast"
 	import { searchInfractions } from "../../domain/search/store"
-	import { navigate } from "svelte-routing"
-	import { dateString } from "../../utils/date"
-	import { truncate } from "../../utils/strings"
-	import PageSwitcher from "../../components/PageSwitcher.svelte"
+	import { allUsers, getAllUsers } from "../../domain/user/store"
 	import {
 		checkFlag,
 		FLAG_VIEW_PLAYER_RECORDS,
 		getFlag,
 	} from "../../permissions/permissions"
-	import NameDisplay from "../../components/NameDisplay.svelte"
+	import { dateString } from "../../utils/date"
+	import { filterEmpty, filterZero } from "../../utils/filters"
+	import { truncate } from "../../utils/strings"
+	import { errorToast } from "../../utils/toast"
+	import { reduceYupErrors } from "../../utils/yup"
+	import Container from "./components/Container.svelte"
+	import SinglePane from "./components/SinglePane.svelte"
 
 	const pageLimit = 10
 

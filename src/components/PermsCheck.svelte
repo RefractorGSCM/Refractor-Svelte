@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { self } from "../domain/auth/store"
-
 	import {
 		checkFlag,
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
-		getAllFlags,
 		getFlag,
 	} from "../permissions/permissions"
 

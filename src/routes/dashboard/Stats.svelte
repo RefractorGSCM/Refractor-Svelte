@@ -1,16 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { writable } from "svelte/store"
 	import tooltip from "../../actions/tooltip"
-	import Button from "../../components/Button.svelte"
-
 	import Heading from "../../components/Heading.svelte"
 	import Spinner from "../../components/Spinner.svelte"
 	import { self } from "../../domain/auth/store"
-	import { getRecentFlaggedMessages } from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
 	import { getStats } from "../../domain/stats/store"
-	import sleep from "../../utils/sleep"
 	import Container from "./components/Container.svelte"
 
 	let stats: Stats

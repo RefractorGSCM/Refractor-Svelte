@@ -1,5 +1,35 @@
 <script lang="ts" context="module">
+	import { navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
+	import * as yup from "yup"
+	import Button from "../../components/Button.svelte"
+	import DatePicker from "../../components/DatePicker.svelte"
+	import GameSelector from "../../components/GameSelector.svelte"
+	import Heading from "../../components/Heading.svelte"
+	import PageSwitcher from "../../components/PageSwitcher.svelte"
+	import PlatformSelector from "../../components/PlatformSelector.svelte"
+	import PlayerSelector from "../../components/PlayerSelector.svelte"
+	import ServerSelector from "../../components/ServerSelector.svelte"
+	import Spinner from "../../components/Spinner.svelte"
+	import TextInput from "../../components/TextInput.svelte"
+	import { self } from "../../domain/auth/store"
+	import { allGames } from "../../domain/game/store"
+	import { loading, setLoading } from "../../domain/loading/store"
+	import { searchChatMessages } from "../../domain/search/store"
+	import { allServers } from "../../domain/server/store"
+	import {
+		checkFlag,
+		FLAG_VIEW_PLAYER_RECORDS,
+		getFlag,
+	} from "../../permissions/permissions"
+	import { dateString } from "../../utils/date"
+	import { filterEmpty, filterZero } from "../../utils/filters"
+	import sleep from "../../utils/sleep"
+	import { truncate } from "../../utils/strings"
+	import { errorToast } from "../../utils/toast"
+	import { reduceYupErrors } from "../../utils/yup"
+	import Container from "./components/Container.svelte"
+	import SinglePane from "./components/SinglePane.svelte"
 
 	const pageLimit = 10
 
@@ -60,41 +90,6 @@
 </script>
 
 <script lang="ts">
-	import Heading from "../../components/Heading.svelte"
-	import PlayerSelector from "../../components/PlayerSelector.svelte"
-	import Select from "../../components/Select.svelte"
-	import Container from "./components/Container.svelte"
-	import SinglePane from "./components/SinglePane.svelte"
-	import * as yup from "yup"
-	import { reduceYupErrors } from "../../utils/yup"
-	import { filterEmpty, filterZero } from "../../utils/filters"
-	import { errorToast } from "../../utils/toast"
-	import { searchChatMessages } from "../../domain/search/store"
-	import TextInput from "../../components/TextInput.svelte"
-	import { string } from "yup/lib/locale"
-	import Button from "../../components/Button.svelte"
-	import ServerSelector from "../../components/ServerSelector.svelte"
-	import DatePicker from "../../components/DatePicker.svelte"
-	import { allServers } from "../../domain/server/store"
-	import GameSelector from "../../components/GameSelector.svelte"
-	import { tick, validate_each_argument } from "svelte/internal"
-	import { allGames } from "../../domain/game/store"
-	import PlatformSelector from "../../components/PlatformSelector.svelte"
-	import Activate from "../Activate.svelte"
-	import { truncate } from "../../utils/strings"
-	import { dateString } from "../../utils/date"
-	import { Link, navigate } from "svelte-routing"
-	import {
-		checkFlag,
-		FLAG_VIEW_PLAYER_RECORDS,
-		getFlag,
-	} from "../../permissions/permissions"
-	import { self } from "../../domain/auth/store"
-	import { loading, setLoading } from "../../domain/loading/store"
-	import Spinner from "../../components/Spinner.svelte"
-	import sleep from "../../utils/sleep"
-	import PageSwitcher from "../../components/PageSwitcher.svelte"
-
 	function onPlayerChange(player) {
 		if (!player) {
 			store.set({

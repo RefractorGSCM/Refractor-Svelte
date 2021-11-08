@@ -1,8 +1,21 @@
 <script lang="ts">
+	import queryString from "query-string"
 	import { onMount } from "svelte"
-	import { Link, navigate, Route, Router } from "svelte-routing"
+	import { navigate } from "svelte-routing"
+	import { writable } from "svelte/store"
+	import tooltip from "../../actions/tooltip"
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
+	import BanModal from "../../components/Modals/BanModal.svelte"
+	import KickModal from "../../components/Modals/KickModal.svelte"
+	import MuteModal from "../../components/Modals/MuteModal.svelte"
+	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
+	import WarningModal from "../../components/Modals/WarningModal.svelte"
+	import PermissionCheck from "../../components/PermissionCheck.svelte"
+	import RequirePerms from "../../components/RequirePerms.svelte"
+	import Spinner from "../../components/Spinner.svelte"
+	import { allGames } from "../../domain/game/store"
+	import { loading, setLoading } from "../../domain/loading/store"
 	import { serverPlayers } from "../../domain/player/store"
 	import {
 		allServers,
@@ -10,10 +23,6 @@
 		getServerPermissions,
 		refreshPlayerList,
 	} from "../../domain/server/store"
-	import Container from "./components/Container.svelte"
-	import SinglePane from "./components/SinglePane.svelte"
-	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
-	import RequirePerms from "../../components/RequirePerms.svelte"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_CREATE_BAN,
@@ -23,17 +32,8 @@
 		FLAG_READ_LIVE_CHAT,
 		FLAG_VIEW_PLAYER_RECORDS,
 	} from "../../permissions/permissions"
-	import BanModal from "../../components/Modals/BanModal.svelte"
-	import WarningModal from "../../components/Modals/WarningModal.svelte"
-	import MuteModal from "../../components/Modals/MuteModal.svelte"
-	import KickModal from "../../components/Modals/KickModal.svelte"
-	import PermissionCheck from "../../components/PermissionCheck.svelte"
-	import { writable } from "svelte/store"
-	import { loading, setLoading } from "../../domain/loading/store"
-	import Spinner from "../../components/Spinner.svelte"
-	import queryString from "query-string"
-	import { allGames } from "../../domain/game/store"
-	import tooltip from "../../actions/tooltip"
+	import Container from "./components/Container.svelte"
+	import SinglePane from "./components/SinglePane.svelte"
 
 	export let id
 	let server: Server = null

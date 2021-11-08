@@ -2,43 +2,33 @@
 	import { onMount } from "svelte"
 	import { Link, Route, Router } from "svelte-routing"
 	import Button from "../../components/Button.svelte"
+	import Heading from "../../components/Heading.svelte"
+	import NameDisplay from "../../components/NameDisplay.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
-	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { self } from "../../domain/auth/store"
+	import { getAllGames } from "../../domain/game/store"
 	import { getAllServers } from "../../domain/server/store"
-	import { connectWebsocket } from "../../domain/websocket/store"
 	import {
 		FLAG_ADMINISTRATOR,
 		FLAG_MODERATE_FLAGGED_MESSAGES,
-		FLAG_SUPER_ADMIN,
 		FLAG_VIEW_CHAT_RECORDS,
 		FLAG_VIEW_INFRACTION_RECORDS,
 		FLAG_VIEW_PLAYER_RECORDS,
 		FLAG_VIEW_SERVERS,
 	} from "../../permissions/permissions"
-	import PlayerRecords from "./PlayerRecords.svelte"
-	import Groups from "./Groups.svelte"
-	import Servers from "./Servers.svelte"
-	import Infraction from "./Infraction.svelte"
-	import InfractionRecords from "./InfractionRecords.svelte"
-	import Player from "./Player.svelte"
-	import Server from "./Server.svelte"
-	import ServerGroups from "./ServerGroups.svelte"
-	import Users from "./settings/Users.svelte"
-	import { getAllGroups } from "../../domain/group/store"
-	import NameDisplay from "../../components/NameDisplay.svelte"
-	import { getAllGames } from "../../domain/game/store"
 	import Chat from "./Chat.svelte"
 	import ChatRecords from "./ChatRecords.svelte"
-	import FlaggedWords from "./settings/FlaggedWords.svelte"
-	import Settings from "./settings/Settings.svelte"
-	import { errorToast } from "../../utils/toast"
-	import Stats from "./Stats.svelte"
-	import Games from "./settings/Games.svelte"
-	import MessageModeration from "./MessageModeration.svelte"
-	import Game from "./settings/Game.svelte"
-	import Heading from "../../components/Heading.svelte"
 	import Container from "./components/Container.svelte"
+	import Infraction from "./Infraction.svelte"
+	import InfractionRecords from "./InfractionRecords.svelte"
+	import MessageModeration from "./MessageModeration.svelte"
+	import Player from "./Player.svelte"
+	import PlayerRecords from "./PlayerRecords.svelte"
+	import Server from "./Server.svelte"
+	import ServerGroups from "./ServerGroups.svelte"
+	import Servers from "./Servers.svelte"
+	import Settings from "./settings/Settings.svelte"
+	import Stats from "./Stats.svelte"
 
 	onMount(async () => {
 		await getAllGames()

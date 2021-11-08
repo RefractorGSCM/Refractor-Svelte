@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import { errorToast, successToast } from "../../utils/toast"
+import { errorToast } from "../../utils/toast"
 import api from "./api"
 
 export const chatMessages = writable({} as { [key: number]: ChatMessage[] })

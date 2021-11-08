@@ -1,14 +1,14 @@
 <script>
+	import { navigate, Route, Router } from "svelte-routing"
+	import Heading from "../../../components/Heading.svelte"
 	import RequirePerms from "../../../components/RequirePerms.svelte"
 	import { FLAG_SUPER_ADMIN } from "../../../permissions/permissions"
-	import { Link, navigate, Router, Route } from "svelte-routing"
-	import Heading from "../../../components/Heading.svelte"
 	import Container from "../components/Container.svelte"
 	import Groups from "../Groups.svelte"
 	import FlaggedWords from "./FlaggedWords.svelte"
 	import Games from "./Games.svelte"
 
-	export let url
+	export let url = ""
 </script>
 
 <svelte:head>

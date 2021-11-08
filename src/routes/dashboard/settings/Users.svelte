@@ -1,8 +1,18 @@
 <script lang="ts">
-	import Container from "../components/Container.svelte"
-	import Heading from "../../../components/Heading.svelte"
-	import DualPane from "../components/DualPane.svelte"
 	import { onMount } from "svelte"
+	import { navigate } from "svelte-routing"
+	import { writable } from "svelte/store"
+	import Button from "../../../components/Button.svelte"
+	import Checkbox from "../../../components/Checkbox.svelte"
+	import Flair from "../../../components/Flair.svelte"
+	import Heading from "../../../components/Heading.svelte"
+	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import CreateUserModal from "../../../components/Modals/CreateUserModal.svelte"
+	import PlayerSearchModal from "../../../components/Modals/PlayerSearchModal.svelte"
+	import PermsCheck from "../../../components/PermsCheck.svelte"
+	import Spinner from "../../../components/Spinner.svelte"
+	import { isAdmin, isSuperAdmin, self } from "../../../domain/auth/store"
+	import { allGroups, getAllGroups } from "../../../domain/group/store"
 	import { loading, setLoading } from "../../../domain/loading/store"
 	import {
 		addUserGroup,
@@ -15,28 +25,16 @@
 		removeUserGroup,
 		unlinkUserPlayer,
 	} from "../../../domain/user/store"
-	import Spinner from "../../../components/Spinner.svelte"
-	import { writable } from "svelte/store"
-	import Button from "../../../components/Button.svelte"
-	import { getTopGroup } from "../../../utils/groups"
-	import { decimalToHex } from "../../../utils/color"
-	import { allGroups, getAllGroups } from "../../../domain/group/store"
-	import Checkbox from "../../../components/Checkbox.svelte"
-	import { group_outros } from "svelte/internal"
-	import Groups from "../Groups.svelte"
 	import {
 		checkFlag,
 		FLAG_ADMINISTRATOR,
 		FLAG_SUPER_ADMIN,
 		getFlag,
 	} from "../../../permissions/permissions"
-	import { isAdmin, isSuperAdmin, self } from "../../../domain/auth/store"
-	import CreateUserModal from "../../../components/Modals/CreateUserModal.svelte"
-	import Flair from "../../../components/Flair.svelte"
-	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
-	import PermsCheck from "../../../components/PermsCheck.svelte"
-	import PlayerSearchModal from "../../../components/Modals/PlayerSearchModal.svelte"
-	import { navigate } from "svelte-routing"
+	import { decimalToHex } from "../../../utils/color"
+	import { getTopGroup } from "../../../utils/groups"
+	import Container from "../components/Container.svelte"
+	import DualPane from "../components/DualPane.svelte"
 
 	const baseGroupId = -1
 
