@@ -5,5 +5,28 @@ export type Game = {
 }
 
 export type GameSettings = {
-	ban_command_pattern: string
+	create: {
+		warn: string[]
+		mute: string[]
+		kick: string[]
+		ban: string[]
+	}
+	update: {
+		warn: string[]
+		mute: string[]
+		kick: string[]
+		ban: string[]
+	}
+	delete: {
+		warn: string[]
+		mute: string[]
+		kick: string[]
+		ban: string[]
+	}
+	repeal: {
+		warn: string[]
+		mute: string[]
+		kick: string[]
+		ban: string[]
+	}
 }

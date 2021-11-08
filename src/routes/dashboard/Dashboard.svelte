@@ -24,18 +24,21 @@
 	import Player from "./Player.svelte"
 	import Server from "./Server.svelte"
 	import ServerGroups from "./ServerGroups.svelte"
-	import Users from "./Users.svelte"
+	import Users from "./settings/Users.svelte"
 	import { getAllGroups } from "../../domain/group/store"
 	import NameDisplay from "../../components/NameDisplay.svelte"
 	import { getAllGames } from "../../domain/game/store"
 	import Chat from "./Chat.svelte"
 	import ChatRecords from "./ChatRecords.svelte"
-	import FlaggedWords from "./FlaggedWords.svelte"
-	import Settings from "./Settings.svelte"
+	import FlaggedWords from "./settings/FlaggedWords.svelte"
+	import Settings from "./settings/Settings.svelte"
 	import { errorToast } from "../../utils/toast"
 	import Stats from "./Stats.svelte"
-	import GameSettings from "./components/GameSettings.svelte"
+	import Games from "./settings/Games.svelte"
 	import MessageModeration from "./MessageModeration.svelte"
+	import Game from "./settings/Game.svelte"
+	import Heading from "../../components/Heading.svelte"
+	import Container from "./components/Container.svelte"
 
 	onMount(async () => {
 		await getAllGames()
@@ -169,13 +172,7 @@
 	<main>
 		<Router {url}>
 			<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>
-				<Route path="/settings/groups" component={Groups} />
-				<Route path="/settings/users" component={Users} />
-				<Route path="/settings/chat/flagged" component={FlaggedWords} />
-			</RequirePerms>
-
-			<RequirePerms allOf={[FLAG_SUPER_ADMIN]} adminBypass={false}>
-				<Route path="/settings/games" component={GameSettings} />
+				<Route path="/settings/*" component={Settings} />
 			</RequirePerms>
 
 			<RequirePerms allOf={[FLAG_VIEW_SERVERS]}>
@@ -235,6 +232,12 @@
 			</Route>
 
 			<Route path="/" component={Stats} />
+
+			<Route>
+				<Container>
+					<Heading type="title">404: Page not found</Heading>
+				</Container>
+			</Route>
 		</Router>
 	</main>
 </div>

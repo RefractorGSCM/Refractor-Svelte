@@ -8,13 +8,14 @@
 	export let disableConfirm = false
 	export let disableDelete = false
 	export let error = null
+	export let placeholder = ""
 
 	const dispatch = createEventDispatcher()
 </script>
 
 <div class="input-wrapper">
 	<div class="input-main" class:error={!!error}>
-		<input type="text" placeholder="Flagged Word" {value} />
+		<input type="text" {placeholder} {value} />
 
 		{#if showConfirm}
 			<button
@@ -37,17 +38,16 @@
 		{/if}
 	</div>
 
-	{#if !!error}
-		<div class="error">
+	<div class="error">
+		{#if !!error}
 			{error}
-		</div>
-	{/if}
+		{/if}
+	</div>
 </div>
 
 <style lang="scss">
-	.wrapper {
+	.input-wrapper {
 		margin-top: 1rem;
-		margin-bottom: 1rem;
 		min-height: 3rem;
 	}
 
@@ -122,6 +122,5 @@
 	.error {
 		color: var(--color-danger);
 		font-size: 1.4rem;
-		margin-bottom: 3px;
 	}
 </style>

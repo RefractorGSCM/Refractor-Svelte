@@ -3,19 +3,19 @@
 
 	import { writable } from "svelte/store"
 
-	import Button from "../../components/Button.svelte"
-	import Heading from "../../components/Heading.svelte"
-	import TextInput from "../../components/TextInput.svelte"
-	import type { FlaggedWord } from "../../domain/chat/chat.types"
+	import Button from "../../../components/Button.svelte"
+	import Heading from "../../../components/Heading.svelte"
+	import TextInput from "../../../components/TextInput.svelte"
+	import type { FlaggedWord } from "../../../domain/chat/chat.types"
 	import {
 		createFlaggedWord,
 		deleteFlaggedWord,
 		getFlaggedWords,
 		updateFlaggedWord,
-	} from "../../domain/chat/store"
-	import { successToast } from "../../utils/toast"
-	import Container from "./components/Container.svelte"
-	import SinglePane from "./components/SinglePane.svelte"
+	} from "../../../domain/chat/store"
+	import { successToast } from "../../../utils/toast"
+	import Container from "../components/Container.svelte"
+	import SinglePane from "../components/SinglePane.svelte"
 
 	let words = writable([] as FlaggedWord[])
 
