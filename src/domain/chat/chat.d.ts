@@ -1,4 +1,4 @@
-export type ChatMessage = {
+type ChatMessage = {
 	id: number
 	player_id: string
 	platform: string
@@ -11,7 +11,7 @@ export type ChatMessage = {
 	modified_at?: Date
 }
 
-export type FlaggedWord = {
+type FlaggedWord = {
 	id?: number
 	word: string
 }

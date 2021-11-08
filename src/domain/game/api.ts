@@ -1,5 +1,4 @@
 import axios from "axios"
-import type { GameSettings } from "./game.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 
@@ -19,8 +18,11 @@ const getDefaultGameSettings = (game: string) => {
 	})
 }
 
-const setGameSettings = (game: string, settings: GameSettings) => {
-	return axios.patch(`${API_ROOT}/games/settings/${game}`, settings, {
+const setGameCommandSettings = (
+	game: string,
+	commands: GameCommandSettings,
+) => {
+	return axios.patch(`${API_ROOT}/games/settings/${game}/commands`, commands, {
 		withCredentials: true,
 	})
 }
@@ -29,5 +31,5 @@ export default {
 	getAllGames,
 	getGameSettings,
 	getDefaultGameSettings,
-	setGameSettings,
+	setGameCommandSettings,
 }

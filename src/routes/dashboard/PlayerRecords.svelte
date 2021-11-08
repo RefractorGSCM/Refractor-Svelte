@@ -6,10 +6,6 @@
 	import Heading from "../../components/Heading.svelte"
 	import Select from "../../components/Select.svelte"
 	import TextInput from "../../components/TextInput.svelte"
-	import type {
-		PlayerSearchBody,
-		PlayerSearchResult,
-	} from "../../domain/search/search.types"
 	import { searchPlayers } from "../../domain/search/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"

@@ -1,4 +1,4 @@
-export type Player = {
+type Player = {
 	id: string
 	platform: string
 	name?: string

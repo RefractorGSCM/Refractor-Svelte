@@ -7,13 +7,11 @@
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
 	import PlatformSelector from "../../components/PlatformSelector.svelte"
 	import Spinner from "../../components/Spinner.svelte"
-	import type { ChatMessage } from "../../domain/chat/chat.types"
 	import {
 		getRecentFlaggedMessages,
 		unflagMessage,
 	} from "../../domain/chat/store"
 	import { loading, setLoading } from "../../domain/loading/store"
-	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer } from "../../domain/player/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"

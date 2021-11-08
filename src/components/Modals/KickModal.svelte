@@ -2,15 +2,7 @@
 	import { createEventDispatcher, onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
-	import type { Attachment } from "../../domain/attachment/attachment.types"
-	import type {
-		CreateBanParams,
-		CreateKickParams,
-		CreateWarningParams,
-		InfractionModifyRes,
-	} from "../../domain/infraction/infraction.types"
 	import { createKick, updateInfraction } from "../../domain/infraction/store"
-	import type { Player } from "../../domain/player/player.types"
 	import { updateServer } from "../../domain/server/store"
 	import Server from "../../routes/dashboard/Server.svelte"
 	import { filterEmptyStrings } from "../../utils/filters"

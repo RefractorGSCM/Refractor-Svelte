@@ -1,13 +1,6 @@
 import type { AxiosResponse } from "axios"
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type {
-	CreateBanParams,
-	CreateKickParams,
-	CreateMuteParams,
-	CreateWarningParams,
-	Infraction,
-} from "./infraction.types"
 
 type infractionCreator = (
 	serverId: number,

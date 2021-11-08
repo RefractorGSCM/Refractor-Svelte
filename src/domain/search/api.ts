@@ -1,9 +1,4 @@
 import axios from "axios"
-import type {
-	ChatSearchBody,
-	InfractionSearchBody,
-	PlayerSearchBody,
-} from "./search.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 

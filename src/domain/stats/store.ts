@@ -1,6 +1,5 @@
 import { errorToast } from "../../utils/toast"
 import api from "./api"
-import type { Stats } from "./stats.types"
 
 export async function getStats(): Promise<Stats> {
 	try {

@@ -1,10 +1,7 @@
 import { writable } from "svelte/store"
-import type { Group } from "../group/group.types"
 import api from "./api"
-import type { User, UserLinkParams, UserTraits } from "./user.types"
 import { toast } from "@zerodevx/svelte-toast"
 import { errorToast, successToast } from "../../utils/toast"
-import type { Player } from "../player/player.types"
 
 export const allUsers = writable([] as User[])
 

@@ -15,9 +15,7 @@
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import ServerSelector from "../../components/ServerSelector.svelte"
 	import { self } from "../../domain/auth/store"
-	import type { Infraction } from "../../domain/infraction/infraction.types"
 	import { getPlayerInfractions } from "../../domain/infraction/store"
-	import type { Player } from "../../domain/player/player.types"
 	import { getPlayer, serverPlayers } from "../../domain/player/store"
 	import {
 		FLAG_CREATE_BAN,

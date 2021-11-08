@@ -3,7 +3,6 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import { createUser } from "../../domain/user/store"
-	import type { UserTraits } from "../../domain/user/user.types"
 	import { reduceYupErrors } from "../../utils/yup"
 
 	import Button from "../Button.svelte"
@@ -109,7 +108,7 @@
 	<div slot="header">
 		<div class="header">Invite New User</div>
 	</div>
-	<div slot="content">
+	<div slot="content" let:store={{ close }}>
 		<div class="content">
 			<p>
 				When you invite a new user, they will have to set a password and verify
@@ -121,7 +120,7 @@
 				(Everyone) by default.
 			</p>
 
-			<form class="form" on:submit={submit}>
+			<form class="form" on:submit={(e) => submit(e, close)}>
 				<TextInput
 					name="email"
 					autocomplete="off"

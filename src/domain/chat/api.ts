@@ -1,5 +1,4 @@
 import axios from "axios"
-import type { FlaggedWord } from "./chat.types"
 
 const API_ROOT = import.meta.env.VITE_API_ROOT
 

@@ -5,13 +5,6 @@ import { sortAsc } from "../../utils/sorting"
 import { errorToast, successToast } from "../../utils/toast"
 import { getAllServers } from "../server/store"
 import api from "./api"
-import type {
-	Group,
-	GroupReorderInfo,
-	NewGroupParams,
-	Permission,
-	ServerOverrides,
-} from "./group.types"
 
 export const allGroups = writable([] as Group[])
 const permissions = writable([] as Permission[])

@@ -1,13 +1,5 @@
 import { errorToast, successToast } from "../../utils/toast"
 import api from "./api"
-import type {
-	ChatSearchBody,
-	ChatSearchResults,
-	InfractionSearchBody,
-	InfractionSearchResults,
-	PlayerSearchBody,
-	PlayerSearchResults,
-} from "./search.types"
 
 export async function searchPlayers(
 	body: PlayerSearchBody,

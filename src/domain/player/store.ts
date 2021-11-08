@@ -1,7 +1,6 @@
 import { writable } from "svelte/store"
 import { errorToast } from "../../utils/toast"
 import api from "./api"
-import type { Player } from "./player.types"
 
 export const serverPlayers = writable({})
 

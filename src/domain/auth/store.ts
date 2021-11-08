@@ -6,7 +6,6 @@ import {
 	getFlag,
 } from "../../permissions/permissions"
 import { errorToast } from "../../utils/toast"
-import type { User } from "../user/user.types"
 import api from "./api"
 
 export const isAuthenticated = writable(false)

@@ -3,7 +3,6 @@
 
 	import { navigate } from "svelte-routing"
 
-	import type { Player } from "../../domain/player/player.types"
 	import MessageModeration from "../../routes/dashboard/MessageModeration.svelte"
 
 	import Button from "../Button.svelte"

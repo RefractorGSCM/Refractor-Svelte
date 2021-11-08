@@ -1,6 +1,5 @@
 <script lang="ts">
 	import dark from "./themes/dark"
-	import type { Theme } from "./theme.types"
 	import { currentTheme } from "./store"
 
 	const themes = {

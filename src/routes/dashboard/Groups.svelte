@@ -14,11 +14,6 @@
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Container from "./components/Container.svelte"
 	import Toggle from "../../components/Toggle.svelte"
-	import type {
-		Group,
-		GroupReorderInfo,
-		NewGroupParams,
-	} from "../../domain/group/group.types"
 	import { writable } from "svelte/store"
 	import {
 		FLAG_ADMINISTRATOR,

@@ -2,7 +2,6 @@
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
-	import type { UpdateServerParams } from "../../domain/server/server.types"
 	import { updateServer } from "../../domain/server/store"
 	import { filterEmptyStrings } from "../../utils/filters"
 	import { reduceYupErrors } from "../../utils/yup"

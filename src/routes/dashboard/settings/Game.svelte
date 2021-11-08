@@ -3,12 +3,6 @@
 
 	import Heading from "../../../components/Heading.svelte"
 	import Spinner from "../../../components/Spinner.svelte"
-	import type { Game, GameSettings } from "../../../domain/game/game.types"
-	import {
-		allGames,
-		getAllGames,
-		getGameSettings,
-	} from "../../../domain/game/store"
 	import { loading, setLoading } from "../../../domain/loading/store"
 	import SinglePane from "../components/SinglePane.svelte"
 	import { Accordion, AccordionItem } from "svelte-collapsible"
@@ -17,6 +11,11 @@
 	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import Button from "../../../components/Button.svelte"
 	import { now } from "svelte/internal"
+	import {
+		allGames,
+		getAllGames,
+		getGameSettings,
+	} from "../../../domain/game/store"
 
 	export let name
 

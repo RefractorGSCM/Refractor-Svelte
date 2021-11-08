@@ -6,10 +6,6 @@
 	import Heading from "../../components/Heading.svelte"
 	import TripleToggle from "../../components/TripleToggle.svelte"
 	import { isSuperAdmin } from "../../domain/auth/store"
-	import type {
-		Permission,
-		ServerOverrides,
-	} from "../../domain/group/group.types"
 	import {
 		allGroups,
 		baseGroup,
@@ -18,7 +14,6 @@
 		getServerOverrides,
 		setServerOverrides,
 	} from "../../domain/group/store"
-	import type { Server } from "../../domain/server/server.types"
 	import { allServers, getAllServers } from "../../domain/server/store"
 	import {
 		getAllPermissions,

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Attachment } from "../domain/attachment/attachment.types"
 	import { truncate } from "../utils/strings"
 	import Button from "./Button.svelte"
 	import AttachmentModal from "./Modals/AttachmentModal.svelte"

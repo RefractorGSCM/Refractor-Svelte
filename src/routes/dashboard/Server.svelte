@@ -4,7 +4,6 @@
 	import Button from "../../components/Button.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import { serverPlayers } from "../../domain/player/store"
-	import type { Server } from "../../domain/server/server.types"
 	import {
 		allServers,
 		getAllServers,
@@ -13,7 +12,6 @@
 	} from "../../domain/server/store"
 	import Container from "./components/Container.svelte"
 	import SinglePane from "./components/SinglePane.svelte"
-	import type { Player } from "../../domain/player/player.types"
 	import PlayerModal from "../../components/Modals/PlayerModal.svelte"
 	import RequirePerms from "../../components/RequirePerms.svelte"
 	import {
@@ -34,7 +32,6 @@
 	import { loading, setLoading } from "../../domain/loading/store"
 	import Spinner from "../../components/Spinner.svelte"
 	import queryString from "query-string"
-	import type { Game } fro../../domain/game/gamepes"
 	import { allGames } from "../../domain/game/store"
 	import tooltip from "../../actions/tooltip"
 

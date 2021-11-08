@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { writable } from "svelte/store"
-	import type { Group } from "../domain/group/group.types"
 	import { baseGroup, getUserPrimaryGroup } from "../domain/group/store"
 	import { decimalToHex, hexToDecimal } from "../utils/color"
 	import Spinner from "./Spinner.svelte"

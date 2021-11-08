@@ -19,7 +19,6 @@
 	} from "../../domain/chat/store"
 	import { allGames } from "../../domain/game/store"
 	import { loading, setLoading } from "../../domain/loading/store"
-	import type { Server } from "../../domain/server/server.types"
 	import {
 		allServers,
 		getAllServers,
