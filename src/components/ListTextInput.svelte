@@ -15,7 +15,7 @@
 
 <div class="input-wrapper">
 	<div class="input-main" class:error={!!error}>
-		<input type="text" {placeholder} {value} />
+		<input type="text" {name} {placeholder} bind:value />
 
 		{#if showConfirm}
 			<button

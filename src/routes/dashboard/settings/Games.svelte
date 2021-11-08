@@ -18,68 +18,6 @@
 	import { Link, Route, Router } from "svelte-routing"
 	import Game from "./Game.svelte"
 
-	let currentlyOpen = writable("")
-
-	type storeType = {
-		values: {
-			ban_command_pattern: string
-		}
-		errors: {
-			ban_command_pattern?: any
-		}
-	}
-
-	const store = writable({
-		values: {
-			ban_command_pattern: "",
-		},
-		errors: {},
-	} as storeType)
-
-	currentlyOpen.subscribe(async (game) => {
-		if (!$currentlyOpen) {
-			return
-		}
-
-		setLoading(`gamesettings-${game}`, true)
-
-		const settings = await getGameSettings(game, false)
-		store.set({
-			values: { ...settings.commands },
-			errors: {},
-		})
-
-		setLoading(`gamesettings-${game}`, false)
-	})
-
-	async function updateGame() {
-		const body = {
-			...$store.values,
-		}
-
-		const errors = await setGameCommandSettings($currentlyOpen, body)
-
-		if (errors) {
-			store.set({
-				...$store,
-				errors: {
-					...$store.errors,
-					...errors,
-				},
-			})
-		}
-	}
-
-	async function resetToDefault() {
-		const defaultSettings = await getGameSettings($currentlyOpen, true)
-
-		store.set({
-			...$store,
-			values: defaultSettings.commands,
-			errors: {},
-		})
-	}
-
 	export let url = ""
 </script>
 

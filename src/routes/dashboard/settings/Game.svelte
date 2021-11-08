@@ -15,7 +15,9 @@
 		allGames,
 		getAllGames,
 		getGameSettings,
+		setGameCommandSettings,
 	} from "../../../domain/game/store"
+	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
 
 	export let name
 
@@ -29,6 +31,13 @@
 		mute: { [key: number]: string }
 		kick: { [key: number]: string }
 		ban: { [key: number]: string }
+	}
+
+	const defaultErrors = {
+		create: { warn: {}, mute: {}, kick: {}, ban: {} },
+		update: { warn: {}, mute: {}, kick: {}, ban: {} },
+		delete: { warn: {}, mute: {}, kick: {}, ban: {} },
+		repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
 	}
 
 	let store = writable({
@@ -58,12 +67,7 @@
 				ban: {},
 			},
 		},
-		errors: {
-			create: { warn: {}, mute: {}, kick: {}, ban: {} },
-			update: { warn: {}, mute: {}, kick: {}, ban: {} },
-			delete: { warn: {}, mute: {}, kick: {}, ban: {} },
-			repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
-		},
+		errors: defaultErrors,
 	} as {
 		values: {
 			create: infractionCommands
@@ -111,19 +115,58 @@
 		setLoading("game", false)
 	})
 
+	async function resetToDefault() {
+		setLoading("cmdsettings", true)
+		const defaultSettings = await getGameSettings(game.name, true)
+
+		store.set({
+			...$store,
+			values: defaultSettings.commands,
+			errors: defaultErrors,
+		})
+
+		setLoading("cmdsettings", false)
+	}
+
+	async function saveCommands() {
+		setLoading("cmdsettings", true)
+
+		// Transform flat command structure to arrays
+		const transformed: GameCommandSettings = {
+			create: { warn: [], mute: [], kick: [], ban: [] },
+			update: { warn: [], mute: [], kick: [], ban: [] },
+			delete: { warn: [], mute: [], kick: [], ban: [] },
+			repeal: { warn: [], mute: [], kick: [], ban: [] },
+		}
+
+		for (const [action, actVal] of Object.entries($store.values)) {
+			for (const infrType of Object.keys(actVal)) {
+				transformed[action][infrType] = Object.values(actVal[infrType])
+			}
+		}
+
+		await setGameCommandSettings(game.name, transformed)
+
+		setLoading("cmdsettings", false)
+	}
+
 	$: console.log("Store", $store)
 </script>
 
 {#if errmsg}
 	<Heading type="subtitle">{errmsg}</Heading>
 {:else if $loading["game"]}
-	<Spinner />
+	<Spinner blocking={false} />
 {:else}
 	<div class="title">
 		<Heading type="title">{game?.name} Settings</Heading>
 	</div>
 
-	<SinglePane style="max-height: auto; height: auto; overflow: auto;">
+	<SinglePane style="max-height: auto; position: relative;">
+		{#if $loading["cmdsettings"]}
+			<Spinner />
+		{/if}
+
 		<div class="commands">
 			<div class="heading">
 				<Heading>Infraction Commands</Heading>
@@ -144,8 +187,17 @@
 			</div>
 
 			<div class="buttons">
-				<Button color="danger">Reset to Default</Button>
-				<Button color="success">Save</Button>
+				<ConfirmModal
+					heading="Are you sure?"
+					message="This will reset all commands to their default values. If you change your mind, reload the page without clicking save."
+					submitText="Reset Commands"
+					on:submit={resetToDefault}
+				>
+					<div slot="trigger" let:open>
+						<Button color="danger" on:click={open}>Reset to Default</Button>
+					</div>
+				</ConfirmModal>
+				<Button color="success" on:click={saveCommands}>Save</Button>
 			</div>
 
 			<div class="list">
@@ -179,6 +231,7 @@
 														bind:value={$store.values[action][infractionType][
 															key
 														]}
+														placeholder={key}
 														error={$store.errors[action][infractionType][key]}
 														showConfirm={false}
 														on:delete={() => {
