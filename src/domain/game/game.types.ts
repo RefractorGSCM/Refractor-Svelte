@@ -5,28 +5,30 @@ export type Game = {
 }
 
 export type GameSettings = {
-	create: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
-	}
-	update: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
-	}
-	delete: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
-	}
-	repeal: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
+	commands: {
+		create: {
+			warn: string[]
+			mute: string[]
+			kick: string[]
+			ban: string[]
+		}
+		update: {
+			warn: string[]
+			mute: string[]
+			kick: string[]
+			ban: string[]
+		}
+		delete: {
+			warn: string[]
+			mute: string[]
+			kick: string[]
+			ban: string[]
+		}
+		repeal: {
+			warn: string[]
+			mute: string[]
+			kick: string[]
+			ban: string[]
+		}
 	}
 }

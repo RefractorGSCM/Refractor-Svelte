@@ -106,7 +106,7 @@
 		console.log("settings", settings)
 		store.set({
 			...$store,
-			values: settings,
+			values: settings.commands,
 		})
 
 		setLoading("game", false)
@@ -124,7 +124,7 @@
 		<Heading type="title">{game?.name} Settings</Heading>
 	</div>
 
-	<SinglePane>
+	<SinglePane style="max-height: auto; height: auto; overflow: auto;">
 		<div class="commands">
 			<div class="heading">
 				<Heading>Infraction Commands</Heading>
@@ -142,6 +142,11 @@
 				</p>
 
 				<p>All durations are in minutes.</p>
+			</div>
+
+			<div class="buttons">
+				<Button color="danger">Reset to Default</Button>
+				<Button color="success">Save</Button>
 			</div>
 
 			<div class="list">
@@ -193,13 +198,14 @@
 
 										<div class="button-add">
 											<Button
+												size="inline"
 												on:click={() => {
 													store.update((current) => {
 														current.values[action][infractionType][Date.now()] =
 															""
 														return current
 													})
-												}}>Add</Button
+												}}>+</Button
 											>
 										</div>
 									</div>
@@ -222,6 +228,8 @@
 
 	.commands {
 		width: 100%;
+		height: auto;
+		overflow: auto;
 
 		.heading {
 			margin-bottom: 1rem;
@@ -233,8 +241,10 @@
 		}
 
 		.placeholders {
-			margin-bottom: 2rem;
+			padding-bottom: 1rem;
+			margin-bottom: 1rem;
 			font-size: 1.6rem;
+			border-bottom: 1px solid var(--color-accent);
 		}
 
 		.list {
@@ -291,6 +301,8 @@
 					text-transform: capitalize;
 					font-size: 1.8rem;
 					font-weight: 500;
+					margin-top: 1rem;
+					margin-bottom: 1rem;
 				}
 
 				.fields {
@@ -298,13 +310,24 @@
 					flex-direction: column;
 				}
 
-				.field:last-child {
+				.field {
 					margin-bottom: 1rem;
 				}
 
 				.button-add {
+					:global(.btn) {
+						width: 2.5rem;
+						height: 2.5rem;
+						font-size: 2rem;
+					}
 				}
 			}
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 1rem;
 		}
 	}
 </style>
