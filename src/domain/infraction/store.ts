@@ -158,6 +158,35 @@ export async function updateInfraction(
 	}
 }
 
+export async function setInfractionRepealed(
+	id: number,
+	isRepealed: boolean,
+): Promise<creationRes> {
+	try {
+		const { data } = await api.setRepealed(id, isRepealed)
+
+		return {
+			infraction: data.payload as Infraction,
+			success: true,
+		}
+	} catch (err) {
+		const { data } = err.response
+
+		if (data.errors) {
+			return {
+				infraction: null,
+				success: false,
+				errors: data.errors,
+			}
+		}
+
+		return {
+			infraction: null,
+			success: false,
+		}
+	}
+}
+
 export async function deleteInfraction(id: number): Promise<boolean> {
 	try {
 		await api.deleteInfraction(id)

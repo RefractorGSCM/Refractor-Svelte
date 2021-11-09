@@ -35,6 +35,16 @@ const updateInfraction = (
 	})
 }
 
+const setRepealed = (infractionId: number, isRepealed: boolean) => {
+	return axios.post(
+		`${API_ROOT}/infractions/${infractionId}/repealed`,
+		{ repealed: isRepealed },
+		{
+			withCredentials: true,
+		},
+	)
+}
+
 const getPlayerInfractions = (platform: string, playerId: string) => {
 	return axios.get(`${API_ROOT}/infractions/player/${platform}/${playerId}`, {
 		withCredentials: true,
@@ -59,6 +69,7 @@ export default {
 	createKick,
 	createBan,
 	updateInfraction,
+	setRepealed,
 	getPlayerInfractions,
 	getInfractionById,
 	deleteInfraction,
