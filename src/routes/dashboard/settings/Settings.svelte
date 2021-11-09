@@ -7,6 +7,7 @@
 	import Groups from "../Groups.svelte"
 	import FlaggedWords from "./FlaggedWords.svelte"
 	import Games from "./Games.svelte"
+	import Users from "./Users.svelte"
 
 	export let url = ""
 </script>
@@ -17,7 +18,7 @@
 
 <Router {url}>
 	<Route path="/groups" component={Groups} />
-	<Route path="/users" component={Groups} />
+	<Route path="/users" component={Users} />
 	<Route path="/chat/flagged" component={FlaggedWords} />
 
 	<RequirePerms allOf={[FLAG_SUPER_ADMIN]} adminBypass={false}>
