@@ -180,11 +180,6 @@
 	}
 
 	function allowDeletion(): boolean {
-		// if this infraction is repealed, do not allow editing.
-		if (infraction.repealed) {
-			return false
-		}
-
 		// if the user created this infraction and they have permission to delete their own infractions then return true
 		if (
 			$self.id === infraction.user_id &&
