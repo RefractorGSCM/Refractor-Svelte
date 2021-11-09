@@ -27,9 +27,19 @@ const setGameCommandSettings = (
 	})
 }
 
+const setGameGeneralSettings = (
+	game: string,
+	settings: GameGeneralSettings,
+) => {
+	return axios.patch(`${API_ROOT}/games/settings/${game}/general`, settings, {
+		withCredentials: true,
+	})
+}
+
 export default {
 	getAllGames,
 	getGameSettings,
 	getDefaultGameSettings,
 	setGameCommandSettings,
+	setGameGeneralSettings,
 }

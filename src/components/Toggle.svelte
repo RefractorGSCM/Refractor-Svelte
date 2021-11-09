@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from "svelte"
 
 	export let name = "toggle"
-	export let value = "false"
+	export let value: string = "false"
 	export let disabled = false
 
 	if (value !== "true" && value !== "false") {

@@ -68,3 +68,24 @@ export async function setGameCommandSettings(
 		}
 	}
 }
+
+export async function setGameGeneralSettings(
+	game: string,
+	body: GameGeneralSettings,
+): Promise<{ [key: string]: string }> {
+	try {
+		await api.setGameGeneralSettings(game, body)
+
+		successToast("Game settings saved")
+
+		return null
+	} catch (err) {
+		errorToast("Could not set game settings")
+
+		const { data } = err.response
+
+		if (data.errors) {
+			return data.errors
+		}
+	}
+}
