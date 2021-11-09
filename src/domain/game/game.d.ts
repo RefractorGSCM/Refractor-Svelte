@@ -31,6 +31,11 @@ type GameCommandSettings = {
 	}
 }
 
+type GameGeneralSettings = {
+	enable_ban_sync: boolean
+}
+
 type GameSettings = {
 	commands: GameCommandSettings
+	general: GameGeneralSettings
 }

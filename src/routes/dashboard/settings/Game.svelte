@@ -7,11 +7,13 @@
 	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
 	import Spinner from "../../../components/Spinner.svelte"
+	import Toggle from "../../../components/Toggle.svelte"
 	import {
 		allGames,
 		getAllGames,
 		getGameSettings,
 		setGameCommandSettings,
+		setGameGeneralSettings,
 	} from "../../../domain/game/store"
 	import { loading, setLoading } from "../../../domain/loading/store"
 	import SinglePane from "../components/SinglePane.svelte"
@@ -37,7 +39,7 @@
 		repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
 	}
 
-	let store = writable({
+	let commandStore = writable({
 		values: {
 			create: {
 				warn: {},
@@ -80,6 +82,16 @@
 		}
 	})
 
+	let generalStore = writable({
+		values: {},
+		errors: {},
+	} as {
+		values: GameGeneralSettings
+		errors: {
+			[key: string]: any
+		}
+	})
+
 	onMount(async () => {
 		setLoading("game", true)
 
@@ -104,20 +116,52 @@
 
 		const settings = await getGameSettings(game.name, false)
 		console.log("settings", settings)
-		store.set({
-			...$store,
+		commandStore.set({
+			...$commandStore,
 			values: settings.commands,
+		})
+
+		generalStore.set({
+			...$generalStore,
+			values: settings.general,
 		})
 
 		setLoading("game", false)
 	})
 
-	async function resetToDefault() {
+	async function resetGeneralToDefault() {
+		setLoading("gensettings", true)
+		const defaultSettings = await getGameSettings(game.name, true)
+
+		generalStore.set({
+			...$generalStore,
+			values: defaultSettings.general,
+			errors: {},
+		})
+
+		setLoading("gensettings", false)
+	}
+
+	async function saveGeneralSettings() {
+		setLoading("gensettings", true)
+
+		const values = $generalStore.values
+
+		if (typeof values.enable_ban_sync === "string") {
+			values.enable_ban_sync = values.enable_ban_sync === "true"
+		}
+
+		await setGameGeneralSettings(game.name, values)
+
+		setLoading("gensettings", false)
+	}
+
+	async function resetCommandsToDefault() {
 		setLoading("cmdsettings", true)
 		const defaultSettings = await getGameSettings(game.name, true)
 
-		store.set({
-			...$store,
+		commandStore.set({
+			...$commandStore,
 			values: defaultSettings.commands,
 			errors: defaultErrors,
 		})
@@ -136,7 +180,7 @@
 			repeal: { warn: [], mute: [], kick: [], ban: [] },
 		}
 
-		for (const [action, actVal] of Object.entries($store.values)) {
+		for (const [action, actVal] of Object.entries($commandStore.values)) {
 			for (const infrType of Object.keys(actVal)) {
 				transformed[action][infrType] = Object.values(actVal[infrType])
 			}
@@ -147,7 +191,19 @@
 		setLoading("cmdsettings", false)
 	}
 
-	$: console.log("Store", $store)
+	function handleGeneralToggleChange(e) {
+		const checked = e.detail.target.value === "true"
+
+		generalStore.set({
+			...$generalStore,
+			values: {
+				...$generalStore.values,
+				[e.detail.target.name]: checked,
+			},
+		})
+	}
+
+	$: console.log("Store", $generalStore)
 </script>
 
 {#if errmsg}
@@ -159,6 +215,45 @@
 		<Heading type="title">{game?.name} Settings</Heading>
 	</div>
 
+	<SinglePane
+		style="max-height: auto; position: relative; background: none; padding: 0;"
+	>
+		{#if $loading["gensettings"]}
+			<Spinner />
+		{/if}
+
+		<div class="general">
+			<div class="heading">
+				<Heading type="subtitle">General Settings</Heading>
+			</div>
+
+			<div class="fields">
+				<div class="field">
+					<span>Enable Ban Sync</span>
+					<Toggle
+						name="enable_ban_sync"
+						value={!!$generalStore.values?.enable_ban_sync ? "true" : "false"}
+						on:change={handleGeneralToggleChange}
+					/>
+				</div>
+			</div>
+
+			<div class="buttons">
+				<ConfirmModal
+					heading="Are you sure?"
+					message="This will reset all general settings to their default values. If you change your mind, reload the page without clicking save."
+					submitText="Reset Settings"
+					on:submit={resetGeneralToDefault}
+				>
+					<div slot="trigger" let:open>
+						<Button color="danger" on:click={open}>Reset to Default</Button>
+					</div>
+				</ConfirmModal>
+				<Button color="success" on:click={saveGeneralSettings}>Save</Button>
+			</div>
+		</div>
+	</SinglePane>
+
 	<SinglePane style="max-height: auto; position: relative;">
 		{#if $loading["cmdsettings"]}
 			<Spinner />
@@ -166,7 +261,7 @@
 
 		<div class="commands">
 			<div class="heading">
-				<Heading>Infraction Commands</Heading>
+				<Heading type="subtitle">Infraction Commands</Heading>
 
 				<p>
 					Each action below contains commands specific to individual infraction
@@ -188,7 +283,7 @@
 					heading="Are you sure?"
 					message="This will reset all commands to their default values. If you change your mind, reload the page without clicking save."
 					submitText="Reset Commands"
-					on:submit={resetToDefault}
+					on:submit={resetCommandsToDefault}
 				>
 					<div slot="trigger" let:open>
 						<Button color="danger" on:click={open}>Reset to Default</Button>
@@ -199,7 +294,7 @@
 
 			<div class="list">
 				<Accordion bind:key={$currentlyOpen} duration={0.2}>
-					{#each Object.keys($store.values) as action}
+					{#each Object.keys($commandStore.values) as action}
 						<AccordionItem key={action}>
 							<div
 								slot="header"
@@ -214,24 +309,26 @@
 								class="command-content"
 								class:expanded={$currentlyOpen === action}
 							>
-								{#each Object.keys($store.values[action]) as infractionType}
+								{#each Object.keys($commandStore.values[action]) as infractionType}
 									<div class="infraction-commands">
 										<div class="heading">
 											{infractionType} Commands
 										</div>
 
 										<div class="fields">
-											{#each Object.keys($store.values[action][infractionType]) as key}
+											{#each Object.keys($commandStore.values[action][infractionType]) as key}
 												<div class="field">
 													<ListTextInput
 														name={`${action}-${infractionType}-${key}`}
-														bind:value={$store.values[action][infractionType][
+														bind:value={$commandStore.values[action][
+															infractionType
+														][key]}
+														error={$commandStore.errors[action][infractionType][
 															key
 														]}
-														error={$store.errors[action][infractionType][key]}
 														showConfirm={false}
 														on:delete={() => {
-															store.update((current) => {
+															commandStore.update((current) => {
 																delete current.values[action][infractionType][
 																	key
 																]
@@ -248,7 +345,7 @@
 											<Button
 												size="inline"
 												on:click={() => {
-													store.update((current) => {
+													commandStore.update((current) => {
 														current.values[action][infractionType][Date.now()] =
 															""
 														return current
@@ -272,6 +369,38 @@
 
 	.title {
 		margin-bottom: 2rem;
+	}
+
+	.general {
+		width: clamp(20vw, 40vw, 100vw);
+		padding: 2rem;
+		height: auto;
+		overflow: auto;
+		background-color: var(--color-background2);
+
+		@include respond-below(md) {
+			width: 100%;
+		}
+
+		.heading {
+			margin-bottom: 1rem;
+		}
+
+		.fields {
+			display: flex;
+			flex-direction: column;
+
+			.field {
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 2rem;
+		}
 	}
 
 	.commands {
