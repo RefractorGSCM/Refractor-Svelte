@@ -19,6 +19,7 @@
 	import {
 		deleteInfraction,
 		getInfractionById,
+		setInfractionRepealed,
 		updateInfraction,
 	} from "../../domain/infraction/store"
 	import { getPlayer } from "../../domain/player/store"
@@ -126,7 +127,7 @@
 	}
 
 	async function repealCurrentInfraction() {
-		const success = await updateInfraction(infraction.id, { repealed: true })
+		const success = await setInfractionRepealed(infraction.id, true)
 
 		if (success) {
 			successToast("Infraction repealed")
