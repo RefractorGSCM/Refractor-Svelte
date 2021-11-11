@@ -153,7 +153,19 @@
 		}
 	}
 
-	$: console.log(game)
+	$: if (!players.find((p) => p.id === selectedPlayerId)) {
+		console.log("Selected player not found in list")
+
+		// Hide player menu if currently open
+		const menu = document.getElementById(`pm-${selectedPlayerId}`)
+		if (menu) {
+			menu.style.display = "none"
+			playerSelected = false
+			selectedPlayerId = ""
+		}
+	} else {
+		console.log("Selected player found in list")
+	}
 </script>
 
 <Container>
