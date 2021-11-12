@@ -37,6 +37,7 @@
 		update: { warn: {}, mute: {}, kick: {}, ban: {} },
 		delete: { warn: {}, mute: {}, kick: {}, ban: {} },
 		repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
+		sync: { mute: {}, ban: {} },
 	}
 
 	let commandStore = writable({
@@ -65,6 +66,10 @@
 				kick: {},
 				ban: {},
 			},
+			sync: {
+				mute: {},
+				ban: {},
+			},
 		},
 		errors: defaultErrors,
 	} as {
@@ -73,12 +78,20 @@
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 		errors: {
 			create: infractionCommands
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 	})
 
@@ -115,7 +128,6 @@
 		}
 
 		const settings = await getGameSettings(game.name, false)
-		console.log("settings", settings)
 		commandStore.set({
 			...$commandStore,
 			values: settings.commands,
@@ -178,6 +190,7 @@
 			update: { warn: [], mute: [], kick: [], ban: [] },
 			delete: { warn: [], mute: [], kick: [], ban: [] },
 			repeal: { warn: [], mute: [], kick: [], ban: [] },
+			sync: { mute: [], ban: [] },
 		}
 
 		for (const [action, actVal] of Object.entries($commandStore.values)) {
@@ -254,7 +267,9 @@
 		</div>
 	</SinglePane>
 
-	<SinglePane style="max-height: auto; position: relative;">
+	<SinglePane
+		style="max-height: unset; height: auto; position: relative; overflow-y: unset;"
+	>
 		{#if $loading["cmdsettings"]}
 			<Spinner />
 		{/if}
@@ -406,7 +421,6 @@
 	.commands {
 		width: 100%;
 		height: auto;
-		overflow: auto;
 
 		.heading {
 			margin-bottom: 1rem;

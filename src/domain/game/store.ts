@@ -42,6 +42,10 @@ export async function getGameSettings(
 			data = res.data
 		}
 
+		// Ensure unwanted sync warn and kick commands are not present
+		delete data.payload.commands.sync.warn
+		delete data.payload.commands.sync.kick
+
 		return data.payload as GameSettings
 	} catch (err) {
 		errorToast("Could not get game settings")
