@@ -52,10 +52,28 @@ export async function getGameSettings(
 	}
 }
 
+type infrErrors = {
+	warn: { index: number; message: string }
+	mute: { index: number; message: string }
+	kick: { index: number; message: string }
+	ban: { index: number; message: string }
+}
+
+type setCommandErrors = {
+	create: infrErrors
+	update: infrErrors
+	delete: infrErrors
+	repeal: infrErrors
+	sync: {
+		mute: { index: number; message: string }
+		ban: { index: number; message: string }
+	}
+}
+
 export async function setGameCommandSettings(
 	game: string,
 	body: GameCommandSettings,
-): Promise<{ [key: string]: string }> {
+): Promise<setCommandErrors> {
 	try {
 		await api.setGameCommandSettings(game, body)
 
