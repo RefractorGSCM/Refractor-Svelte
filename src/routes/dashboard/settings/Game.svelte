@@ -236,8 +236,6 @@
 			},
 		})
 	}
-
-	$: console.log("Store", $generalStore)
 </script>
 
 {#if errmsg}
@@ -267,6 +265,14 @@
 					<Toggle
 						name="enable_ban_sync"
 						value={!!$generalStore.values?.enable_ban_sync ? "true" : "false"}
+						on:change={handleGeneralToggleChange}
+					/>
+				</div>
+				<div class="field">
+					<span>Enable Mute Sync</span>
+					<Toggle
+						name="enable_mute_sync"
+						value={!!$generalStore.values?.enable_mute_sync ? "true" : "false"}
 						on:change={handleGeneralToggleChange}
 					/>
 				</div>
@@ -429,6 +435,11 @@
 			.field {
 				display: flex;
 				justify-content: space-between;
+				margin-bottom: 1rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
 			}
 		}
 
