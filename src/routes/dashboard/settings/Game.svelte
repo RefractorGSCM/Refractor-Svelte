@@ -199,9 +199,30 @@
 			}
 		}
 
-		await setGameCommandSettings(game.name, transformed)
+		const errors = await setGameCommandSettings(game.name, transformed)
 
 		setLoading("cmdsettings", false)
+
+		if (!!errors) {
+			// transform errors
+			const transformed = defaultErrors
+
+			for (const [actKey, actVal] of Object.entries(errors)) {
+				for (const [infrKey, infrVal] of Object.entries(actVal)) {
+					transformed[actKey] = {
+						...transformed[actKey],
+						[infrKey]: {
+							[infrVal.index]: infrVal.message,
+						},
+					}
+				}
+			}
+
+			commandStore.set({
+				...$commandStore,
+				errors: transformed,
+			})
+		}
 	}
 
 	function handleGeneralToggleChange(e) {
@@ -331,7 +352,7 @@
 										</div>
 
 										<div class="fields">
-											{#each Object.keys($commandStore.values[action][infractionType]) as key}
+											{#each Object.keys($commandStore.values[action][infractionType]) as key, idx}
 												<div class="field">
 													<ListTextInput
 														name={`${action}-${infractionType}-${key}`}
@@ -339,7 +360,7 @@
 															infractionType
 														][key]}
 														error={$commandStore.errors[action][infractionType][
-															key
+															idx
 														]}
 														showConfirm={false}
 														on:delete={() => {
