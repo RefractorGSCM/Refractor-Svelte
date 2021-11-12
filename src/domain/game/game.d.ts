@@ -37,6 +37,7 @@ type GameCommandSettings = {
 
 type GameGeneralSettings = {
 	enable_ban_sync: boolean
+	enable_mute_sync: boolean
 }
 
 type GameSettings = {
