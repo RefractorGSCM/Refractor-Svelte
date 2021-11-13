@@ -33,6 +33,8 @@ type GameCommandSettings = {
 
 type GameGeneralSettings = {
 	enable_ban_sync: boolean
+	player_infraction_threshold: number
+	player_infraction_timespan: number
 }
 
 type GameSettings = {
