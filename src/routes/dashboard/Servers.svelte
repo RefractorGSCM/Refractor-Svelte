@@ -14,6 +14,13 @@
 	async function deleteServer(id: number) {
 		await deactivateServer(id)
 	}
+
+	let servers: Server[] = []
+	$: servers = $allServers.sort((a, b) => {
+		const A = a.name.toUpperCase()
+		const B = b.name.toUpperCase()
+		return A < B ? -1 : A > B ? 1 : 0
+	})
 </script>
 
 <svelte:head>
@@ -21,7 +28,7 @@
 </svelte:head>
 
 <Container>
-	{#if $allServers && $allServers.length > 0}
+	{#if servers && servers.length > 0}
 		<Heading type="title">Servers</Heading>
 
 		<RequirePerms allOf={[FLAG_ADMINISTRATOR]}>

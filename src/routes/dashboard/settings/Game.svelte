@@ -6,6 +6,7 @@
 	import Heading from "../../../components/Heading.svelte"
 	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import NumberInput from "../../../components/NumberInput.svelte"
 	import Spinner from "../../../components/Spinner.svelte"
 	import Toggle from "../../../components/Toggle.svelte"
 	import {
@@ -37,6 +38,7 @@
 		update: { warn: {}, mute: {}, kick: {}, ban: {} },
 		delete: { warn: {}, mute: {}, kick: {}, ban: {} },
 		repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
+		sync: { mute: {}, ban: {} },
 	}
 
 	let commandStore = writable({
@@ -65,6 +67,10 @@
 				kick: {},
 				ban: {},
 			},
+			sync: {
+				mute: {},
+				ban: {},
+			},
 		},
 		errors: defaultErrors,
 	} as {
@@ -73,12 +79,20 @@
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 		errors: {
 			create: infractionCommands
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 	})
 
@@ -115,7 +129,6 @@
 		}
 
 		const settings = await getGameSettings(game.name, false)
-		console.log("settings", settings)
 		commandStore.set({
 			...$commandStore,
 			values: settings.commands,
@@ -151,6 +164,13 @@
 			values.enable_ban_sync = values.enable_ban_sync === "true"
 		}
 
+		values.player_infraction_threshold = parseInt(
+			values.player_infraction_threshold.toString(),
+		)
+		values.player_infraction_timespan = parseInt(
+			values.player_infraction_timespan.toString(),
+		)
+
 		await setGameGeneralSettings(game.name, values)
 
 		setLoading("gensettings", false)
@@ -178,6 +198,7 @@
 			update: { warn: [], mute: [], kick: [], ban: [] },
 			delete: { warn: [], mute: [], kick: [], ban: [] },
 			repeal: { warn: [], mute: [], kick: [], ban: [] },
+			sync: { mute: [], ban: [] },
 		}
 
 		for (const [action, actVal] of Object.entries($commandStore.values)) {
@@ -186,9 +207,30 @@
 			}
 		}
 
-		await setGameCommandSettings(game.name, transformed)
+		const errors = await setGameCommandSettings(game.name, transformed)
 
 		setLoading("cmdsettings", false)
+
+		if (!!errors) {
+			// transform errors
+			const transformed = defaultErrors
+
+			for (const [actKey, actVal] of Object.entries(errors)) {
+				for (const [infrKey, infrVal] of Object.entries(actVal)) {
+					transformed[actKey] = {
+						...transformed[actKey],
+						[infrKey]: {
+							[infrVal.index]: infrVal.message,
+						},
+					}
+				}
+			}
+
+			commandStore.set({
+				...$commandStore,
+				errors: transformed,
+			})
+		}
 	}
 
 	function handleGeneralToggleChange(e) {
@@ -203,7 +245,15 @@
 		})
 	}
 
-	$: console.log("Store", $generalStore)
+	function handleGeneralNumberChange(e) {
+		generalStore.set({
+			...$generalStore,
+			values: {
+				...$generalStore.values,
+				[e.target.name]: e.target.value,
+			},
+		})
+	}
 </script>
 
 {#if errmsg}
@@ -236,6 +286,40 @@
 						on:change={handleGeneralToggleChange}
 					/>
 				</div>
+				<div class="field">
+					<span>Enable Mute Sync</span>
+					<Toggle
+						name="enable_mute_sync"
+						value={!!$generalStore.values?.enable_mute_sync ? "true" : "false"}
+						on:change={handleGeneralToggleChange}
+					/>
+				</div>
+				<div class="description">
+					<Heading>Player Name Display</Heading>
+
+					<p>
+						This section configures the thresholds used to display troublemaker
+						players specially. As they approach the infraction threshold value
+						within a the specified timespan, their name color in server lists
+						will change.
+					</p>
+				</div>
+				<div class="field">
+					<NumberInput
+						name="player_infraction_threshold"
+						label="Infraction Thereshold"
+						value={$generalStore.values?.player_infraction_threshold?.toString()}
+						on:change={handleGeneralNumberChange}
+					/>
+				</div>
+				<div class="field">
+					<NumberInput
+						name="player_infraction_timespan"
+						label="Infraction Timespan (minutes)"
+						value={$generalStore.values?.player_infraction_timespan?.toString()}
+						on:change={handleGeneralNumberChange}
+					/>
+				</div>
 			</div>
 
 			<div class="buttons">
@@ -254,7 +338,9 @@
 		</div>
 	</SinglePane>
 
-	<SinglePane style="max-height: auto; position: relative;">
+	<SinglePane
+		style="max-height: unset; height: auto; position: relative; overflow-y: unset;"
+	>
 		{#if $loading["cmdsettings"]}
 			<Spinner />
 		{/if}
@@ -316,7 +402,7 @@
 										</div>
 
 										<div class="fields">
-											{#each Object.keys($commandStore.values[action][infractionType]) as key}
+											{#each Object.keys($commandStore.values[action][infractionType]) as key, idx}
 												<div class="field">
 													<ListTextInput
 														name={`${action}-${infractionType}-${key}`}
@@ -324,7 +410,7 @@
 															infractionType
 														][key]}
 														error={$commandStore.errors[action][infractionType][
-															key
+															idx
 														]}
 														showConfirm={false}
 														on:delete={() => {
@@ -372,7 +458,7 @@
 	}
 
 	.general {
-		width: clamp(20vw, 40vw, 100vw);
+		width: 100%;
 		padding: 2rem;
 		height: auto;
 		overflow: auto;
@@ -393,6 +479,20 @@
 			.field {
 				display: flex;
 				justify-content: space-between;
+				margin-bottom: 1rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			.description {
+				p {
+					margin-top: 0.5rem;
+					margin-bottom: 1rem;
+					font-size: 1.4rem;
+					color: var(--color-text-muted);
+				}
 			}
 		}
 
@@ -406,7 +506,6 @@
 	.commands {
 		width: 100%;
 		height: auto;
-		overflow: auto;
 
 		.heading {
 			margin-bottom: 1rem;
