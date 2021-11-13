@@ -6,6 +6,7 @@
 	import Heading from "../../../components/Heading.svelte"
 	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
+	import NumberInput from "../../../components/NumberInput.svelte"
 	import Spinner from "../../../components/Spinner.svelte"
 	import Toggle from "../../../components/Toggle.svelte"
 	import {
@@ -163,6 +164,13 @@
 			values.enable_ban_sync = values.enable_ban_sync === "true"
 		}
 
+		values.player_infraction_threshold = parseInt(
+			values.player_infraction_threshold.toString(),
+		)
+		values.player_infraction_timespan = parseInt(
+			values.player_infraction_timespan.toString(),
+		)
+
 		await setGameGeneralSettings(game.name, values)
 
 		setLoading("gensettings", false)
@@ -236,6 +244,16 @@
 			},
 		})
 	}
+
+	function handleGeneralNumberChange(e) {
+		generalStore.set({
+			...$generalStore,
+			values: {
+				...$generalStore.values,
+				[e.target.name]: e.target.value,
+			},
+		})
+	}
 </script>
 
 {#if errmsg}
@@ -281,11 +299,27 @@
 
 					<p>
 						This section configures the thresholds used to display troublemaker
-						players. As they approach the infraction threshold value within a
-						period of time, their name will gradually turn red.
+						players specially. As they approach the infraction threshold value
+						within a the specified timespan, their name color in server lists
+						will change.
 					</p>
 				</div>
-				<div class="field" />
+				<div class="field">
+					<NumberInput
+						name="player_infraction_threshold"
+						label="Infraction Thereshold"
+						value={$generalStore.values?.player_infraction_threshold?.toString()}
+						on:change={handleGeneralNumberChange}
+					/>
+				</div>
+				<div class="field">
+					<NumberInput
+						name="player_infraction_timespan"
+						label="Infraction Timespan (minutes)"
+						value={$generalStore.values?.player_infraction_timespan?.toString()}
+						on:change={handleGeneralNumberChange}
+					/>
+				</div>
 			</div>
 
 			<div class="buttons">
@@ -424,7 +458,7 @@
 	}
 
 	.general {
-		width: clamp(20vw, 40vw, 100vw);
+		width: 100%;
 		padding: 2rem;
 		height: auto;
 		overflow: auto;
@@ -449,6 +483,15 @@
 
 				&:last-child {
 					margin-bottom: 0;
+				}
+			}
+
+			.description {
+				p {
+					margin-top: 0.5rem;
+					margin-bottom: 1rem;
+					font-size: 1.4rem;
+					color: var(--color-text-muted);
 				}
 			}
 		}
