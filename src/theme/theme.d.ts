@@ -22,6 +22,8 @@ type Theme = {
 		successDark: string
 		warningLight: string
 		warning: string
+		alertLight: string
+		alert: string
 		dangerLight: string
 		danger: string
 	}

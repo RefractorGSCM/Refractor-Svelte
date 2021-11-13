@@ -162,6 +162,21 @@
 			selectedPlayerId = ""
 		}
 	}
+
+	function getPlayerNameColor(infractionCount: number): string {
+		const threshold = game.settings.player_infraction_threshold
+		const percentage = infractionCount / threshold
+
+		if (percentage > 0.8) {
+			return "var(--color-danger)"
+		} else if (percentage > 0.6) {
+			return "var(--color-alert)"
+		} else if (percentage > 0.3) {
+			return "var(--color-warning)"
+		} else {
+			return "var(--color-text2)"
+		}
+	}
 </script>
 
 <Container>
@@ -239,7 +254,13 @@
 																	<PlayerModal {player}>
 																		<div slot="trigger" let:open>
 																			<div class="player" on:click={open}>
-																				{player.name}
+																				<span
+																					style={`color: ${getPlayerNameColor(
+																						player.infraction_count_since_timespan,
+																					)};`}
+																				>
+																					{player.name}
+																				</span>
 																			</div>
 																		</div>
 																	</PlayerModal>
@@ -324,7 +345,14 @@
 																			selectedPlayerId === player.id}
 																		on:click={() => togglePlayerMenu(player.id)}
 																	>
-																		<span class="name">{player.name}</span>
+																		<span
+																			class="name"
+																			style={`color: ${getPlayerNameColor(
+																				player.infraction_count_since_timespan,
+																			)};`}
+																		>
+																			{player.name}
+																		</span>
 																		{#if player.infraction_count}
 																			<span
 																				class="infraction-count"
