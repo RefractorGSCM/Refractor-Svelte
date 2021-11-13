@@ -37,6 +37,7 @@
 		update: { warn: {}, mute: {}, kick: {}, ban: {} },
 		delete: { warn: {}, mute: {}, kick: {}, ban: {} },
 		repeal: { warn: {}, mute: {}, kick: {}, ban: {} },
+		sync: { mute: {}, ban: {} },
 	}
 
 	let commandStore = writable({
@@ -65,6 +66,10 @@
 				kick: {},
 				ban: {},
 			},
+			sync: {
+				mute: {},
+				ban: {},
+			},
 		},
 		errors: defaultErrors,
 	} as {
@@ -73,12 +78,20 @@
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 		errors: {
 			create: infractionCommands
 			update: infractionCommands
 			delete: infractionCommands
 			repeal: infractionCommands
+			sync: {
+				mute: { [key: number]: string }
+				ban: { [key: number]: string }
+			}
 		}
 	})
 
@@ -115,7 +128,6 @@
 		}
 
 		const settings = await getGameSettings(game.name, false)
-		console.log("settings", settings)
 		commandStore.set({
 			...$commandStore,
 			values: settings.commands,
@@ -178,6 +190,7 @@
 			update: { warn: [], mute: [], kick: [], ban: [] },
 			delete: { warn: [], mute: [], kick: [], ban: [] },
 			repeal: { warn: [], mute: [], kick: [], ban: [] },
+			sync: { mute: [], ban: [] },
 		}
 
 		for (const [action, actVal] of Object.entries($commandStore.values)) {
@@ -186,9 +199,30 @@
 			}
 		}
 
-		await setGameCommandSettings(game.name, transformed)
+		const errors = await setGameCommandSettings(game.name, transformed)
 
 		setLoading("cmdsettings", false)
+
+		if (!!errors) {
+			// transform errors
+			const transformed = defaultErrors
+
+			for (const [actKey, actVal] of Object.entries(errors)) {
+				for (const [infrKey, infrVal] of Object.entries(actVal)) {
+					transformed[actKey] = {
+						...transformed[actKey],
+						[infrKey]: {
+							[infrVal.index]: infrVal.message,
+						},
+					}
+				}
+			}
+
+			commandStore.set({
+				...$commandStore,
+				errors: transformed,
+			})
+		}
 	}
 
 	function handleGeneralToggleChange(e) {
@@ -202,8 +236,6 @@
 			},
 		})
 	}
-
-	$: console.log("Store", $generalStore)
 </script>
 
 {#if errmsg}
@@ -236,6 +268,14 @@
 						on:change={handleGeneralToggleChange}
 					/>
 				</div>
+				<div class="field">
+					<span>Enable Mute Sync</span>
+					<Toggle
+						name="enable_mute_sync"
+						value={!!$generalStore.values?.enable_mute_sync ? "true" : "false"}
+						on:change={handleGeneralToggleChange}
+					/>
+				</div>
 			</div>
 
 			<div class="buttons">
@@ -254,7 +294,9 @@
 		</div>
 	</SinglePane>
 
-	<SinglePane style="max-height: auto; position: relative;">
+	<SinglePane
+		style="max-height: unset; height: auto; position: relative; overflow-y: unset;"
+	>
 		{#if $loading["cmdsettings"]}
 			<Spinner />
 		{/if}
@@ -316,7 +358,7 @@
 										</div>
 
 										<div class="fields">
-											{#each Object.keys($commandStore.values[action][infractionType]) as key}
+											{#each Object.keys($commandStore.values[action][infractionType]) as key, idx}
 												<div class="field">
 													<ListTextInput
 														name={`${action}-${infractionType}-${key}`}
@@ -324,7 +366,7 @@
 															infractionType
 														][key]}
 														error={$commandStore.errors[action][infractionType][
-															key
+															idx
 														]}
 														showConfirm={false}
 														on:delete={() => {
@@ -393,6 +435,11 @@
 			.field {
 				display: flex;
 				justify-content: space-between;
+				margin-bottom: 1rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
 			}
 		}
 
@@ -406,7 +453,6 @@
 	.commands {
 		width: 100%;
 		height: auto;
-		overflow: auto;
 
 		.heading {
 			margin-bottom: 1rem;
