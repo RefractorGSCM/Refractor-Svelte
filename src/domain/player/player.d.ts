@@ -8,4 +8,5 @@ type Player = {
 	created_at?: Date
 	modified_at?: Date
 	infraction_count?: number // not a db field
+	infraction_count_since_timespan?: number // not a db field
 }

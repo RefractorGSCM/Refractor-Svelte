@@ -276,6 +276,16 @@
 						on:change={handleGeneralToggleChange}
 					/>
 				</div>
+				<div class="description">
+					<Heading>Player Name Display</Heading>
+
+					<p>
+						This section configures the thresholds used to display troublemaker
+						players. As they approach the infraction threshold value within a
+						period of time, their name will gradually turn red.
+					</p>
+				</div>
+				<div class="field" />
 			</div>
 
 			<div class="buttons">

@@ -2,6 +2,9 @@ type Game = {
 	name: string
 	platform: string
 	chat_enabled?: boolean
+	settings?: {
+		player_infraction_threshold: number
+	}
 }
 
 type GameCommandSettings = {
