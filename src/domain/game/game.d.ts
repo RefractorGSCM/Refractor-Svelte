@@ -29,6 +29,10 @@ type GameCommandSettings = {
 		kick: string[]
 		ban: string[]
 	}
+	sync: {
+		mute: string[]
+		ban: string[]
+	}
 }
 
 type GameGeneralSettings = {
