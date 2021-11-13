@@ -2,7 +2,9 @@ import { writable } from "svelte/store"
 import { errorToast } from "../../utils/toast"
 import api from "./api"
 
-export const serverPlayers = writable({})
+export const serverPlayers = writable(
+	{} as { [key: number]: { [key: string]: Player } },
+)
 
 export function addPlayerToServer(serverId: number, player: Player) {
 	serverPlayers.update((players) => {

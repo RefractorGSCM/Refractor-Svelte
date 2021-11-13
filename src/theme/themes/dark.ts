@@ -22,6 +22,8 @@ const dark: Theme = {
 		successDark: "#0cb064",
 		warningLight: "#F3AE3F",
 		warning: "#F1A01D",
+		alert: "#eb5a1c",
+		alertLight: "#e6712e",
 		dangerLight: "#D54856",
 		danger: "#D02F3F",
 	},
