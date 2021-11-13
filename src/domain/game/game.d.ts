@@ -29,10 +29,15 @@ type GameCommandSettings = {
 		kick: string[]
 		ban: string[]
 	}
+	sync: {
+		mute: string[]
+		ban: string[]
+	}
 }
 
 type GameGeneralSettings = {
 	enable_ban_sync: boolean
+	enable_mute_sync: boolean
 }
 
 type GameSettings = {
