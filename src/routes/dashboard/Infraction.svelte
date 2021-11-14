@@ -136,7 +136,7 @@
 
 			access.set({
 				canEdit: false,
-				canDelete: false,
+				canDelete: allowDeletion(),
 			})
 		}
 	}
