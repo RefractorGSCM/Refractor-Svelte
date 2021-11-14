@@ -58,6 +58,7 @@
 	import { writable } from "svelte/store"
 	import * as yup from "yup"
 	import Button from "../../components/Button.svelte"
+	import DurationDisplay from "../../components/DurationDisplay.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import NameDisplay from "../../components/NameDisplay.svelte"
 	import PageSwitcher from "../../components/PageSwitcher.svelte"
@@ -483,9 +484,10 @@
 							</span>
 						</div>
 						<div class="duration">
-							<span class="mobile-label">Length: </span>{result.duration
-								? `${result.duration} mins`
-								: ""}
+							<span class="mobile-label">Length: </span>
+							{#if !!result.duration}
+								<DurationDisplay duration={result.duration} />
+							{/if}
 						</div>
 						<div class="reason">
 							<span class="mobile-label">Reason: </span>{truncate(

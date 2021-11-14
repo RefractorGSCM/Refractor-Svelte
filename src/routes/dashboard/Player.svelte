@@ -6,6 +6,7 @@
 	import tooltip from "../../actions/tooltip"
 	import Button from "../../components/Button.svelte"
 	import Checkbox from "../../components/Checkbox.svelte"
+	import DurationDisplay from "../../components/DurationDisplay.svelte"
 	import Flair from "../../components/Flair.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import BanModal from "../../components/Modals/BanModal.svelte"
@@ -353,7 +354,9 @@
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
-										<span class="value">{infraction.duration}</span>
+										<span class="value">
+											<DurationDisplay duration={infraction.duration} />
+										</span>
 									</div>
 									<div class="field date">
 										<span class="label">Date</span>
@@ -408,7 +411,9 @@
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
-										<span class="value">{infraction.duration}</span>
+										<span class="value">
+											<DurationDisplay duration={infraction.duration} />
+										</span>
 									</div>
 									<div class="field date">
 										<span class="label">Date</span>
@@ -463,7 +468,9 @@
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
-										<span class="value">{infraction.duration}</span>
+										<span class="value">
+											<DurationDisplay duration={infraction.duration} />
+										</span>
 									</div>
 									<div class="field date">
 										<span class="label">Date</span>
@@ -518,7 +525,9 @@
 									</div>
 									<div class="field duration">
 										<span class="label">Duration</span>
-										<span class="value">{infraction.duration}</span>
+										<span class="value">
+											<DurationDisplay duration={infraction.duration} />
+										</span>
 									</div>
 									<div class="field date">
 										<span class="label">Date</span>
