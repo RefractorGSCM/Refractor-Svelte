@@ -87,6 +87,14 @@
 			})
 		}
 
+		// Sort infractions by date
+		store.set({
+			warnings: sortByDate($store.warnings),
+			mutes: sortByDate($store.mutes),
+			kicks: sortByDate($store.kicks),
+			bans: sortByDate($store.bans),
+		})
+
 		const parsed = queryString.parse(window.location.search)
 		if (!!parsed.highlight) {
 			const highlightId = parseInt(parsed.highlight as string)
@@ -96,10 +104,19 @@
 		}
 	})
 
+	function sortByDate(infractionArr: Infraction[]): Infraction[] {
+		return infractionArr.sort((a, b) => {
+			const A = new Date(a.created_at)
+			const B = new Date(b.created_at)
+
+			console.log(A, B)
+
+			return B.getTime() - A.getTime()
+		})
+	}
+
 	$: {
 		const ref = infractionRefs[$highlightInfractionId]
-
-		console.log($highlightInfractionId, ref)
 
 		if (ref) {
 			ref.classList.add("highlight")
@@ -177,6 +194,14 @@
 				return current
 			})
 		}
+
+		// Sort by date
+		store.set({
+			warnings: sortByDate($store.warnings),
+			mutes: sortByDate($store.mutes),
+			kicks: sortByDate($store.kicks),
+			bans: sortByDate($store.bans),
+		})
 	}
 
 	function addInfraction(type: string, infraction: Infraction) {
