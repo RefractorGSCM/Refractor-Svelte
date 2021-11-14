@@ -52,7 +52,7 @@ type Infraction = {
 	server_id: number
 	type: string
 	reason?: string
-	duration?: Date
+	duration?: number
 	system_action?: boolean
 	created_at?: string
 	modified_at?: string

@@ -3,6 +3,7 @@
 	import { Link, navigate } from "svelte-routing"
 	import { writable } from "svelte/store"
 	import Button from "../../components/Button.svelte"
+	import DurationDisplay from "../../components/DurationDisplay.svelte"
 	import Heading from "../../components/Heading.svelte"
 	import AttachmentModal from "../../components/Modals/AttachmentModal.svelte"
 	import BanModal from "../../components/Modals/BanModal.svelte"
@@ -315,7 +316,7 @@
 				{#if infraction.duration}
 					<div class="info--field duration">
 						<span>Duration:</span>
-						{infraction.duration} mins
+						<DurationDisplay duration={infraction.duration} />
 					</div>
 				{/if}
 
