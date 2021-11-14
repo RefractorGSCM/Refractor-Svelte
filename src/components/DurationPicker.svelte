@@ -10,7 +10,7 @@
 	export let ref = null
 	export let autocomplete = "off"
 	export let required = false
-	export let min = 0
+	export let min = -1
 	export let max = 0x7fffffff
 	export let quickselects: { name: string; value: number }[] = null
 
@@ -23,9 +23,16 @@
 			target = e.detail
 		}
 
-		value = parseInt(target.value)
+		let newValue = parseInt(target.value)
 
-		dispatch("change", value)
+		if (newValue === 0) {
+			if (newValue < value) newValue = -1
+			else newValue = 1
+		}
+
+		value = newValue
+
+		dispatch("change", newValue)
 	}
 </script>
 
@@ -34,7 +41,7 @@
 		<input
 			type="number"
 			bind:this={ref}
-			bind:value
+			{value}
 			{disabled}
 			{autocomplete}
 			{name}

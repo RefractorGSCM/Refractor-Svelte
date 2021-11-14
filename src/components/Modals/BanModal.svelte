@@ -110,8 +110,9 @@
 		duration: yup
 			.number()
 			.transform((val) => (isNaN(val) ? undefined : val))
-			.min(0, "Must not be less than 0")
+			.min(-1, "Must not be less than -1")
 			.max(maxInt32, "Must not be higher than 2,147,483,647")
+			.test("not zero", "Must not be 0", (val) => val !== 0)
 			.required("Duration is required"),
 	})
 
@@ -242,7 +243,7 @@
 					quickselects={[
 						{
 							name: "permanent",
-							value: 0,
+							value: -1,
 						},
 						{
 							name: "30 mins",
