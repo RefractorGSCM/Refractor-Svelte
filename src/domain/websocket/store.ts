@@ -94,6 +94,7 @@ export function connectWebsocket() {
 					name: body.name,
 					watched: body.watched,
 					infraction_count: body.infraction_count,
+					infraction_count_since_timespan: body.infraction_count_since_timespan,
 				})
 				break
 			}
