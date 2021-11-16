@@ -62,3 +62,20 @@ export async function getPlayer(id: string, platform: string): Promise<Player> {
 
 	return null
 }
+
+export function updateOnlinePlayer(
+	playerID: string,
+	updater: (player: Player) => Player,
+) {
+	serverPlayers.update((current) => {
+		for (const [serverID, onlinePlayers] of Object.entries(current)) {
+			const targetPlayer = onlinePlayers[playerID]
+
+			if (!!targetPlayer) {
+				current[serverID][playerID] = updater(targetPlayer)
+			}
+		}
+
+		return current
+	})
+}
