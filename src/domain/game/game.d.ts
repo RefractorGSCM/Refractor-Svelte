@@ -9,32 +9,32 @@ type Game = {
 
 type GameCommandSettings = {
 	create: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
+		warn: GameCommand[]
+		mute: GameCommand[]
+		kick: GameCommand[]
+		ban: GameCommand[]
 	}
 	update: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
+		warn: GameCommand[]
+		mute: GameCommand[]
+		kick: GameCommand[]
+		ban: GameCommand[]
 	}
 	delete: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
+		warn: GameCommand[]
+		mute: GameCommand[]
+		kick: GameCommand[]
+		ban: GameCommand[]
 	}
 	repeal: {
-		warn: string[]
-		mute: string[]
-		kick: string[]
-		ban: string[]
+		warn: GameCommand[]
+		mute: GameCommand[]
+		kick: GameCommand[]
+		ban: GameCommand[]
 	}
 	sync: {
-		mute: string[]
-		ban: string[]
+		mute: GameCommand[]
+		ban: GameCommand[]
 	}
 }
 
@@ -43,6 +43,11 @@ type GameGeneralSettings = {
 	enable_mute_sync: boolean
 	player_infraction_threshold: number
 	player_infraction_timespan: number
+}
+
+type GameCommand = {
+	command: string
+	run_on_all: boolean
 }
 
 type GameSettings = {

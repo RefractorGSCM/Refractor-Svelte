@@ -7,6 +7,7 @@
 	import ListTextInput from "../../../components/ListTextInput.svelte"
 	import ConfirmModal from "../../../components/Modals/ConfirmModal.svelte"
 	import NumberInput from "../../../components/NumberInput.svelte"
+	import Select from "../../../components/Select.svelte"
 	import Spinner from "../../../components/Spinner.svelte"
 	import Toggle from "../../../components/Toggle.svelte"
 	import {
@@ -26,11 +27,24 @@
 	let gameSettings: GameSettings = null
 	let currentlyOpen = writable("")
 
-	type infractionCommands = {
-		warn: { [key: number]: string }
-		mute: { [key: number]: string }
-		kick: { [key: number]: string }
-		ban: { [key: number]: string }
+	type _gameCommand = {
+		command: string
+		run_on: string
+	}
+
+	type _gameCommandSettings = {
+		create: _infractionCommands
+		update: _infractionCommands
+		delete: _infractionCommands
+		repeal: _infractionCommands
+		sync: _infractionCommands
+	}
+
+	type _infractionCommands = {
+		warn?: { [key: number]: _gameCommand }
+		mute?: { [key: number]: _gameCommand }
+		kick?: { [key: number]: _gameCommand }
+		ban?: { [key: number]: _gameCommand }
 	}
 
 	const defaultErrors = {
@@ -74,24 +88,15 @@
 		},
 		errors: defaultErrors,
 	} as {
-		values: {
-			create: infractionCommands
-			update: infractionCommands
-			delete: infractionCommands
-			repeal: infractionCommands
-			sync: {
-				mute: { [key: number]: string }
-				ban: { [key: number]: string }
-			}
-		}
+		values: _gameCommandSettings
 		errors: {
-			create: infractionCommands
-			update: infractionCommands
-			delete: infractionCommands
-			repeal: infractionCommands
+			create: _infractionCommands
+			update: _infractionCommands
+			delete: _infractionCommands
+			repeal: _infractionCommands
 			sync: {
-				mute: { [key: number]: string }
-				ban: { [key: number]: string }
+				mute: { [key: number]: _gameCommand }
+				ban: { [key: number]: _gameCommand }
 			}
 		}
 	})
@@ -129,9 +134,11 @@
 		}
 
 		const settings = await getGameSettings(game.name, false)
+		const transformedCommands = fromServerCommands(settings.commands)
+
 		commandStore.set({
 			...$commandStore,
-			values: settings.commands,
+			values: transformedCommands,
 		})
 
 		generalStore.set({
@@ -141,6 +148,72 @@
 
 		setLoading("game", false)
 	})
+
+	// Because we format the infraction command data differently on the client and server, we use transformation
+	// functions to convert it between the two formats. toServerCommands takes client data and converts it to
+	// the server command setting format.
+	function toServerCommands(
+		clientCommands: _gameCommandSettings,
+	): GameCommandSettings {
+		const transformed: GameCommandSettings = {
+			create: { warn: [], mute: [], kick: [], ban: [] },
+			update: { warn: [], mute: [], kick: [], ban: [] },
+			delete: { warn: [], mute: [], kick: [], ban: [] },
+			repeal: { warn: [], mute: [], kick: [], ban: [] },
+			sync: { mute: [], ban: [] },
+		}
+
+		for (const [actKey, actVal] of Object.entries(clientCommands)) {
+			for (const [infrKey, infrVal] of Object.entries(actVal)) {
+				const infractions: GameCommand[] = []
+
+				for (const cmd of Object.values(infrVal)) {
+					infractions.push({
+						command: cmd.command,
+						run_on_all: cmd.run_on === "all",
+					})
+				}
+
+				transformed[actKey][infrKey] = infractions
+			}
+		}
+
+		return transformed
+	}
+
+	// Because we format the infraction command data differently on the client and server, we use transformation
+	// functions to convert it between the two formats. fromServerCommands takes server data and converts it to
+	// the client command setting format.
+	function fromServerCommands(
+		serverCommands: GameCommandSettings,
+	): _gameCommandSettings {
+		const transformed: _gameCommandSettings = {
+			create: { warn: [], mute: [], kick: [], ban: [] },
+			update: { warn: [], mute: [], kick: [], ban: [] },
+			delete: { warn: [], mute: [], kick: [], ban: [] },
+			repeal: { warn: [], mute: [], kick: [], ban: [] },
+			sync: { mute: [], ban: [] },
+		}
+
+		for (const [actKey, actVal] of Object.entries(serverCommands)) {
+			for (const [infrKey, infrVal] of Object.entries(actVal)) {
+				const infractions: _gameCommand[] = []
+
+				if (infrVal !== null) {
+					for (const cmd of infrVal) {
+						infractions.push({
+							command: cmd.command,
+							run_on: cmd.run_on_all ? "all" : "origin",
+						})
+					}
+				}
+
+				transformed[actKey][infrKey] = infractions
+			}
+		}
+
+		return transformed
+	}
 
 	async function resetGeneralToDefault() {
 		setLoading("gensettings", true)
@@ -182,7 +255,7 @@
 
 		commandStore.set({
 			...$commandStore,
-			values: defaultSettings.commands,
+			values: fromServerCommands(defaultSettings.commands),
 			errors: defaultErrors,
 		})
 
@@ -192,22 +265,10 @@
 	async function saveCommands() {
 		setLoading("cmdsettings", true)
 
-		// Transform flat command structure to arrays
-		const transformed: GameCommandSettings = {
-			create: { warn: [], mute: [], kick: [], ban: [] },
-			update: { warn: [], mute: [], kick: [], ban: [] },
-			delete: { warn: [], mute: [], kick: [], ban: [] },
-			repeal: { warn: [], mute: [], kick: [], ban: [] },
-			sync: { mute: [], ban: [] },
-		}
-
-		for (const [action, actVal] of Object.entries($commandStore.values)) {
-			for (const infrType of Object.keys(actVal)) {
-				transformed[action][infrType] = Object.values(actVal[infrType])
-			}
-		}
-
-		const errors = await setGameCommandSettings(game.name, transformed)
+		const { settings, errors } = await setGameCommandSettings(
+			game.name,
+			toServerCommands($commandStore.values),
+		)
 
 		setLoading("cmdsettings", false)
 
@@ -229,6 +290,12 @@
 			commandStore.set({
 				...$commandStore,
 				errors: transformed,
+			})
+		} else {
+			// Update settings if no errors were returned
+			commandStore.set({
+				...$commandStore,
+				values: fromServerCommands(settings.commands),
 			})
 		}
 	}
@@ -404,11 +471,22 @@
 										<div class="fields">
 											{#each Object.keys($commandStore.values[action][infractionType]) as key, idx}
 												<div class="field">
+													<select
+														name="run_on"
+														bind:value={$commandStore.values[action][
+															infractionType
+														][key].run_on}
+													>
+														<option value="">Run on...</option>
+														<option value="origin">Origin Server</option>
+														<option value="all">All Servers</option>
+													</select>
+
 													<ListTextInput
 														name={`${action}-${infractionType}-${key}`}
 														bind:value={$commandStore.values[action][
 															infractionType
-														][key]}
+														][key].command}
 														error={$commandStore.errors[action][infractionType][
 															idx
 														]}
@@ -433,7 +511,10 @@
 												on:click={() => {
 													commandStore.update((current) => {
 														current.values[action][infractionType][Date.now()] =
-															""
+															{
+																command: "",
+																run_on: "",
+															}
 														return current
 													})
 												}}>+</Button
@@ -588,6 +669,27 @@
 
 				.field {
 					margin-bottom: 1rem;
+					display: flex;
+
+					:global(.input-wrapper) {
+						width: 100%;
+					}
+
+					:global(.input-main) {
+						border-top-left-radius: 0;
+						border-bottom-left-radius: 0;
+					}
+
+					select {
+						background: var(--color-background1);
+						border: none;
+						border-top-left-radius: var(--border-sm);
+						border-bottom-left-radius: var(--border-sm);
+						color: var(--color-text2);
+						border-right: 1px solid var(--color-topbar);
+						padding-right: 1rem;
+						font-size: 1.4rem;
+					}
 				}
 
 				.button-add {
