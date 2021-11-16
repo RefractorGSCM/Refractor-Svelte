@@ -7,6 +7,7 @@ import {
 	addPlayerToServer,
 	removePlayerFromServer,
 	setServerPlayers,
+	updateOnlinePlayer,
 } from "../player/store"
 import { setServerStatus } from "../server/store"
 
@@ -116,6 +117,15 @@ export function connectWebsocket() {
 
 			case "player-list-refresh": {
 				setServerPlayers(body.server_id, body.online_players)
+				break
+			}
+
+			case "infraction-create": {
+				updateOnlinePlayer(body.player_id, (player) => {
+					player.infraction_count++
+					player.infraction_count_since_timespan++
+					return player
+				})
 				break
 			}
 		}
