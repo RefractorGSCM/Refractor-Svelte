@@ -425,7 +425,7 @@
 
 			<div class="placeholders">
 				<p>
-					Available placeholders: {`{{PLAYER_ID}} {{PLAYER_NAME}} {{PLATFORM}} {{DURATION}} {{REASON}}`}
+					Available placeholders: {`{{PLAYER_ID}} {{PLAYER_NAME}} {{PLATFORM}} {{DURATION}} {{DURATION_REMAINING}} {{REASON}}`}
 				</p>
 
 				<p>All durations are in minutes.</p>
