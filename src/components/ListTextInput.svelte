@@ -72,7 +72,7 @@
 			width: 100%;
 			color: var(--color-text2);
 			padding: 0.5rem 1rem;
-			font-size: 1.6rem;
+			font-size: 1.4rem;
 			height: 100%;
 		}
 

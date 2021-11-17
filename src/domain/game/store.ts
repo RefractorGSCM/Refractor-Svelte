@@ -73,20 +73,29 @@ type setCommandErrors = {
 export async function setGameCommandSettings(
 	game: string,
 	body: GameCommandSettings,
-): Promise<setCommandErrors> {
+): Promise<{
+	settings: GameSettings
+	errors: setCommandErrors
+}> {
 	try {
-		await api.setGameCommandSettings(game, body)
+		const { data } = await api.setGameCommandSettings(game, body)
 
 		successToast("Game commands saved")
 
-		return null
+		return {
+			settings: data.payload as GameSettings,
+			errors: null,
+		}
 	} catch (err) {
 		errorToast("Could not set game commands")
 
 		const { data } = err.response
 
 		if (data.errors) {
-			return data.errors
+			return {
+				settings: null,
+				errors: data.errors,
+			}
 		}
 	}
 }
