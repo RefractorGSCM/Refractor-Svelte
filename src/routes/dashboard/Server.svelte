@@ -177,6 +177,15 @@
 			return "var(--color-text2)"
 		}
 	}
+
+	function closePlayerMenu() {
+		const menu = document.getElementById(`pm-${selectedPlayerId}`)
+		if (menu) {
+			menu.style.display = "none"
+			playerSelected = false
+			selectedPlayerId = ""
+		}
+	}
 </script>
 
 <Container>
@@ -241,13 +250,29 @@
 						<div class="list">
 							{#each players as player}
 								<!-- begin infraction modal wrapping here to avoid messing with styling and modal positioning -->
-								<WarningModal serverId={id} {player}>
+								<WarningModal
+									serverId={id}
+									{player}
+									on:submit={closePlayerMenu}
+								>
 									<div slot="trigger" let:openWarning>
-										<MuteModal serverId={id} {player}>
+										<MuteModal
+											serverId={id}
+											{player}
+											on:submit={closePlayerMenu}
+										>
 											<div slot="trigger" let:openMute>
-												<KickModal serverId={id} {player}>
+												<KickModal
+													serverId={id}
+													{player}
+													on:submit={closePlayerMenu}
+												>
 													<div slot="trigger" let:openKick>
-														<BanModal serverId={id} {player}>
+														<BanModal
+															serverId={id}
+															{player}
+															on:submit={closePlayerMenu}
+														>
 															<div slot="trigger" let:openBan>
 																<!-- for small screens -->
 																<div class="mobile-player-wrapper">
