@@ -97,6 +97,12 @@
 				font-size: 1.7rem;
 				outline: none;
 				color: var(--color-text2);
+
+				:global(option) {
+					background-color: var(--color-background3);
+					border: none;
+					outline: none;
+				}
 			}
 
 			select:focus ~ label,
