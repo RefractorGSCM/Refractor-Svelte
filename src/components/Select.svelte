@@ -52,6 +52,12 @@
 				color: var(--color-text2);
 				padding: 0;
 				margin: 0;
+
+				:global(option) {
+					background-color: var(--color-background3);
+					border: none;
+					outline: none;
+				}
 			}
 
 			select:focus ~ label,

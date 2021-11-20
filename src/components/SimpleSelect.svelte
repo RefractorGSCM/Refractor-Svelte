@@ -31,5 +31,11 @@
 		background: none;
 		color: var(--color-text2);
 		border-bottom: 2px solid var(--color-primary);
+
+		:global(option) {
+			background-color: var(--color-background3);
+			border: none;
+			outline: none;
+		}
 	}
 </style>
