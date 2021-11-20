@@ -334,7 +334,7 @@
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
 
 	let sortedUsers: User[] = []
-	$: sortedUsers = $allUsers.sort((a, b) => {
+	$: sortedUsers = $users.sort((a, b) => {
 		const A = a.username.toUpperCase()
 		const B = b.username.toUpperCase()
 		return A < B ? -1 : A > B ? 1 : 0
