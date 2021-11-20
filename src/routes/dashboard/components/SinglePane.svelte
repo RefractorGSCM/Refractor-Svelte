@@ -30,6 +30,10 @@
 		@include respond-below(sm) {
 			flex-direction: column;
 		}
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
 	}
 
 	.bg {
