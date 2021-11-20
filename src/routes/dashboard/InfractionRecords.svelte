@@ -332,6 +332,13 @@
 
 	let amountOfPages = writable(0)
 	$: amountOfPages.set(Math.ceil($searchStore.meta.total / pageLimit))
+
+	let sortedUsers: User[] = []
+	$: sortedUsers = $allUsers.sort((a, b) => {
+		const A = a.username.toUpperCase()
+		const B = b.username.toUpperCase()
+		return A < B ? -1 : A > B ? 1 : 0
+	})
 </script>
 
 <svelte:head>
@@ -395,7 +402,7 @@
 						error={$store.errors.user_id}
 					>
 						<option value="">Any</option>
-						{#each $users as user}
+						{#each sortedUsers as user}
 							<option value={user.id}>{user.username}</option>
 						{/each}
 					</Select>
