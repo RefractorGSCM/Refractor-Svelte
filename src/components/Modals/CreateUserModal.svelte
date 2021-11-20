@@ -90,11 +90,16 @@
 		const errors = await createUser(values as UserTraits)
 		store.set({
 			...$store,
-			errors,
+			errors: errors || {},
 		})
 
 		// If no errors were returned, the user creation succeeded. Close the form.
 		if (!errors) {
+			store.set({
+				values: {},
+				errors: {},
+			})
+
 			close()
 		}
 	}
